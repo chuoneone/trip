@@ -1,0 +1,348 @@
+import React, { useState } from 'react';
+import { ChevronRight, MapPin, Clock, ShoppingBag, Utensils, Info, ChevronDown, ChevronUp, ExternalLink, Car, RefreshCw, Star, Home, Navigation } from 'lucide-react';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js';
+import { Bar } from 'react-chartjs-2';
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
+
+// 輔助函式：產生 Google 地圖搜尋連結
+const getMapUrl = (query) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query + " 沖繩")}`;
+
+const tripData = [
+  {
+    day: 1, date: "1/28 (週三)", title: "落地取車、首波採購", highlight: "重點：iias 買衣服與宵夜",
+    map: "https://www.google.com/maps/dir/Naha+Airport/OTS+Rent-a-car+Rinku+Toyosaki/iias+Okinawa+Toyosaki/Yukureba+Maejima+Hotel",
+    stats: [1.5, 2, 2], infoType: "activity", infoTitle: "今日攻略", infoText: "取車後直奔 iias。2F UQ/GU 是戰場。若想吃燒肉，附近的小祿也有燒肉王分店。",
+    timeline: [
+      { time: "17:05", act: "抵達那霸機場", desc: "入境後前往 OTS 接駁區" },
+      { time: "19:15", act: "OTS 臨空豐崎營業所", desc: "記得攜帶駕照正本與譯本" },
+      { time: "19:30", act: "iias 沖繩豐崎", desc: "UQ/GU 買齊衣服，超市買宵夜" },
+      { time: "21:30", act: "Yukureba Maejima Hotel", desc: "辦理入住休息" }
+    ],
+    food: [
+      { name: "燒肉王 那霸小祿店", type: "吃到飽", note: "如果第一晚就想吃燒肉王，這間順路" },
+      { name: "傑克牛排 Jack's Steak House", type: "必吃名店", note: "開到凌晨 1 點，宵夜聖地" },
+      { name: "暖暮拉麵 那霸牧志店", type: "必吃名店", note: "台灣人最愛，半夜排隊人潮多" },
+      { name: "LOPIA 沖繩豐崎店", type: "快速便利", note: "iias 內，海鮮壽司與烤肉拼盤極強" }
+    ],
+    backups: ["瀨長島 Umikaji Terrace", "DMM Kariyushi 水族館"],
+    returnHome: "Yukureba Maejima Hotel"
+  },
+  {
+    day: 2, date: "1/29 (週四)", title: "直線北上：美國村與鳳梨園", highlight: "重點：15:00 辦理入住",
+    map: "https://www.google.com/maps/dir/Yukureba+Maejima+Hotel/American+Village/Kyoda+Rest+Area/Nago+Pineapple+Park/Lieta+Nakayama",
+    stats: [2.5, 4, 2], infoType: "hotel", infoTitle: "🏨 住宿動線",
+    infoText: "今日一路向北。下午三點入住後把和牛冰起來。鳳梨園就在飯店隔壁。",
+    timeline: [
+      { time: "10:00", act: "Yukureba Maejima Hotel", desc: "行李上車出發北上" },
+      { time: "11:00", act: "美國村 American Village", desc: "異國風情、午餐時間" },
+      { time: "14:30", act: "許田休息站", desc: "必買三矢甜甜圈，短暫休息" },
+      { time: "15:30", act: "名護鳳梨園", desc: "飯店隔壁 2 分鐘，逛完入住" },
+      { time: "16:45", act: "MaxValu 名護店", desc: "買豪華和牛、阿古豬" },
+      { time: "17:45", act: "Lieta Nakayama", desc: "辦理入住 check-in" }
+    ],
+    food: [
+      { name: "燒肉王 名護店", type: "吃到飽", note: "名護市中心，想大口吃肉的首選" },
+      { name: "Taco Rice Cafe Kijimuna", type: "必吃名店", note: "美國村名店，歐姆蛋塔可飯" },
+      { name: "濱屋蕎麥麵 Hamaya", type: "必吃名店", note: "軟骨豬肉麵神級好吃" },
+      { name: "Blue Ocean Steak", type: "在地強推", note: "美國村高評價牛排" }
+    ],
+    backups: ["名護曲餐廳", "萬座毛"],
+    returnHome: "Lieta Nakayama"
+  },
+  {
+    day: 3, date: "1/30 (週五)", title: "美麗海 4 小時大滿足", highlight: "重點：中午抵達水族館",
+    map: "https://www.google.com/maps/dir/Lieta+Nakayama/Okinawa+Churaumi+Aquarium/Kouri+Island/Lieta+Nakayama",
+    stats: [1, 7, 0], infoType: "activity", infoTitle: "水族館黃金時段", infoText: "住在名護的優勢。12點準時入館，16點離開去古宇利看夕陽，完全不趕。",
+    timeline: [
+      { time: "11:00", act: "Lieta Nakayama", desc: "飯店出發往本部半島" },
+      { time: "12:00", act: "美麗海水族館", desc: "🐋 待滿 4 小時 (12:00-16:00)" },
+      { time: "16:30", act: "古宇利島", desc: "心形岩、夕陽美景、跨海大橋" },
+      { time: "18:30", act: "名護市區", desc: "大口吃肉時間" }
+    ],
+    food: [
+      { name: "海人料理 海邦丸", type: "在地強推", note: "水族館旁，CP 值極高的鮮魚" },
+      { name: "花人逢 Kajinho", type: "必吃名店", note: "景觀老宅披薩 (要排隊)" },
+      { name: "岸本食堂 Kishimoto", type: "在地強推", note: "本部町百年老店沖繩麵" },
+      { name: "燒肉乃我那霸 名護店", type: "必吃名店", note: "名護燒肉聖地，肉舖直營" },
+      { name: "古宇利島蝦蝦飯", type: "必吃名店", note: "經典蒜味蝦" },
+      { name: "百年古家 大家", type: "必吃名店", note: "氛圍一流的阿古豬涮涮鍋" }
+    ],
+    backups: ["備瀨福木林道", "今歸仁城跡"],
+    returnHome: "Lieta Nakayama"
+  },
+  {
+    day: 4, date: "1/31 (週六)", title: "南下海岸與 Costco", highlight: "重點：Costco 週六掃貨",
+    map: "https://www.google.com/maps/dir/Lieta+Nakayama/Busena+Marine+Park/Manzamo/Aeon+Mall+Okinawa+Rycom/Costco+Wholesale+Okinawa+Nanjo/Hotel+Chula+Vista+SENAGA",
+    stats: [3.5, 5, 6], infoType: "hotel", infoTitle: "南部入住",
+    infoText: "今日南下行李全上。永旺來客夢預留多一點時間逛街。Costco 晚餐最隨性。",
+    timeline: [
+      { time: "09:30", act: "Lieta Nakayama", desc: "退房行李上車出發南下" },
+      { time: "10:30", act: "部瀨名海中公園", desc: "玻璃底船直觀海洋世界" },
+      { time: "12:00", act: "萬座毛", desc: "象鼻岩快閃拍照" },
+      { time: "14:00", act: "永旺夢樂城來客夢", desc: "沖繩最大商城購物" },
+      { time: "19:15", act: "Costco 沖繩南城店", desc: "買熟食拼盤回飯店吃" },
+      { time: "20:45", act: "Hotel Chula Vista SENAGA", desc: "辦理入住休息" }
+    ],
+    food: [
+      { name: "恩納之驛 休息站", type: "在地強推", note: "炸蝦、海鮮串燒應有盡有" },
+      { name: "琉球的牛 恩納店", type: "必吃名店", note: "極高品質和牛，需預約" },
+      { name: "A&W 漢堡 Rycom店", type: "快速便利", note: "必喝 Root Beer" },
+      { name: "Costco 沖繩南城店 熟食區", type: "快速便利", note: "烤雞/握壽司拼盤" }
+    ],
+    backups: ["港川外人住宅", "東南植物樂園"],
+    returnHome: "Hotel Chula Vista SENAGA"
+  },
+  {
+    day: 5, date: "2/1 (週日)", title: "南部玉泉洞與補貨", highlight: "重點：飯店旁就有燒肉王",
+    map: "https://www.google.com/maps/dir/Hotel+Chula+Vista+SENAGA/Okinawa+World/iias+Okinawa+Toyosaki/Don+Quijote+Itoman/Hotel+Chula+Vista+SENAGA",
+    stats: [1.5, 4, 7], infoType: "shopping", infoTitle: "最後一晚大餐",
+    infoText: "燒肉王(豐見城店)就在飯店附近。這晚可以衝最後一波燒肉吃到飽！",
+    timeline: [
+      { time: "10:30", act: "玉泉洞 (沖繩世界)", desc: "壯觀鐘乳石洞與國王村" },
+      { time: "13:30", act: "iias 沖繩豐崎", desc: "二訪補買電器與服飾品牌" },
+      { time: "17:30", act: "唐吉訶德 糸滿店", desc: "藥妝伴手禮大採購" },
+      { time: "20:00", act: "燒肉王 豐見城店", desc: "就在飯店附近，最後狂歡" }
+    ],
+    food: [
+      { name: "燒肉王 豐見城店", type: "吃到飽", note: "最後一晚衝了！就在飯店附近" },
+      { name: "系滿漁市場", type: "快速便利", note: "各種平價海鮮熟食" },
+      { name: "幸福鬆餅 瀨長島店", type: "必吃名店", note: "看飛機夕陽配甜點" },
+      { name: "氾濫漢堡 Flood Burger", type: "在地強推", note: "瀨長島巨型漢堡" },
+      { name: "琉球的牛 那霸店", type: "必吃名店", note: "豪華燒肉結尾" }
+    ],
+    backups: ["奧武島 中本天婦羅", "知念岬公園"],
+    returnHome: "Hotel Chula Vista SENAGA"
+  },
+  {
+    day: 6, date: "2/2 (週一)", title: "市區祈福歸途", highlight: "15:00 準時還車",
+    map: "https://www.google.com/maps/dir/Hotel+Chula+Vista+SENAGA/Naminoue+Shrine/Kokusai+Dori/OTS+Rent-a-car+Rinku+Toyosaki",
+    stats: [1, 2, 3], infoType: "activity", infoTitle: "歸途提醒",
+    infoText: "還車前記得至對面 Eneos 加滿油。國際通是最後伴手禮採買點。",
+    timeline: [
+      { time: "10:00", act: "波上宮", desc: "參拜神社與看海景" },
+      { time: "12:00", act: "國際通", desc: "最後伴手禮漏網補齊" },
+      { time: "14:30", act: "Eneos 加油站 豐崎店", desc: "加滿油還車，保留收據" },
+      { time: "15:00", act: "OTS 臨空豐崎營業所", desc: "歸還車輛，接駁機場" }
+    ],
+    food: [
+      { name: "第一牧志公設市場", type: "在地強推", note: "沖繩熱炒與新鮮海鮮" },
+      { name: "琉球茶房 Ashibiuna", type: "必吃名店", note: "老宅豬腳定食" },
+      { name: "富士屋 泊本店", type: "在地強推", note: "在地人最愛的紅豆冰" }
+    ],
+    backups: ["首里城", "瀨長島"],
+    returnHome: "那霸機場"
+  }
+];
+
+export default function App() {
+  const [activeDay, setActiveDay] = useState(1);
+  const [showBackup, setShowBackup] = useState(false);
+  const [randomFood, setRandomFood] = useState(null);
+  const day = tripData[activeDay - 1];
+
+  const paceData = {
+    labels: ['活動比例'],
+    datasets: [
+      { label: '車程', data: [day.stats[0]], backgroundColor: '#94a3b8' },
+      { label: '景點', data: [day.stats[1]], backgroundColor: '#60a5fa' },
+      { label: '購物', data: [day.stats[2] || 0], backgroundColor: '#f43f5e' }
+    ],
+  };
+
+  const chartOptions = {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: { x: { stacked: true, display: false }, y: { stacked: true, display: false } },
+    plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } }
+  };
+
+  const pickRandomFood = () => {
+    const list = day.food;
+    const random = list[Math.floor(Math.random() * list.length)];
+    setRandomFood(random);
+    setTimeout(() => setRandomFood(null), 3000);
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-50 pb-20 font-sans text-slate-900">
+      <header className="bg-slate-900 text-white p-6 shadow-lg sticky top-0 z-50">
+        <div className="max-w-5xl mx-auto flex justify-between items-center">
+          <div>
+            <h1 className="text-xl font-bold tracking-tight">沖繩 6天5夜 導航版</h1>
+            <p className="text-slate-400 text-xs">2026/01/28 - 2026/02/02</p>
+          </div>
+          <a href={day.map} target="_blank" rel="noreferrer" className="bg-emerald-500 text-white px-4 py-2 rounded-lg font-bold text-xs flex items-center gap-2 hover:bg-emerald-600 transition-all shadow-md">
+            <Navigation size={14} /> 導航今日全路徑
+          </a>
+        </div>
+      </header>
+
+      <nav className="bg-white border-b sticky top-[84px] z-40 overflow-x-auto">
+        <div className="max-w-5xl mx-auto flex p-2 gap-2">
+          {tripData.map(d => (
+            <button 
+              key={d.day}
+              onClick={() => { setActiveDay(d.day); setRandomFood(null); }}
+              className={`flex-shrink-0 px-5 py-2 rounded-xl text-sm font-bold transition-all ${activeDay === d.day ? 'bg-slate-800 text-white shadow-lg' : 'bg-slate-100 text-slate-500'}`}
+            >
+              DAY {d.day}
+            </button>
+          ))}
+        </div>
+      </nav>
+
+      <main className="max-w-5xl mx-auto p-4 space-y-6 mt-4">
+        <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex justify-between items-center">
+          <div>
+            <h2 className="text-2xl font-bold text-slate-800">Day {day.day}: {day.title}</h2>
+            <p className="text-slate-500 mt-1 italic">點擊下方任何地點，直接導航 Google Maps</p>
+          </div>
+          <div className="bg-blue-50 text-blue-600 p-3 rounded-2xl hidden md:block">
+            <Car size={32} />
+          </div>
+        </section>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-4">
+            {/* Timeline Area */}
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="font-bold text-lg flex items-center gap-2"><Clock size={20} className="text-blue-600" /> 行程導航</h3>
+                <button 
+                  onClick={() => setShowBackup(!showBackup)}
+                  className="text-xs font-bold text-slate-400 bg-slate-100 px-3 py-1 rounded-full flex items-center gap-1"
+                >
+                  備案景點 {showBackup ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                </button>
+              </div>
+
+              <div className="space-y-6 border-l-2 border-slate-100 ml-3 pl-6">
+                {day.timeline.map((t, i) => (
+                  <div key={i} className="relative">
+                    <div className="absolute -left-[31px] top-1.5 w-3 h-3 rounded-full bg-blue-600 border-2 border-white shadow-sm"></div>
+                    <a 
+                      href={getMapUrl(t.act)} 
+                      target="_blank" 
+                      rel="noreferrer"
+                      className="flex items-baseline gap-3 group"
+                    >
+                      <span className="text-xs font-mono font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">{t.time}</span>
+                      <h4 className="font-bold text-slate-800 group-hover:text-blue-600 transition-colors flex items-center gap-1">
+                        {t.act} <ExternalLink size={12} className="text-slate-300 group-hover:text-blue-400" />
+                      </h4>
+                    </a>
+                    <p className="text-xs text-slate-400 mt-1">{t.desc}</p>
+                  </div>
+                ))}
+              </div>
+
+              {showBackup && (
+                <div className="mt-8 pt-4 border-t border-dashed border-slate-200">
+                  <p className="text-[10px] font-bold text-slate-300 uppercase mb-3 flex items-center gap-1">🔄 備案導航</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {day.backups.map((b, i) => (
+                      <a 
+                        key={i} 
+                        href={getMapUrl(b)} 
+                        target="_blank" 
+                        rel="noreferrer"
+                        className="bg-slate-50 p-2 rounded-lg text-[10px] text-slate-500 font-bold border border-slate-100 flex items-center justify-between hover:bg-blue-50 hover:text-blue-600 transition-all"
+                      >
+                        <span className="flex items-center gap-1"><MapPin size={10} /> {b}</span>
+                        <ExternalLink size={10} />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Food Area */}
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="font-bold text-lg flex items-center gap-2"><Utensils size={20} className="text-orange-500" /> 美食地圖導航</h3>
+                <button 
+                  onClick={pickRandomFood}
+                  className="text-xs font-bold text-orange-600 bg-orange-50 px-3 py-1 rounded-full flex items-center gap-2 hover:bg-orange-100 transition-all"
+                >
+                  <RefreshCw size={14} /> 抽籤去哪吃
+                </button>
+              </div>
+
+              {randomFood && (
+                <a 
+                  href={getMapUrl(randomFood.name)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mb-4 p-4 bg-orange-600 text-white rounded-xl shadow-lg animate-bounce flex items-center justify-between"
+                >
+                  <div>
+                    <p className="text-[10px] uppercase font-bold text-orange-200">系統決定去這裡：(點我導航)</p>
+                    <p className="text-lg font-bold">{randomFood.name}</p>
+                  </div>
+                  <Navigation size={24} />
+                </a>
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {day.food.map((d, i) => (
+                  <a 
+                    key={i} 
+                    href={getMapUrl(d.name)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="p-4 bg-orange-50/50 rounded-xl border border-orange-100 hover:border-orange-300 hover:bg-orange-100 transition-all group"
+                  >
+                    <div className="flex justify-between items-start mb-2">
+                      <p className="font-bold text-sm text-orange-900 flex items-center gap-1 group-hover:text-orange-700">
+                        {d.name} <ExternalLink size={12} className="text-orange-300" />
+                      </p>
+                      <span className="text-[9px] bg-white text-orange-500 border border-orange-200 px-1.5 py-0.5 rounded uppercase font-bold">{d.type || '推薦'}</span>
+                    </div>
+                    <p className="text-[11px] text-orange-700">{d.note}</p>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+              <h3 className="font-bold text-xs text-slate-500 uppercase tracking-widest mb-4">📈 當日分析</h3>
+              <div className="h-20">
+                <Bar data={paceData} options={chartOptions} />
+              </div>
+            </div>
+
+            <div className={`p-6 rounded-3xl shadow-xl text-white transition-all ${day.day === 2 || day.day === 4 ? 'bg-indigo-600' : 'bg-slate-800'}`}>
+              <div className="flex items-start gap-4">
+                <div className="p-2 bg-white/20 rounded-xl">
+                  {day.day === 2 || day.day === 4 ? <Home size={24} /> : <MapPin size={24} />}
+                </div>
+                <div>
+                  <h4 className="font-bold text-lg mb-1">{day.infoTitle}</h4>
+                  <p className="text-xs text-white/80 leading-relaxed">{day.infoText}</p>
+                </div>
+              </div>
+            </div>
+
+            <a 
+              href={getMapUrl(day.returnHome)} 
+              target="_blank" 
+              rel="noreferrer"
+              className="bg-slate-100 p-4 rounded-2xl border border-slate-200 block hover:bg-slate-200 transition-all group"
+            >
+                <p className="text-[11px] text-slate-500 font-bold mb-2 uppercase flex items-center justify-between">
+                  🏠 今日回飯店導航 <ExternalLink size={12} />
+                </p>
+                <p className="text-xs text-slate-700 font-bold">{day.returnHome}</p>
+                <p className="text-[10px] text-slate-400 mt-1 italic">點擊直接開啟導航</p>
+            </a>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
