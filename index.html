@@ -3,113 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2026 沖繩 6天5夜 隨性導航版</title>
+    <title>2026 沖繩 櫻花賞 隨性導航版</title>
+    <!-- 設定網頁圖示 (Favicon) -->
+    <link rel="icon" type="image/png" href="images/japan.png">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
     
-    <!-- Chosen Palette: Okinawa Sand & Ocean (背景暖色 #fdfbf7, 主色 藍/橘) -->
-    <!-- Application Structure Plan: 
-         1. 導覽列：頂部 Day 1-6 切換，並附帶該日全路徑 Google Maps 按鈕。
-         2. 兩欄式設計：左側為「📍 行程景點」與「🍴 美食挑選」，右側為「📊 體力分析」與「🏠 飯店資訊」。
-         3. 互動性：所有的地點名稱皆為可點擊的導航連結。
-         4. 資訊架構：針對「P人」隨性風格，美食區提供多樣選擇並附帶隨機選餐按鈕。
-         5. 飯店鎖定：右側區塊固定顯示當晚入住飯店與 15:00 入住提醒，方便估算回飯店時間。
-    -->
-    <!-- Visualization & Content Choices: 
-         - 每日體力分配 (Stacked Bar Chart): 展示車程 vs 活動。
-         - 行程時序圖 (HTML/CSS): 直覺展示先後順序，點擊文字即導航。
-         - 美食隨機抽籤 (JS): 解決糾結症。
-         - 飯店提示 (Context Card): 高亮度顯示入住規則。
-         CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
-    -->
-
     <style>
-        body {
-            font-family: 'Noto Sans TC', sans-serif;
-            background-color: #fdfbf7;
-            color: #1e293b;
-        }
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            height: 150px;
-        }
-        .nav-tab.active {
-            background-color: #1e293b;
-            color: #ffffff;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        .timeline-line {
-            position: relative;
-        }
-        .timeline-line::before {
-            content: '';
-            position: absolute;
-            left: 15px;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: #e2e8f0;
-        }
-        .location-link:hover {
-            text-decoration: underline;
-            color: #3b82f6;
-        }
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #fffafb; color: #1e293b; }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin: 0 auto; height: 120px; }
+        .nav-tab.active { background-color: #ff4d6d; color: #ffffff; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255, 77, 109, 0.3); }
+        .timeline-line { position: relative; }
+        .timeline-line::before { content: ''; position: absolute; left: 15px; top: 0; bottom: 0; width: 2px; background: #ffe3e8; }
+        .location-link:hover { text-decoration: underline; color: #ff4d6d; }
+        .sakura-tag { background: #ff4d6d; color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-left: 5px; }
     </style>
 </head>
 <body class="min-h-screen">
 
     <!-- Header -->
-    <header class="bg-slate-900 text-white p-6 sticky top-0 z-50">
+    <header class="bg-slate-900 text-white p-6 sticky top-0 z-50 shadow-xl border-b-4 border-pink-500">
         <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
             <div>
-                <h1 class="text-xl font-bold tracking-tight">🏝️ 2026 沖繩 6天5夜 隨性之旅</h1>
-                <p class="text-slate-400 text-xs mt-1">規劃原則：路程最順 ‧ 全地點一鍵導航</p>
+                <h1 class="text-xl font-bold tracking-tight flex items-center gap-2">
+                    <!-- 將原本的 🌸 換成 images/japan.png -->
+                    <img src="images/japan.png" alt="Japan Icon" class="w-8 h-8 object-contain">
+                    2026 沖繩櫻花賞 ‧ 隨性之旅
+                </h1>
+                <p class="text-pink-300 text-xs mt-1">1月下旬限定：名護櫻花祭 ‧ 今歸仁夜櫻</p>
             </div>
             <a id="daily-full-map" href="#" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-xl text-sm font-bold flex items-center gap-2 transition-all shadow-lg">
-                <span>🗺️</span> 導航今日全路徑 (Google Maps)
+                <span>🗺️</span> 導航今日櫻花路徑
             </a>
         </div>
     </header>
 
     <!-- Navigation -->
     <nav class="bg-white border-b sticky top-[92px] md:top-[76px] z-40 overflow-x-auto shadow-sm">
-        <div class="max-w-6xl mx-auto flex p-3 gap-2" id="day-nav">
-            <!-- 由 JS 生成 -->
-        </div>
+        <div class="max-w-6xl mx-auto flex p-3 gap-2" id="day-nav"></div>
     </nav>
 
     <!-- Main Content -->
     <main class="max-w-6xl mx-auto p-4 grid grid-cols-1 lg:grid-cols-3 gap-8 mt-4">
         
-        <!-- Left Column (2/3): Itinerary & Food -->
+        <!-- Left Column: Itinerary & Food -->
         <div class="lg:col-span-2 space-y-6">
-            
-            <!-- Itinerary Section -->
-            <section class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
+            <section class="bg-white rounded-3xl p-6 shadow-sm border border-pink-50">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-2xl font-bold text-slate-800 flex items-center gap-2">
-                        <span class="text-blue-500">📍</span> 行程景點
+                        <span class="text-pink-500">📍</span> 行程景點
                     </h2>
                     <span id="current-date" class="text-sm font-bold text-slate-400"></span>
                 </div>
-                
-                <div id="itinerary-list" class="timeline-line space-y-8 pl-4">
-                    <!-- 由 JS 生成 -->
-                </div>
-
-                <!-- Plan B Toggle -->
+                <div id="itinerary-list" class="timeline-line space-y-8 pl-4"></div>
                 <div class="mt-10 pt-6 border-t border-slate-100">
-                    <button id="toggle-backup" class="text-xs font-bold text-slate-400 hover:text-slate-600 flex items-center gap-1">
-                        <span>➕ 顯示/隱藏備案景點</span>
+                    <button id="toggle-backup" class="text-xs font-bold text-slate-400 hover:text-pink-500 flex items-center gap-1">
+                        <span>➕ 更多賞櫻/逛街備案</span>
                     </button>
-                    <div id="backup-list" class="hidden mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <!-- 由 JS 生成 -->
-                    </div>
+                    <div id="backup-list" class="hidden mt-4 grid grid-cols-1 md:grid-cols-2 gap-3"></div>
                 </div>
             </section>
 
@@ -119,57 +72,37 @@
                     <h2 class="text-2xl font-bold flex items-center gap-2 text-orange-400">
                         <span>🍴</span> 美食挑選
                     </h2>
-                    <button onclick="pickRandomFood()" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-2">
-                        <span>🎲</span> P人救星：幫我選一個
-                    </button>
+                    <button onclick="pickRandomFood()" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-2">幫我選一個</button>
                 </div>
-                
-                <div id="food-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- 由 JS 生成 -->
-                </div>
+                <div id="food-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </section>
-
         </div>
 
-        <!-- Right Column (1/3): Stats & Hotel -->
+        <!-- Right Column: Stats & Hotel -->
         <div class="space-y-6">
-            
-            <!-- Pace Chart Area -->
-            <section class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100">
-                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">📈 今日活動/車程預估</h3>
+            <section class="bg-white rounded-3xl p-6 shadow-sm border border-pink-50">
+                <h3 class="text-sm font-bold text-pink-400 uppercase tracking-widest mb-4">🌸 今日賞櫻指數</h3>
                 <div class="chart-container">
                     <canvas id="paceChart"></canvas>
                 </div>
                 <p id="pace-tip" class="text-[10px] text-slate-400 mt-4 text-center leading-relaxed"></p>
             </section>
 
-            <!-- Hotel Card -->
             <section class="bg-blue-600 rounded-3xl p-6 shadow-lg text-white">
-                <div class="flex items-center gap-4 mb-4">
-                    <div class="bg-white/20 p-3 rounded-2xl text-2xl"><span>🏠</span></div>
-                    <div>
-                        <h4 class="font-bold text-lg">今日入住飯店</h4>
-                        <p class="text-blue-100 text-xs">下塌之處與入住提醒</p>
-                    </div>
-                </div>
-                <div id="hotel-info" class="bg-white/10 rounded-2xl p-4 border border-white/20">
-                    <!-- 由 JS 生成 -->
-                </div>
+                <div id="hotel-info-card"></div>
                 <div class="mt-4 flex items-center gap-2 text-[10px] font-bold bg-yellow-400/20 text-yellow-100 p-2 rounded-lg">
                     <span>🕒</span> 提醒：15:00 之後方可辦理入住
                 </div>
             </section>
 
-            <!-- Quick Tips -->
             <section class="bg-stone-100 rounded-3xl p-6 border border-stone-200">
-                <h4 class="text-sm font-bold text-stone-500 mb-3">💡 自駕小工具</h4>
+                <h4 class="text-sm font-bold text-stone-500 mb-3">💡 賞櫻小筆記</h4>
                 <ul class="text-xs text-stone-600 space-y-3">
-                    <li class="flex items-start gap-2"><span>⛽</span> 還車前記得去加油站加滿油並保留收據。</li>
-                    <li class="flex items-start gap-2"><span>💳</span> Costco 只收 Mastercard 或現金。</li>
-                    <li class="flex items-start gap-2"><span>🥩</span> 燒肉王熱門時段建議先用手機 APP 預約。</li>
+                    <li>🌸 沖繩櫻花是桃紅色的寒緋櫻。</li>
+                    <li>🏮 今歸仁城跡夜櫻點燈通常於 18:00 開始。</li>
+                    <li>🚙 名護中央公園櫻花祭期間人車較多，建議耐心慢行。</li>
                 </ul>
             </section>
-
         </div>
     </main>
 
@@ -179,128 +112,111 @@
                 day: 1, date: "1/28 WED", title: "落地與首戰採買",
                 fullMap: "https://www.google.com/maps/dir/Naha+Airport/OTS+Rent-a-car+Rinku+Toyosaki/iias+Okinawa+Toyosaki/Yukureba+Maejima+Hotel",
                 itinerary: [
-                    { time: "17:05", loc: "那霸機場", desc: "抵達沖繩，辦理入境手續" },
-                    { time: "19:15", loc: "OTS 臨空豐崎營業所", desc: "取車（記得帶日文譯本）" },
-                    { time: "19:30", loc: "iias 沖繩豐崎", desc: "首戰 UQ/GU，買齊這幾天的衣服" },
-                    { time: "21:30", loc: "Yukureba Maejima Hotel", desc: "辦理入住休息" }
+                    { time: "17:05", loc: "那霸機場", desc: "抵達沖繩" },
+                    { time: "19:15", loc: "OTS 臨空豐崎營業所", desc: "取車" },
+                    { time: "19:30", loc: "iias 沖繩豐崎", desc: "買齊換洗衣物，2F UQ/GU 是目標" },
+                    { time: "21:30", loc: "Yukureba Maejima Hotel", desc: "入住休息" }
                 ],
                 food: [
-                    { name: "燒肉王 那霸小祿店", type: "吃到飽", note: "大口吃肉慶祝開玩" },
+                    { name: "燒肉王 那霸小祿店", type: "吃到飽", note: "第一晚燒肉狂歡" },
                     { name: "傑克牛排 Jack's Steak House", type: "宵夜", note: "老牌名店，開到凌晨" },
-                    { name: "暖暮拉麵 那霸牧志店", type: "拉麵", note: "台灣人最愛的經典口味" },
-                    { name: "LOPIA 超市熟食", type: "快速便利", note: "iias 內，買回飯店吃最輕鬆" }
+                    { name: "暖暮拉麵 那霸牧志店", type: "拉麵", note: "經典豚骨，半夜常排隊" }
                 ],
-                backups: ["瀨長島 Umikaji Terrace", "DMM Kariyushi 水族館"],
+                backups: ["瀨長島 Umikaji Terrace", "DMM 水族館"],
                 hotel: { name: "Yukureba Maejima Hotel", loc: "那霸市前島" },
-                stats: [40, 60], // [移動%, 活動%]
-                tip: "第一晚體力消耗較大，建議在 iias 直接買好宵夜回飯店。"
+                stats: [30, 70], tip: "第一晚雖然沒有櫻花，但先準備好保暖衣物很重要。"
             },
             {
-                day: 2, date: "1/29 THU", title: "直線北上、鳳梨名護",
-                fullMap: "https://www.google.com/maps/dir/Yukureba+Maejima+Hotel/American+Village/Kyoda+Rest+Area/Nago+Pineapple+Park/Lieta+Nakayama",
+                day: 2, date: "1/29 THU", title: "直線北上 ‧ 名護櫻花祭",
+                fullMap: "https://www.google.com/maps/dir/Yukureba+Maejima+Hotel/American+Village/Kyoda+Rest+Area/Nago+Castle+Park/Nago+Pineapple+Park/Lieta+Nakayama",
                 itinerary: [
-                    { time: "10:00", loc: "Yukureba Maejima Hotel", desc: "退房出發北上" },
-                    { time: "11:00", loc: "美國村 American Village", desc: "異國街景拍照，吃午餐" },
-                    { time: "14:30", loc: "許田休息站", desc: "下高速順路休息，必買甜甜圈" },
-                    { time: "15:30", loc: "名護鳳梨園", desc: "就在飯店隔壁，車程 2 分鐘" },
-                    { time: "17:00", loc: "MaxValu 名護店", desc: "買和牛、阿古豬準備自煮" },
-                    { time: "18:00", loc: "Lieta Nakayama", desc: "正式入住辦理" }
+                    { time: "11:00", loc: "美國村 American Village", desc: "異國風情拍照午餐" },
+                    { time: "14:30", loc: "許田休息站", desc: "吃現炸甜甜圈" },
+                    { time: "15:30", loc: "名護中央公園", desc: "🌸 賞櫻重點：名護櫻花祭主會場", sakura: true },
+                    { time: "16:45", loc: "名護鳳梨園", desc: "就在飯店隔壁，搭造型小車" },
+                    { time: "18:00", loc: "Lieta Nakayama", desc: "入住辦理" }
                 ],
                 food: [
-                    { name: "Kijimuna 塔可飯", type: "美國村", note: "歐姆蛋塔可飯始祖" },
-                    { name: "燒肉王 名護店", type: "吃到飽", note: "名護市中心便利選擇" },
-                    { name: "濱屋蕎麥麵 Hamaya", type: "沖繩麵", note: "軟骨豬肉麵神級美味" },
-                    { name: "三矢甜甜圈 許田店", type: "點心", note: "現炸三矢 Sata Andagi" }
+                    { name: "燒肉王 名護店", type: "吃到飽", note: "名護市區，推薦「四大名物」" },
+                    { name: "Kijimuna 塔可飯", type: "美國村", note: "歐姆蛋口味絕配" },
+                    { name: "濱屋蕎麥麵 Hamaya", type: "沖繩麵", note: "軟骨豬肉麵神級口感" },
+                    { name: "MaxValu 名護店", type: "超市", note: "買阿古豬回飯店煎" }
                 ],
                 backups: ["名護曲餐廳", "萬座毛"],
-                hotel: { name: "Lieta Nakayama", loc: "名護市" },
-                stats: [30, 70],
-                tip: "飯店就在鳳梨園旁邊，逛完直接 check-in 冰食材，動線最順。"
+                hotel: { name: "Lieta Nakayama", loc: "名護市區北" },
+                stats: [40, 60], tip: "名護城公園在櫻花祭期間非常壯觀，可以俯瞰整個名護灣。"
             },
             {
-                day: 3, date: "1/30 FRI", title: "美麗海 4 小時巔峰",
-                fullMap: "https://www.google.com/maps/dir/Lieta+Nakayama/Okinawa+Churaumi+Aquarium/Kouri+Island/Lieta+Nakayama",
+                day: 3, date: "1/30 FRI", title: "美麗海 ‧ 世界遺產夜櫻",
+                fullMap: "https://www.google.com/maps/dir/Lieta+Nakayama/Okinawa+Churaumi+Aquarium/Kouri+Island/Nakijin+Castle+Ruins/Lieta+Nakayama",
                 itinerary: [
-                    { time: "11:00", loc: "Lieta Nakayama", desc: "飯店出發往本部半島" },
-                    { time: "12:00", loc: "美麗海水族館", desc: "🐋 待滿 4 小時 (12:00-16:00)" },
-                    { time: "16:30", loc: "古宇利島", desc: "跨海大橋、夕陽、心形岩" },
-                    { time: "18:30", loc: "燒肉王 名護店", desc: "大口吃肉時間" },
-                    { time: "20:30", loc: "Lieta Nakayama", desc: "回房休息" }
+                    { time: "12:00", loc: "美麗海水族館", desc: "🐋 待滿 4 小時完整觀賞黑潮之海" },
+                    { time: "16:30", loc: "古宇利島", desc: "跨海大橋與心形岩夕陽" },
+                    { time: "18:30", loc: "今歸仁城跡", desc: "🌸 賞櫻重點：世界遺產之上的粉紅夜櫻", sakura: true },
+                    { time: "20:30", loc: "Lieta Nakayama", desc: "回飯店休息" }
                 ],
                 food: [
-                    { name: "燒肉王 名護店", type: "吃到飽", note: "體力消耗大，推薦點四大名物牛肉" },
-                    { name: "海人料理 海邦丸", type: "海鮮", note: "水族館旁，鮮魚丼必點" },
-                    { name: "古宇利島蝦蝦飯", type: "網紅名店", note: "蒜味蝦拼盤，現在有店面" },
-                    { name: "岸本食堂 Kishimoto", type: "百年老店", note: "手打沖繩麵老舖" },
-                    { name: "燒肉乃我那霸 名護店", type: "頂級燒肉", note: "肉舖直營，想吃單點頂級和牛" }
+                    { name: "燒肉王 名護店", type: "吃到飽", note: "賞完櫻花大口吃肉" },
+                    { name: "海人料理 海邦丸", type: "海鮮", note: "水族館旁最夯鮮魚丼" },
+                    { name: "燒肉乃我那霸 名護店", type: "燒肉", note: "肉舖直營單點精品" },
+                    { name: "古宇利島蝦蝦飯", type: "網紅", note: "蒜味蝦拼盤，有店面了" }
                 ],
-                backups: ["備瀨福木林道", "今歸仁城跡"],
-                hotel: { name: "Lieta Nakayama", loc: "名護市" },
-                stats: [15, 85],
-                tip: "這天集中在北部，不用跑遠。水族館待滿 4 小時剛好可以完整看完餵食秀。"
+                backups: ["備瀨福木林道", "花人逢披薩"],
+                hotel: { name: "Lieta Nakayama", loc: "名護市區北" },
+                stats: [20, 80], tip: "今歸仁城跡的夜櫻點燈是沖繩一絕，千萬別錯過！"
             },
             {
-                day: 4, date: "1/31 SAT", title: "南下海岸與 Costco",
+                day: 4, date: "1/31 SAT", title: "海岸南下 ‧ 永旺 Costco",
                 fullMap: "https://www.google.com/maps/dir/Lieta+Nakayama/Busena+Marine+Park/Manzamo/Aeon+Mall+Okinawa+Rycom/Costco+Wholesale+Okinawa+Nanjo/Hotel+Chula+Vista+SENAGA",
                 itinerary: [
-                    { time: "09:30", loc: "Lieta Nakayama", desc: "退房行李上車南下" },
-                    { time: "10:30", loc: "部瀨名海中公園", desc: "玻璃底船直觀海底世界" },
-                    { time: "12:00", loc: "萬座毛", desc: "象鼻岩快閃拍照打卡" },
-                    { time: "14:00", loc: "永旺夢樂城來客夢", desc: "沖繩最大 Mall 逛到爽" },
-                    { time: "19:15", loc: "Costco 沖繩南城店", desc: "買熟食拼盤當晚餐" },
-                    { time: "20:45", loc: "Hotel Chula Vista SENAGA", desc: "辦理入住休息" }
+                    { time: "10:30", loc: "部瀨名海中公園", desc: "搭鯨魚底船看珊瑚礁" },
+                    { time: "12:00", loc: "萬座毛", desc: "象鼻岩打卡快閃" },
+                    { time: "14:00", loc: "永旺夢樂城來客夢", desc: "沖繩最大商城狂逛" },
+                    { time: "19:15", loc: "Costco 沖繩南城店", desc: "買握壽司/烤雞晚餐" },
+                    { time: "20:45", loc: "Hotel Chula Vista SENAGA", desc: "南部入住休息" }
                 ],
                 food: [
-                    { name: "A&W 漢堡 Rycom店", type: "沖繩特色", note: "必喝 Root Beer，可免費續杯" },
-                    { name: "恩納之驛 休息站", type: "多樣化", note: "刨冰、炸海鮮串燒應有盡有" },
-                    { name: "琉球的牛 恩納店", type: "高級燒肉", note: "高品質單點，環境優美" },
-                    { name: "Costco 熟食區", type: "快速便利", note: "烤雞、壽司拼盤，回飯店派對" }
+                    { name: "A&W 漢堡 Rycom店", type: "特色", note: "沖繩代表性口味 Root Beer" },
+                    { name: "恩納之驛 休息站", type: "在地", note: "炸海鮮串與刨冰" },
+                    { name: "Costco 熟食大餐", type: "便利", note: "買回飯店開烤雞派對" }
                 ],
-                backups: ["港川外人住宅", "東南植物樂園"],
+                backups: ["殘波岬", "美國村二訪"],
                 hotel: { name: "Hotel Chula Vista SENAGA", loc: "豐見城市" },
-                stats: [40, 60],
-                tip: "Costco 在東南邊，買完後開往飯店剛好入住，這條動線最順。"
+                stats: [45, 55], tip: "今天以移動和購物為主，記得 Costco 只收 Mastercard。"
             },
             {
-                day: 5, date: "2/1 SUN", title: "南部文化與燒肉王",
-                fullMap: "https://www.google.com/maps/dir/Hotel+Chula+Vista+SENAGA/Okinawa+World/iias+Okinawa+Toyosaki/Don+Quijote+Itoman/Hotel+Chula+Vista+SENAGA",
+                day: 5, date: "2/1 SUN", title: "南部賞櫻 ‧ 燒肉王狂歡",
+                fullMap: "https://www.google.com/maps/dir/Hotel+Chula+Vista+SENAGA/Okinawa+World/八重瀬公園/Don+Quijote+Itoman/Hotel+Chula+Vista+SENAGA",
                 itinerary: [
-                    { time: "10:30", loc: "玉泉洞 (沖繩世界)", desc: "壯觀鐘乳石洞與國王村巡禮" },
-                    { time: "13:30", loc: "iias 沖繩豐崎", desc: "二訪補買電器與第一天遺珠" },
-                    { time: "17:30", loc: "唐吉訶德 糸滿店", desc: "藥妝伴手禮最後總補貨" },
-                    { time: "20:00", loc: "燒肉王 豐見城店", desc: "就在飯店附近，最後狂歡吃飽" }
+                    { time: "10:30", loc: "玉泉洞 (沖繩世界)", desc: "壯觀鐘乳石洞與國王村" },
+                    { time: "13:30", loc: "八重瀬公園", desc: "🌸 賞櫻備案：南部的櫻花祭會場", sakura: true },
+                    { time: "17:30", loc: "唐吉訶德 糸滿店", desc: "伴手禮藥妝大採購" },
+                    { time: "20:00", loc: "燒肉王 豐見城店", desc: "飯店旁的最後燒肉狂歡" }
                 ],
                 food: [
-                    { name: "燒肉王 豐見城店", type: "吃到飽", note: "就在飯店附近！最後一晚衝了" },
-                    { name: "系滿漁市場", type: "海鮮", note: "買點熟食龍蝦或生魚片墊胃" },
-                    { name: "幸福鬆餅 瀨長島店", type: "甜點", note: "看著大海吃鬆餅超療癒" },
-                    { name: "氾濫漢堡 Flood Burger", type: "巨型漢堡", note: "位於瀨長島，視覺份量十足" },
-                    { name: "琉球的牛 那霸店", type: "高級燒肉", note: "想改吃更頂級的可以去那霸店" }
+                    { name: "燒肉王 豐見城店", type: "吃到飽", note: "離飯店超近，最後一晚必衝" },
+                    { name: "系滿漁市場", type: "海鮮", note: "買干貝海膽墊墊胃" },
+                    { name: "幸福鬆餅 瀨長島店", type: "甜點", note: "海景配超軟鬆餅" }
                 ],
-                backups: ["奧武島 中本天婦羅", "知念岬公園"],
+                backups: ["知念岬公園", "奧武島中本天婦羅"],
                 hotel: { name: "Hotel Chula Vista SENAGA", loc: "豐見城市" },
-                stats: [20, 80],
-                tip: "燒肉王豐見城店離飯店極近，吃飽後馬上就能回去休息。"
+                stats: [30, 70], tip: "燒肉王豐見城店生意極好，強烈建議先 APP 預約。"
             },
             {
-                day: 6, date: "2/2 MON", title: "市區還車歸途",
+                day: 6, date: "2/2 MON", title: "那霸最後補貨 ‧ 還車",
                 fullMap: "https://www.google.com/maps/dir/Hotel+Chula+Vista+SENAGA/Naminoue+Shrine/Kokusai+Dori/OTS+Rent-a-car+Rinku+Toyosaki",
                 itinerary: [
-                    { time: "10:00", loc: "波上宮", desc: "神社參拜與海灘最後合影" },
-                    { time: "12:00", loc: "國際通", desc: "最後伴手禮漏網補齊" },
-                    { time: "14:30", loc: "Eneos 加油站 豐崎店", desc: "OTS旁加滿油還車" },
-                    { time: "15:00", loc: "OTS 臨空豐崎營業所", desc: "準時還車，搭接駁前往機場" }
+                    { time: "10:00", loc: "波上宮", desc: "參拜神社與海灘最後留影" },
+                    { time: "12:00", loc: "國際通", desc: "最後伴手禮補齊" },
+                    { time: "15:00", loc: "OTS 臨空豐崎營業所", desc: "準時還車前加滿油" }
                 ],
                 food: [
-                    { name: "第一牧志公設市場", type: "沖繩熱炒", note: "二樓代客料理，感受生活氣息" },
-                    { name: "琉球茶房 Ashibiuna", type: "老宅料理", note: "坐在緣廊吃豬腳定食，氛圍極佳" },
-                    { name: "富士屋 泊本店", type: "在地甜品", note: "沖繩人最愛的紅豆冰" },
-                    { name: "暖暮拉麵 那霸店", type: "拉麵", note: "最後一碗拉麵的回憶" }
+                    { name: "第一牧志公設市場", type: "熱炒", note: "在地廚房的沖繩味" },
+                    { name: "琉球茶房 Ashibiuna", type: "老宅", note: "緣廊吃豬腳定食，氛圍滿分" }
                 ],
-                backups: ["首里城", "瀨長島散步"],
-                hotel: { name: "那霸機場", loc: "返台歸途" },
-                stats: [25, 75],
-                tip: "還車點在豐崎，剛好就是第一天取車的地方，路程已經固定。"
+                backups: ["首里城"],
+                hotel: { name: "那霸機場", loc: "回家歸途" },
+                stats: [20, 80], tip: "還車點在豐崎，剛好也是買衣服的地方。"
             }
         ];
 
@@ -312,23 +228,14 @@
         function updateApp(idx) {
             currentDayIdx = idx;
             const data = tripData[idx];
-
-            // Update UI Text
             document.getElementById('current-date').innerText = data.date;
             document.getElementById('daily-full-map').href = data.fullMap;
             document.getElementById('pace-tip').innerText = data.tip;
-
-            // Render Nav
             renderNav();
-            // Render Itinerary
             renderItinerary(data.itinerary);
-            // Render Food
             renderFood(data.food);
-            // Render Backup
             renderBackup(data.backups);
-            // Render Hotel
             renderHotel(data.hotel);
-            // Update Chart
             updateChart(data.stats);
         }
 
@@ -345,11 +252,11 @@
             const container = document.getElementById('itinerary-list');
             container.innerHTML = list.map(item => `
                 <div class="relative">
-                    <div class="absolute -left-[24px] top-1 w-4 h-4 rounded-full bg-blue-500 border-2 border-white shadow-sm"></div>
+                    <div class="absolute -left-[24px] top-1 w-4 h-4 rounded-full ${item.sakura ? 'bg-pink-500 animate-pulse' : 'bg-blue-500'} border-2 border-white shadow-sm"></div>
                     <div class="flex items-center gap-3">
-                        <span class="text-xs font-mono font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">${item.time}</span>
-                        <a href="${getSearchUrl(item.loc)}" target="_blank" class="location-link font-bold text-slate-800 flex items-center gap-1">
-                            ${item.loc} <span class="text-[10px] text-slate-300 font-normal">🔗 導航</span>
+                        <span class="text-xs font-mono font-bold ${item.sakura ? 'text-pink-600' : 'text-blue-600'} bg-white px-2 py-0.5 rounded border border-slate-100">${item.time}</span>
+                        <a href="${getSearchUrl(item.loc)}" target="_blank" class="location-link font-bold text-slate-800 flex items-center">
+                            ${item.loc} ${item.sakura ? '<span class="sakura-tag">🌸 櫻花點</span>' : ''}
                         </a>
                     </div>
                     <p class="text-xs text-slate-400 mt-1 ml-1">${item.desc}</p>
@@ -373,19 +280,25 @@
         function renderBackup(list) {
             const container = document.getElementById('backup-list');
             container.innerHTML = list.map(b => `
-                <a href="${getSearchUrl(b)}" target="_blank" class="bg-slate-50 p-3 rounded-xl text-xs font-bold text-slate-500 flex items-center justify-between hover:bg-blue-50 hover:text-blue-600 transition-all">
+                <a href="${getSearchUrl(b)}" target="_blank" class="bg-white p-3 rounded-xl text-xs font-bold text-slate-500 flex items-center justify-between hover:bg-pink-50 hover:text-pink-600 transition-all border border-pink-50">
                     <span>📍 ${b}</span>
-                    <span class="text-[10px] font-normal">🔗 導航</span>
+                    <span class="text-[10px] font-normal opacity-50">🔗 導航</span>
                 </a>
             `).join('');
         }
 
         function renderHotel(hotel) {
-            const container = document.getElementById('hotel-info');
+            const container = document.getElementById('hotel-info-card');
             container.innerHTML = `
-                <a href="${getSearchUrl(hotel.name)}" target="_blank" class="block group">
-                    <p class="font-bold text-sm group-hover:underline">${hotel.name}</p>
-                    <p class="text-[10px] text-blue-200 mt-1">地點：${hotel.loc} 🔗 點擊導航</p>
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="bg-white/20 p-3 rounded-2xl text-2xl"><span>🏠</span></div>
+                    <div>
+                        <h4 class="font-bold text-lg">今日入住飯店</h4>
+                        <p class="text-blue-100 text-xs">地點：${hotel.loc}</p>
+                    </div>
+                </div>
+                <a href="${getSearchUrl(hotel.name)}" target="_blank" class="block bg-white/10 hover:bg-white/20 p-3 rounded-xl border border-white/20 group transition-all">
+                    <p class="font-bold text-sm flex items-center justify-between">${hotel.name} <span class="text-[10px] font-normal opacity-70 italic">點我導航</span></p>
                 </a>
             `;
         }
@@ -393,44 +306,33 @@
         function updateChart(stats) {
             const ctx = document.getElementById('paceChart').getContext('2d');
             if (paceChart) paceChart.destroy();
-
             paceChart = new Chart(ctx, {
-                type: 'bar',
+                type: 'doughnut',
                 data: {
-                    labels: ['體力比例'],
-                    datasets: [
-                        { label: '車程', data: [stats[0]], backgroundColor: '#94a3b8' },
-                        { label: '景點活動', data: [stats[1]], backgroundColor: '#3b82f6' }
-                    ]
+                    datasets: [{
+                        data: [stats[0], stats[1]],
+                        backgroundColor: ['#e2e8f0', '#ff4d6d'],
+                        borderWidth: 0
+                    }]
                 },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: { x: { stacked: true, display: false }, y: { stacked: true, display: false } },
-                    plugins: { legend: { display: false }, tooltip: { enabled: true } }
-                }
+                options: { cutout: '80%', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { enabled: false } } }
             });
         }
 
         function pickRandomFood() {
             const foods = tripData[currentDayIdx].food;
             const random = foods[Math.floor(Math.random() * foods.length)];
-            // 使用內建訊息提示代替 alert
             const msg = document.createElement('div');
-            msg.className = "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-orange-600 text-white p-8 rounded-3xl shadow-2xl z-[100] text-center animate-bounce";
-            msg.innerHTML = `<p class="text-xs uppercase font-bold text-orange-200 mb-2">系統幫您挑選了：</p><p class="text-2xl font-bold mb-4">${random.name}</p><button onclick="this.parentElement.remove()" class="text-xs bg-black/20 px-4 py-1 rounded-full">點此導航前往</button>`;
-            msg.onclick = () => { window.open(getSearchUrl(random.name), '_blank'); msg.remove(); };
+            msg.className = "fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-900 text-white p-8 rounded-3xl shadow-2xl z-[100] text-center border-t-4 border-orange-500";
+            msg.innerHTML = `<p class="text-xs uppercase font-bold text-orange-400 mb-2">系統今日為您挑選：</p><p class="text-2xl font-bold mb-6">${random.name}</p><button onclick="window.open('${getSearchUrl(random.name)}', '_blank'); this.parentElement.remove();" class="bg-orange-500 text-white px-6 py-2 rounded-full font-bold">立即導航前往</button><br><button onclick="this.parentElement.remove()" class="mt-4 text-[10px] text-slate-500 underline">取消</button>`;
             document.body.appendChild(msg);
         }
 
-        // Toggle Backup List
         document.getElementById('toggle-backup').onclick = () => {
             const list = document.getElementById('backup-list');
             list.classList.toggle('hidden');
         };
 
-        // Initialize
         window.onload = () => updateApp(0);
     </script>
 </body>
