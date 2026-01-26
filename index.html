@@ -12,7 +12,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="沖繩櫻花賞">
     
-    <!-- Icons updated to japan.png -->
+    <!-- Icons -->
     <link rel="apple-touch-icon" href="images/japan.png">
     <link rel="icon" type="image/png" href="images/japan.png">
 
@@ -29,7 +29,7 @@
         }
         /* 預設根字體大小 */
         html {
-            font-size: 115%; /* 調整預設大小：從 100% 改為 115% */
+            font-size: 115%; 
             transition: font-size 0.2s ease-out;
             padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
         }
@@ -107,15 +107,12 @@
             <div class="w-full sm:w-auto flex justify-between items-center">
                 <div>
                     <h1 class="text-lg font-black text-slate-900 flex items-center gap-2">
-                        <!-- Icon 換成 japan.png -->
                         <img src="images/japan.png" alt="icon" class="w-6 h-6 animate-bounce object-contain">
                         2026 沖繩櫻花賞
                     </h1>
                     <p id="header-subtitle" class="text-[0.7rem] text-pink-600 font-bold uppercase tracking-tight mt-0.5"></p>
                 </div>
-                <!-- 手機版右側顯示按鈕群組 -->
                 <div class="flex sm:hidden gap-2 items-center">
-                     <!-- Font Controls (Mobile) -->
                     <div class="flex bg-slate-100 rounded-full p-1 gap-1 border border-slate-200">
                         <button onclick="adjustFontSize(-5)" class="w-7 h-7 flex items-center justify-center rounded-full bg-white text-xs font-bold shadow-sm text-slate-600 active:scale-90 border border-slate-100">A-</button>
                         <button onclick="adjustFontSize(5)" class="w-7 h-7 flex items-center justify-center rounded-full bg-white text-xs font-bold shadow-sm text-slate-600 active:scale-90 border border-slate-100">A+</button>
@@ -124,7 +121,6 @@
             </div>
             
             <div class="flex gap-2 w-full sm:w-auto justify-end items-center">
-                 <!-- Font Controls (Desktop) -->
                 <div class="hidden sm:flex bg-slate-100 rounded-full p-1 gap-1 border border-slate-200 mr-2">
                     <button onclick="adjustFontSize(-5)" class="w-7 h-7 flex items-center justify-center rounded-full bg-white text-xs font-bold shadow-sm text-slate-600 active:scale-90 border border-slate-100 hover:bg-slate-50">A-</button>
                     <button onclick="adjustFontSize(5)" class="w-7 h-7 flex items-center justify-center rounded-full bg-white text-xs font-bold shadow-sm text-slate-600 active:scale-90 border border-slate-100 hover:bg-slate-50">A+</button>
@@ -144,6 +140,24 @@
 
     <main class="max-w-4xl mx-auto p-4 space-y-6">
         
+        <!-- 今日圖文攻略 (動態切換) -->
+        <section class="animate-in fade-in zoom-in duration-500">
+            <div class="flex items-center justify-between mb-2 px-1">
+                 <h3 class="text-[0.7rem] font-black text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                    <span class="w-1.5 h-3 bg-pink-500 rounded-full"></span> 今日圖文攻略
+                 </h3>
+                 <span id="daily-image-label" class="text-[0.6rem] text-slate-400 font-bold bg-slate-100 px-2 py-0.5 rounded-full">Day 1</span>
+            </div>
+            <!-- 16:9 圖片容器 -->
+            <div class="w-full aspect-video rounded-2xl shadow-md border border-white/60 bg-slate-100 overflow-hidden relative group">
+                <img id="daily-image" src="" loading="eager" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="今日行程圖文">
+                <!-- 點擊放大提示 -->
+                <a id="daily-image-link" href="#" target="_blank" class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                    <span class="opacity-0 group-hover:opacity-100 bg-black/60 text-white text-xs px-3 py-1 rounded-full backdrop-blur-sm transition-opacity">點擊查看大圖</span>
+                </a>
+            </div>
+        </section>
+
         <!-- 今日概覽卡片 -->
         <section class="grid grid-cols-2 gap-3">
             <div class="glass-card rounded-3xl p-4 shadow-sm border border-pink-100 flex flex-col items-center">
@@ -318,7 +332,6 @@
     </div>
 
     <script>
-        // PWA Service Worker 註冊腳本 (模仿範例)
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
@@ -327,13 +340,11 @@
             });
         }
 
-        // 字體控制邏輯 (從 115% 開始)
         let currentZoom = 115;
-        
         function adjustFontSize(delta) {
             currentZoom += delta;
             if (currentZoom < 85) currentZoom = 85;
-            if (currentZoom > 140) currentZoom = 140; // 稍微放寬上限
+            if (currentZoom > 140) currentZoom = 140; 
             document.documentElement.style.fontSize = currentZoom + '%';
         }
 
@@ -481,12 +492,24 @@
                 'display-date': data.fullDate.replace(/-/g, '/'),
                 'header-subtitle': data.title,
                 'hotel-name': data.hotel.name,
-                'hotel-loc': data.hotel.loc
+                'hotel-loc': data.hotel.loc,
+                'daily-image-label': `Day ${data.day}`
             };
 
             for (const [id, val] of Object.entries(elements)) {
                 const el = document.getElementById(id);
                 if (el) el.innerText = val;
+            }
+
+            // 動態更新圖片：Day 1 -> 3.jpg, Day 2 -> 4.jpg ...
+            const imgId = 3 + idx; 
+            const imgEl = document.getElementById('daily-image');
+            const imgLink = document.getElementById('daily-image-link');
+            
+            if (imgEl && imgLink) {
+                const imgPath = `images/${imgId}.jpg`;
+                imgEl.src = imgPath;
+                imgLink.href = imgPath;
             }
 
             const fab = document.getElementById('fab-map-link');
