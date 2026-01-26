@@ -1,0 +1,20 @@
+{
+  "name": "2026 沖繩櫻花賞",
+  "short_name": "沖繩櫻花賞",
+  "start_url": "./itinerary.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "images/japan.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "images/japan.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
