@@ -38,6 +38,7 @@
             background-color: #f8fafc; 
             color: #0f172a; 
             -webkit-tap-highlight-color: transparent;
+            touch-action: pan-y; /* 優化垂直滾動，避免與水平滑動衝突 */
         }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -138,7 +139,7 @@
         <div class="max-w-6xl mx-auto flex p-3 gap-3" id="day-nav"></div>
     </nav>
 
-    <main class="max-w-4xl mx-auto p-4 space-y-6">
+    <main class="max-w-4xl mx-auto p-4 space-y-6" id="main-content">
         
         <!-- 今日圖文攻略 (動態切換) -->
         <section class="animate-in fade-in zoom-in duration-500">
@@ -179,7 +180,7 @@
         <section class="glass-card rounded-[2.5rem] p-6 shadow-sm ring-1 ring-slate-100">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-xl font-black flex items-center gap-2 text-slate-800">
-                    <span class="text-pink-500">📍</span> 景點與購物
+                    <span class="text-pink-500">📍</span> 景點 <!-- 標題已修改 -->
                 </h2>
                 <span id="display-date" class="text-xs font-mono font-bold text-slate-500"></span>
             </div>
@@ -371,13 +372,13 @@
                 day: 2, date: "1/29", fullDate: "2026-01-29", title: "魚市場早餐 ‧ 名護櫻花",
                 fullMap: "https://www.google.com/maps/dir/泊いゆまち/American+Village/Aeon+Chatan/Nago+Castle+Park/Workman+Plus+Nago/Lieta+Nakayama",
                 itinerary: [
-                    { time: "08:30", loc: "泊いゆまち (魚市場)", desc: "🐟 必吃海鮮丼、握壽司早餐" },
                     { time: "11:00", loc: "美國村 American Village", desc: "異國風漫步與午餐" },
                     { time: "14:30", loc: "許田休息站", desc: "買炸甜甜圈與優惠票" },
                     { time: "15:30", loc: "名護中央公園", desc: "🌸 名護櫻花祭主會場", sakura: true },
                     { time: "18:30", loc: "Lieta Nakayama", desc: "名護飯店入住" }
                 ],
                 food: [
+                    { name: "泊いゆまち (魚市場)", type: "海鮮", note: "4.1★ 必吃海鮮丼、握壽司早餐", special: true },
                     { name: "Tonkatsu Taro 北谷店", type: "豬排", note: "4.1★ 品質穩定，高麗菜絲極佳", tonkatsu: true },
                     { name: "濱屋蕎麥麵 Hamaya Soba", type: "麵食", note: "4.5★ 必吃超軟嫩軟骨麵" },
                     { name: "壽司郎 名護店", type: "壽司", note: "4.0★ 熊本熊卡指定通路 (若有吃的話)", kumamon: true }
@@ -445,12 +446,12 @@
                 day: 6, date: "2/02", fullDate: "2026-02-02", title: "公設市場 ‧ 15:00 還車",
                 fullMap: "https://www.google.com/maps/dir/第一牧志公設市場/Naminoue+Shrine/Kokusai+Dori/Kojima+x+Bic+Camera+Naha/Naha+Airport",
                 itinerary: [
-                    { time: "09:00", loc: "第一牧志公設市場", desc: "🥣 推薦鮮魚湯或生魚片早餐" },
                     { time: "11:00", loc: "波上宮", desc: "神社參拜與海邊最後留影" },
                     { time: "13:00", loc: "國際通", desc: "Bic Camera/松本清 (熊本熊8.5%)", shopping: true, kumamon: true },
                     { time: "15:00", loc: "OTS 臨空豐崎", desc: "🚙 15:00 準時還車\n(Toyota Roomy)" }
                 ],
                 food: [
+                    { name: "第一牧志公設市場", type: "海鮮", note: "4.1★ 推薦鮮魚湯或生魚片早餐", special: true },
                     { name: "炸豬排 山助 Yamasuke", type: "豬排", note: "4.4★ 那霸評價最高豬排", tonkatsu: true },
                     { name: "Zooton's Burger", type: "漢堡", note: "4.4★ 酪梨起司漢堡極推" },
                     { name: "一蘭拉麵", type: "拉麵", note: "4.0★ 國際通店 (指定通路8.5%)", kumamon: true }
@@ -501,7 +502,6 @@
                 if (el) el.innerText = val;
             }
 
-            // 動態更新圖片：Day 1 -> 3.jpg, Day 2 -> 4.jpg ...
             const imgId = 3 + idx; 
             const imgEl = document.getElementById('daily-image');
             const imgLink = document.getElementById('daily-image-link');
@@ -577,6 +577,7 @@
                             <h4 class="font-black text-slate-800 text-sm flex flex-wrap items-center gap-1">
                                 ${f.name} 
                                 ${f.tonkatsu ? '<span class="text-[0.6rem] bg-orange-500 text-white px-1.5 rounded font-bold">🐷 Agu 豬排</span>' : ''}
+                                ${f.special ? '<span class="text-[0.6rem] bg-blue-500 text-white px-1.5 rounded font-bold">🐟 推薦</span>' : ''}
                                 ${f.kumamon ? '<span class="kumamon-tag scale-90 origin-left">🐻 8.5%</span>' : ''}
                             </h4>
                         </div>
@@ -692,6 +693,36 @@
                 dot1.classList.replace('bg-slate-300', 'bg-slate-800');
             }
         }
+
+        // Swipe Logic
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        function checkSwipe() {
+            const SWIPE_THRESHOLD = 50; 
+            if (touchEndX < touchStartX - SWIPE_THRESHOLD) {
+                // Swipe Left -> Next Day
+                if (currentDayIdx < tripData.length - 1) {
+                    updateApp(currentDayIdx + 1);
+                }
+            }
+            if (touchEndX > touchStartX + SWIPE_THRESHOLD) {
+                // Swipe Right -> Prev Day
+                if (currentDayIdx > 0) {
+                    updateApp(currentDayIdx - 1);
+                }
+            }
+        }
+
+        // Add swipe listeners to body
+        document.body.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, {passive: true});
+
+        document.body.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            checkSwipe();
+        }, {passive: true});
 
         window.onload = function() {
             autoSelectDay();
