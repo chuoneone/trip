@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>2026 沖繩櫻花賞 ‧ 隨性導航</title>
+    <title>2026 沖繩沖沖沖</title>
     
     <!-- PWA Settings (Standard Mode) -->
     <link rel="manifest" href="manifest.json">
@@ -38,7 +38,6 @@
             background-color: #f8fafc; 
             color: #0f172a; 
             -webkit-tap-highlight-color: transparent;
-            touch-action: pan-y; /* 優化垂直滾動，避免與水平滑動衝突 */
         }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -159,28 +158,11 @@
             </div>
         </section>
 
-        <!-- 今日概覽卡片 -->
-        <section class="grid grid-cols-2 gap-3">
-            <div class="glass-card rounded-3xl p-4 shadow-sm border border-pink-100 flex flex-col items-center">
-                <h3 class="text-[0.7rem] font-black text-pink-500 mb-2 uppercase w-full">行程節奏</h3>
-                <div class="h-16 w-full flex items-center justify-center">
-                    <canvas id="paceChart"></canvas>
-                </div>
-                <p id="pace-tip" class="hidden"></p> 
-            </div>
-            <div class="bg-slate-900 rounded-3xl p-4 shadow-lg text-white flex flex-col justify-center relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-16 h-16 bg-white/5 rounded-full -mr-8 -mt-8"></div>
-                <h3 class="text-[0.7rem] font-black text-orange-400 mb-1 uppercase z-10">今日下榻</h3>
-                <p id="hotel-name" class="text-sm font-bold truncate z-10"></p>
-                <p id="hotel-loc" class="text-[0.65rem] text-slate-400 z-10"></p>
-            </div>
-        </section>
-
         <!-- 行程清單 -->
         <section class="glass-card rounded-[2.5rem] p-6 shadow-sm ring-1 ring-slate-100">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-xl font-black flex items-center gap-2 text-slate-800">
-                    <span class="text-pink-500">📍</span> 景點 <!-- 標題已修改 -->
+                    <span class="text-pink-500">📍</span> 景點
                 </h2>
                 <span id="display-date" class="text-xs font-mono font-bold text-slate-500"></span>
             </div>
@@ -446,6 +428,7 @@
                 day: 6, date: "2/02", fullDate: "2026-02-02", title: "公設市場 ‧ 15:00 還車",
                 fullMap: "https://www.google.com/maps/dir/第一牧志公設市場/Naminoue+Shrine/Kokusai+Dori/Kojima+x+Bic+Camera+Naha/Naha+Airport",
                 itinerary: [
+                    { time: "09:00", loc: "第一牧志公設市場", desc: "🥣 推薦鮮魚湯或生魚片早餐" },
                     { time: "11:00", loc: "波上宮", desc: "神社參拜與海邊最後留影" },
                     { time: "13:00", loc: "國際通", desc: "Bic Camera/松本清 (熊本熊8.5%)", shopping: true, kumamon: true },
                     { time: "15:00", loc: "OTS 臨空豐崎", desc: "🚙 15:00 準時還車\n(Toyota Roomy)" }
@@ -492,8 +475,6 @@
             const elements = {
                 'display-date': data.fullDate.replace(/-/g, '/'),
                 'header-subtitle': data.title,
-                'hotel-name': data.hotel.name,
-                'hotel-loc': data.hotel.loc,
                 'daily-image-label': `Day ${data.day}`
             };
 
@@ -515,15 +496,11 @@
             const fab = document.getElementById('fab-map-link');
             if (fab) fab.href = data.fullMap;
 
-            const tip = document.getElementById('pace-tip');
-            if (tip) tip.innerText = `指數為 P 人專屬：數值越高代表越適合無腦逛街。`;
-
             renderNav();
             renderItinerary(data.itinerary);
             renderFood(data.food);
             renderShopping(data.shoppingItems);
             renderNotes(data.notes);
-            updateChart(data.stats);
 
             const nav = document.getElementById('day-nav');
             const activeBtn = nav.children[idx];
@@ -605,31 +582,6 @@
             container.innerHTML = notes.map(n => `<li>${n}</li>`).join('');
         }
 
-        function updateChart(stats) {
-            const canvas = document.getElementById('paceChart');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-            if (paceChart) paceChart.destroy();
-            paceChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    datasets: [{
-                        data: [stats[0], stats[1]],
-                        backgroundColor: ['#f1f5f9', '#ff4d6d'],
-                        borderWidth: 0,
-                        hoverOffset: 0
-                    }]
-                },
-                options: { 
-                    cutout: '75%', 
-                    responsive: true, 
-                    maintainAspectRatio: false, 
-                    plugins: { legend: { display: false }, tooltip: { enabled: false } },
-                    animation: { animateRotate: true }
-                }
-            });
-        }
-
         function pickRandomFood() {
             const foods = tripData[currentDayIdx].food;
             const random = foods[Math.floor(Math.random() * foods.length)];
@@ -693,36 +645,6 @@
                 dot1.classList.replace('bg-slate-300', 'bg-slate-800');
             }
         }
-
-        // Swipe Logic
-        let touchStartX = 0;
-        let touchEndX = 0;
-
-        function checkSwipe() {
-            const SWIPE_THRESHOLD = 50; 
-            if (touchEndX < touchStartX - SWIPE_THRESHOLD) {
-                // Swipe Left -> Next Day
-                if (currentDayIdx < tripData.length - 1) {
-                    updateApp(currentDayIdx + 1);
-                }
-            }
-            if (touchEndX > touchStartX + SWIPE_THRESHOLD) {
-                // Swipe Right -> Prev Day
-                if (currentDayIdx > 0) {
-                    updateApp(currentDayIdx - 1);
-                }
-            }
-        }
-
-        // Add swipe listeners to body
-        document.body.addEventListener('touchstart', e => {
-            touchStartX = e.changedTouches[0].screenX;
-        }, {passive: true});
-
-        document.body.addEventListener('touchend', e => {
-            touchEndX = e.changedTouches[0].screenX;
-            checkSwipe();
-        }, {passive: true});
 
         window.onload = function() {
             autoSelectDay();
