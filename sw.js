@@ -1,7 +1,7 @@
 // 簡單的 Service Worker，用於滿足 PWA 安裝條件
 const CACHE_NAME = 'okinawa-trip-v1';
 const urlsToCache = [
-  './itinerary.html',
+  './index.html',
   './manifest.json',
   './images/japan.png'
 ];
