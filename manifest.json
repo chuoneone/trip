@@ -1,7 +1,7 @@
 {
   "name": "2026 沖繩櫻花賞",
   "short_name": "沖繩櫻花賞",
-  "start_url": "./itinerary.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",
