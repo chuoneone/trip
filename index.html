@@ -3,43 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>2026 沖繩櫻花賞 ‧ 隨性導航</title>
+    <title>沖繩 2026 姊妹神戰記 & 行程導航</title>
     
-    <!-- PWA Settings (Standard Mode) -->
+    <!-- PWA Settings -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ffffff">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="沖繩櫻花賞">
     
-    <!-- Icons -->
-    <link rel="apple-touch-icon" href="images/japan.png">
-    <link rel="icon" type="image/png" href="images/japan.png">
-
-    <script src="https://cdn.tailwindcss.com/3.4.1"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
     
     <style>
+        /* --- 全域變數與樣式 --- */
         :root {
             --sakura-pink: #ff4d6d;
             --ocean-blue: #0ea5e9;
             --kumamon-black: #1a1a1a;
-            --kumamon-red: #ef4444;
-            --cathay-green: #008740; /* 國泰綠 */
+            --kumamon-red: #e60012;
+            --cathay-green: #008740;
+            --pluspay-blue: #0052cc;
         }
-        /* 預設根字體大小 */
+
         html {
-            font-size: 115%; 
+            font-size: 100%; /* 行程頁面會動態調整這個值 */
             transition: font-size 0.2s ease-out;
             padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
         }
+
         body { 
-            font-family: 'Noto Sans TC', sans-serif; 
-            background-color: #f8fafc; 
-            color: #0f172a; 
+            background-color: #f3f4f6; 
+            font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             -webkit-tap-highlight-color: transparent;
+            padding-bottom: 6rem; /* 預留底部選單空間 */
         }
+
+        /* --- 行程頁面樣式 (App B) --- */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -49,12 +49,14 @@
             box-shadow: 0 10px 15px -3px rgba(255, 77, 109, 0.4);
             transform: scale(1.05);
         }
+        
         .glass-card {
             background: rgba(255, 255, 255, 0.95); 
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.5);
         }
+
         .timeline-dot::after {
             content: '';
             position: absolute;
@@ -69,9 +71,9 @@
         
         .fab-map {
             position: fixed;
-            bottom: 24px;
+            bottom: 100px; /* 避開底部選單 */
             right: 24px;
-            z-index: 90;
+            z-index: 40;
         }
 
         .kumamon-tag {
@@ -100,122 +102,327 @@
             border: 1px solid #006400;
         }
 
-        .slide-container {
-            display: none;
-            animation: fadeIn 0.3s ease-in-out;
+        .slide-container { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .slide-container.active { display: block; }
+
+        /* --- 計帳頁面樣式 (App A) --- */
+        .kumamon-red-bg { background-color: var(--kumamon-red); }
+        .kumamon-black-bg { background-color: var(--kumamon-black); }
+        .pluspay-blue-bg { background-color: var(--pluspay-blue); }
+        .general-green-bg { background-color: #10b981; } /* 新增一般消費顏色 */
+
+        .progress-bar { transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        
+        /* 調整輸入框樣式以適應合併 */
+        .accounting-select { font-size: 18px !important; padding: 16px !important; }
+        .accounting-input { font-size: 20px !important; }
+        
+        .suggestion-pulse {
+            animation: pulse 2s infinite;
+            border-width: 3px;
         }
-        .slide-container.active {
-            display: block;
+
+        /* --- 共用動畫 --- */
+        @keyframes pulse {
+            0% { border-color: #fbbf24; box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4); }
+            70% { border-color: #f59e0b; box-shadow: 0 0 0 10px rgba(251, 191, 36, 0); }
+            100% { border-color: #fbbf24; box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* --- 頁面切換控制 --- */
+        .view-section {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+        .view-section.active {
+            display: block;
+        }
+        
+        /* 底部導航按鈕樣式 */
+        .bottom-nav-btn {
+            color: #9ca3af;
+            transition: all 0.3s;
+        }
+        .bottom-nav-btn.active {
+            color: var(--kumamon-red);
+            transform: translateY(-5px);
+        }
+        .bottom-nav-btn.active i {
+            filter: drop-shadow(0 4px 6px rgba(230, 0, 18, 0.3));
+        }
     </style>
 </head>
-<body class="pb-24">
+<body>
 
-    <!-- Sticky Header -->
-    <header class="bg-white/95 backdrop-blur-md sticky top-0 z-50 border-b border-pink-100 px-4 py-3 shadow-sm">
-        <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-0">
-            <div class="w-full sm:w-auto flex justify-between items-center">
-                <div>
-                    <h1 class="text-lg font-black text-slate-900 flex items-center gap-2">
-                        <img src="images/japan.png" alt="icon" class="w-6 h-6 animate-bounce object-contain">
-                        2026 沖繩櫻花賞
-                    </h1>
-                    <p id="header-subtitle" class="text-[0.7rem] text-pink-600 font-bold uppercase tracking-tight mt-0.5"></p>
-                </div>
-                <div class="flex sm:hidden gap-2 items-center">
-                    <div class="flex bg-slate-100 rounded-full p-1 gap-1 border border-slate-200">
-                        <button onclick="adjustFontSize(-5)" class="w-7 h-7 flex items-center justify-center rounded-full bg-white text-xs font-bold shadow-sm text-slate-600 active:scale-90 border border-slate-100">A-</button>
-                        <button onclick="adjustFontSize(5)" class="w-7 h-7 flex items-center justify-center rounded-full bg-white text-xs font-bold shadow-sm text-slate-600 active:scale-90 border border-slate-100">A+</button>
+    <!-- ========================================= -->
+    <!-- VIEW 1: 行程 (ITINERARY) - 來自 App B -->
+    <!-- ========================================= -->
+    <div id="view-schedule" class="view-section active">
+        <!-- Sticky Header (Itinerary) -->
+        <header class="bg-white/95 backdrop-blur-md sticky top-0 z-50 border-b border-pink-100 px-4 py-3 shadow-sm">
+            <div class="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-0">
+                <div class="w-full sm:w-auto flex justify-between items-center">
+                    <div>
+                        <h1 class="text-lg font-black text-slate-900 flex items-center gap-2">
+                            <span class="text-pink-500"><i class="fa-brands fa-pagelines"></i></span>
+                            2026 沖繩櫻花賞
+                        </h1>
+                        <p id="header-subtitle" class="text-[0.7rem] text-pink-600 font-bold uppercase tracking-tight mt-0.5"></p>
+                    </div>
+                    <div class="flex sm:hidden gap-2 items-center">
+                        <div class="flex bg-slate-100 rounded-full p-1 gap-1 border border-slate-200">
+                            <button onclick="adjustFontSize(-5)" class="w-7 h-7 flex items-center justify-center rounded-full bg-white text-xs font-bold shadow-sm text-slate-600 active:scale-90 border border-slate-100">A-</button>
+                            <button onclick="adjustFontSize(5)" class="w-7 h-7 flex items-center justify-center rounded-full bg-white text-xs font-bold shadow-sm text-slate-600 active:scale-90 border border-slate-100">A+</button>
+                        </div>
                     </div>
                 </div>
+                
+                <div class="flex gap-2 w-full sm:w-auto justify-end items-center">
+                    <div class="hidden sm:flex bg-slate-100 rounded-full p-1 gap-1 border border-slate-200 mr-2">
+                        <button onclick="adjustFontSize(-5)" class="w-7 h-7 flex items-center justify-center rounded-full bg-white text-xs font-bold shadow-sm text-slate-600 active:scale-90 border border-slate-100 hover:bg-slate-50">A-</button>
+                        <button onclick="adjustFontSize(5)" class="w-7 h-7 flex items-center justify-center rounded-full bg-white text-xs font-bold shadow-sm text-slate-600 active:scale-90 border border-slate-100 hover:bg-slate-50">A+</button>
+                    </div>
+                    <button onclick="openCardModal()" class="flex-1 sm:flex-none bg-slate-900 text-white text-[0.7rem] px-4 py-2 sm:py-1.5 rounded-full font-bold shadow-md flex items-center justify-center gap-1 active:scale-95 transition-transform border border-red-500 whitespace-nowrap">
+                        💳 刷卡/租車攻略
+                    </button>
+                </div>
             </div>
-            
-            <div class="flex gap-2 w-full sm:w-auto justify-end items-center">
-                <div class="hidden sm:flex bg-slate-100 rounded-full p-1 gap-1 border border-slate-200 mr-2">
-                    <button onclick="adjustFontSize(-5)" class="w-7 h-7 flex items-center justify-center rounded-full bg-white text-xs font-bold shadow-sm text-slate-600 active:scale-90 border border-slate-100 hover:bg-slate-50">A-</button>
-                    <button onclick="adjustFontSize(5)" class="w-7 h-7 flex items-center justify-center rounded-full bg-white text-xs font-bold shadow-sm text-slate-600 active:scale-90 border border-slate-100 hover:bg-slate-50">A+</button>
+        </header>
+
+        <!-- Day Navigation -->
+        <nav class="bg-white sticky top-[105px] sm:top-[61px] z-40 border-b shadow-sm overflow-x-auto no-scrollbar">
+            <div class="max-w-6xl mx-auto flex p-3 gap-3" id="day-nav"></div>
+        </nav>
+
+        <main class="max-w-4xl mx-auto p-4 space-y-6" id="main-content">
+            <!-- 今日圖文攻略 -->
+            <section class="animate-in fade-in zoom-in duration-500">
+                <div class="flex items-center justify-between mb-2 px-1">
+                     <h3 class="text-[0.7rem] font-black text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                        <span class="w-1.5 h-3 bg-pink-500 rounded-full"></span> 今日圖文攻略
+                     </h3>
+                     <span id="daily-image-label" class="text-[0.6rem] text-slate-400 font-bold bg-slate-100 px-2 py-0.5 rounded-full">Day 1</span>
+                </div>
+                <div class="w-full aspect-video rounded-2xl shadow-md border border-white/60 bg-slate-100 overflow-hidden relative group">
+                    <img id="daily-image" src="" loading="eager" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="今日行程圖文 (請確保 images 資料夾存在)">
+                    <a id="daily-image-link" href="#" target="_blank" class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                        <span class="opacity-0 group-hover:opacity-100 bg-black/60 text-white text-xs px-3 py-1 rounded-full backdrop-blur-sm transition-opacity">點擊查看大圖</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- 行程清單 -->
+            <section class="glass-card rounded-[2.5rem] p-6 shadow-sm ring-1 ring-slate-100">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-black flex items-center gap-2 text-slate-800">
+                        <span class="text-pink-500">📍</span> 景點
+                    </h2>
+                    <span id="display-date" class="text-xs font-mono font-bold text-slate-500"></span>
+                </div>
+                <div id="itinerary-list" class="space-y-0"></div>
+            </section>
+
+            <!-- 購物與美食 (合併顯示) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <section id="shopping-section" class="space-y-3">
+                    <h3 class="text-sm font-black text-slate-800 px-2 flex items-center gap-2">
+                        <span class="w-1.5 h-4 bg-sky-500 rounded-full"></span> 購物與備案
+                    </h3>
+                    <div id="shopping-list" class="grid grid-cols-1 gap-2"></div>
+                </section>
+
+                <section class="space-y-4">
+                    <div class="flex justify-between items-end px-2">
+                        <h3 class="text-sm font-black text-slate-800 flex items-center gap-2">
+                            <span class="w-1.5 h-4 bg-orange-500 rounded-full"></span> 嚴選美食 (4★+)
+                        </h3>
+                        <button onclick="pickRandomFood()" class="text-[0.65rem] font-bold text-orange-600 bg-orange-50 px-3 py-1 rounded-full border border-orange-200 shadow-sm active:bg-orange-100">隨機選餐</button>
+                    </div>
+                    <div id="food-grid" class="grid grid-cols-1 gap-3"></div>
+                </section>
+            </div>
+
+            <!-- 小筆記 -->
+            <section class="bg-stone-100 rounded-3xl p-5 border border-stone-200">
+                <h4 class="text-xs font-black text-stone-600 mb-3 flex items-center gap-2">💡 隨行小筆記</h4>
+                <ul id="daily-notes" class="text-xs font-medium text-stone-600 space-y-2 leading-relaxed"></ul>
+            </section>
+        </main>
+        
+        <!-- 懸浮地圖按鈕 -->
+        <a id="fab-map-link" href="#" target="_blank" class="fab-map bg-emerald-600 text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-xl transition-transform active:scale-90 border-2 border-white">
+            <i class="fa-solid fa-map-location-dot"></i>
+        </a>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- VIEW 2: 計帳 (ACCOUNTING - INPUT) - 來自 App A -->
+    <!-- ========================================= -->
+    <div id="view-accounting" class="view-section">
+        <header class="kumamon-black-bg text-white py-6 shadow-xl sticky top-0 z-50 text-center">
+            <h1 class="text-2xl font-black italic tracking-[0.2em]">INPUT</h1>
+            <p class="text-xs text-gray-400 font-bold uppercase">消費輸入</p>
+        </header>
+
+        <main class="p-4 space-y-6 max-w-lg mx-auto">
+            <!-- 即時推薦區 (Dynamic Advice) -->
+            <div id="live-advice" class="bg-white rounded-3xl p-6 shadow-lg border-2 suggestion-pulse min-h-[120px] flex flex-col justify-center">
+                <h2 class="text-amber-600 text-sm font-black uppercase tracking-widest mb-2 flex items-center">
+                    <i class="fa-solid fa-wand-magic-sparkles mr-2"></i> 最佳刷卡選擇
+                </h2>
+                <div id="advice-text" class="text-2xl font-black text-gray-900 leading-snug">
+                    請輸入消費...
+                </div>
+                <div id="paypay-warning" class="hidden mt-2 text-red-600 font-bold text-sm bg-red-50 p-2 rounded-lg border border-red-200">
+                    <i class="fa-solid fa-triangle-exclamation mr-1"></i> 單筆超額！建議拆單結帳 (每單 < 857 元)
+                </div>
+            </div>
+
+            <!-- 快速輸入表單 -->
+            <section class="bg-white rounded-[2.5rem] p-8 shadow-xl space-y-6 border border-gray-100">
+                <div class="space-y-5">
+                    <!-- 商店下拉 -->
+                    <div>
+                        <label class="text-sm font-black text-gray-400 mb-2 block ml-1">📍 商店</label>
+                        <select id="input-store" onchange="handleStoreChange()" class="accounting-select w-full bg-gray-50 border-2 border-gray-100 rounded-2xl font-bold text-gray-800 focus:border-red-500 focus:bg-white transition-all">
+                            <option value="" disabled selected>點此選擇店家</option>
+                            <optgroup label="🚗 交通租車">
+                                <option value="OTS租車">OTS 租車 (特店)</option>
+                            </optgroup>
+                            <optgroup label="🛍️ 購物/藥妝/家電">
+                                <option value="BicCamera">BicCamera (特店)</option>
+                                <option value="Yodobashi">Yodobashi (特店)</option>
+                                <option value="松本清">松本清 (特店)</option>
+                                <option value="唐吉軻德">唐吉軻德 (特店)</option>
+                                <option value="大國藥妝">大國藥妝 (特店)</option>
+                                <option value="無印良品">無印良品 (特店)</option>
+                                <option value="UNIQLO">UNIQLO (特店)</option>
+                                <option value="GU">GU (特店)</option>
+                                <option value="三井購物園區">三井 MITSUI (特店)</option>
+                            </optgroup>
+                            <optgroup label="🍣 美食饗宴">
+                                <option value="敘敘苑">敘敘苑 (特店)</option>
+                                <option value="勝烈亭">勝烈亭 (特店)</option>
+                                <option value="一蘭拉麵">一蘭拉麵 (特店)</option>
+                                <option value="壽司郎">壽司郎 (特店)</option>
+                                <option value="藏壽司">藏壽司 (特店)</option>
+                                <option value="鳥貴族">鳥貴族 (特店)</option>
+                                <option value="Shake Shack">Shake Shack (特店)</option>
+                            </optgroup>
+                            <optgroup label="其他">
+                                <option value="一般消費">一般店家 (無加碼)</option>
+                                <option value="PayPay消費">PayPay/全支付 (掃碼)</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <!-- 金額 -->
+                    <div>
+                        <label class="text-sm font-black text-gray-400 mb-2 block ml-1">💰 日幣金額 (JPY)</label>
+                        <input type="number" id="input-jpy" placeholder="0" 
+                               oninput="updateLiveAdvice()"
+                               class="accounting-input w-full p-5 bg-gray-50 border-2 border-gray-100 rounded-2xl text-3xl font-mono font-black text-red-600 focus:bg-white focus:border-red-500 transition-all outline-none">
+                    </div>
+
+                    <input type="hidden" id="input-type" value="general">
+
+                    <!-- 最終執行人 -->
+                    <div>
+                        <label class="text-sm font-black text-gray-400 mb-2 block ml-1">👤 實際執行人</label>
+                        <select id="input-member" class="w-full bg-red-50 border-2 border-red-200 rounded-2xl font-black text-red-600 text-xl p-3">
+                            <option value="mom">媽媽 (0.2040)</option>
+                            <option value="chu3">朱三 (0.1992)</option>
+                            <option value="chu1">朱一 (0.2039)</option>
+                            <option value="chu2">朱二 (0.2040)</option>
+                        </select>
+                    </div>
                 </div>
 
-                <button onclick="openCardModal()" class="flex-1 sm:flex-none bg-slate-900 text-white text-[0.7rem] px-4 py-2 sm:py-1.5 rounded-full font-bold shadow-md flex items-center justify-center gap-1 active:scale-95 transition-transform border border-red-500 whitespace-nowrap">
-                    💳 刷卡/租車攻略
+                <button id="add-btn" onclick="addTransaction()" class="w-full kumamon-red-bg text-white font-black py-6 rounded-2xl shadow-2xl active:scale-95 transition-all text-2xl tracking-[0.2em]">
+                    確認入帳 🐻
                 </button>
-            </div>
-        </div>
-    </header>
+            </section>
+        </main>
+    </div>
 
-    <!-- Day Navigation -->
-    <nav class="bg-white sticky top-[105px] sm:top-[61px] z-40 border-b shadow-sm overflow-x-auto no-scrollbar">
-        <div class="max-w-6xl mx-auto flex p-3 gap-3" id="day-nav"></div>
+    <!-- ========================================= -->
+    <!-- VIEW 3: 紀錄 (RECORDS - HISTORY) - 來自 App A -->
+    <!-- ========================================= -->
+    <div id="view-records" class="view-section">
+        <header class="kumamon-black-bg text-white py-6 shadow-xl sticky top-0 z-50 text-center">
+            <h1 class="text-2xl font-black italic tracking-[0.2em]">RECORDS</h1>
+            <div class="mt-2 flex flex-col items-center">
+                <div id="current-date-display" class="text-[10px] bg-red-600 px-4 py-1 rounded-full font-bold uppercase tracking-widest mb-2"></div>
+                <div class="bg-white/10 px-6 py-2 rounded-2xl border border-white/20">
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">全家總支出 (JPY)</p>
+                    <p id="total-jpy-spent" class="text-3xl font-black text-white font-mono">0</p>
+                </div>
+            </div>
+        </header>
+
+        <main class="p-4 space-y-6 max-w-lg mx-auto">
+            <!-- 進度條區 -->
+            <section class="space-y-4">
+                <h3 class="font-black text-gray-800 flex justify-between items-center px-2 text-lg">
+                    <span><i class="fa-solid fa-chart-pie mr-2 text-red-500"></i>姊妹額度進度</span>
+                </h3>
+                <div id="member-stats" class="space-y-6">
+                    <!-- JS 動態渲染 -->
+                </div>
+            </section>
+
+            <!-- 完整記帳明細 -->
+            <section class="space-y-4">
+                <div class="flex justify-between items-center px-2">
+                    <h3 class="font-black text-gray-800 text-lg">
+                        <i class="fa-solid fa-receipt mr-2 text-gray-500"></i>消費明細
+                    </h3>
+                    <div class="flex gap-2">
+                         <button onclick="copyCSV()" class="text-[10px] font-bold bg-gray-200 px-3 py-1 rounded-full text-gray-600 active:bg-gray-300">
+                            <i class="fa-solid fa-copy mr-1"></i> CSV
+                        </button>
+                        <button onclick="setGasUrl()" class="text-[10px] font-bold bg-blue-100 px-3 py-1 rounded-full text-blue-600 active:bg-blue-200">
+                             <i id="gas-icon" class="fa-solid fa-link mr-1"></i> GAS
+                        </button>
+                         <button onclick="resetData()" class="text-[10px] font-bold bg-red-100 px-3 py-1 rounded-full text-red-600 active:bg-red-200">
+                            <i class="fa-solid fa-trash mr-1"></i> 重置
+                        </button>
+                    </div>
+                </div>
+                <div id="history-list" class="space-y-4 pb-10">
+                    <!-- 完整明細 -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- 共用元件：底部導航列 (Bottom Nav) -->
+    <!-- ========================================= -->
+    <nav class="fixed bottom-0 w-full bg-white/95 backdrop-blur-xl border-t border-gray-200 pb-safe pt-2 z-[60] shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
+        <div class="flex justify-around items-center h-16 max-w-lg mx-auto">
+            <button onclick="switchTab('schedule')" class="bottom-nav-btn active flex flex-col items-center justify-center w-1/3 h-full" id="btn-schedule">
+                <i class="fa-solid fa-map-location-dot text-xl mb-1"></i>
+                <span class="text-[10px] font-bold">行程</span>
+            </button>
+            <button onclick="switchTab('accounting')" class="bottom-nav-btn flex flex-col items-center justify-center w-1/3 h-full" id="btn-accounting">
+                <i class="fa-solid fa-calculator text-xl mb-1"></i>
+                <span class="text-[10px] font-bold">計帳</span>
+            </button>
+            <button onclick="switchTab('records')" class="bottom-nav-btn flex flex-col items-center justify-center w-1/3 h-full" id="btn-records">
+                <i class="fa-solid fa-chart-pie text-xl mb-1"></i>
+                <span class="text-[10px] font-bold">紀錄</span>
+            </button>
+        </div>
     </nav>
 
-    <main class="max-w-4xl mx-auto p-4 space-y-6" id="main-content">
-        
-        <!-- 今日圖文攻略 (動態切換) -->
-        <section class="animate-in fade-in zoom-in duration-500">
-            <div class="flex items-center justify-between mb-2 px-1">
-                 <h3 class="text-[0.7rem] font-black text-slate-400 uppercase tracking-wider flex items-center gap-1">
-                    <span class="w-1.5 h-3 bg-pink-500 rounded-full"></span> 今日圖文攻略
-                 </h3>
-                 <span id="daily-image-label" class="text-[0.6rem] text-slate-400 font-bold bg-slate-100 px-2 py-0.5 rounded-full">Day 1</span>
-            </div>
-            <!-- 16:9 圖片容器 -->
-            <div class="w-full aspect-video rounded-2xl shadow-md border border-white/60 bg-slate-100 overflow-hidden relative group">
-                <img id="daily-image" src="" loading="eager" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="今日行程圖文">
-                <!-- 點擊放大提示 -->
-                <a id="daily-image-link" href="#" target="_blank" class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
-                    <span class="opacity-0 group-hover:opacity-100 bg-black/60 text-white text-xs px-3 py-1 rounded-full backdrop-blur-sm transition-opacity">點擊查看大圖</span>
-                </a>
-            </div>
-        </section>
-
-        <!-- 行程清單 -->
-        <section class="glass-card rounded-[2.5rem] p-6 shadow-sm ring-1 ring-slate-100">
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-xl font-black flex items-center gap-2 text-slate-800">
-                    <span class="text-pink-500">📍</span> 景點
-                </h2>
-                <span id="display-date" class="text-xs font-mono font-bold text-slate-500"></span>
-            </div>
-            <div id="itinerary-list" class="space-y-0"></div>
-        </section>
-
-        <!-- 購物點與備案 -->
-        <section id="shopping-section" class="space-y-3">
-            <h3 class="text-sm font-black text-slate-800 px-2 flex items-center gap-2">
-                <span class="w-1.5 h-4 bg-sky-500 rounded-full"></span> 購物與備案
-            </h3>
-            <div id="shopping-list" class="grid grid-cols-1 gap-2"></div>
-        </section>
-
-        <!-- 美食推薦 -->
-        <section class="space-y-4">
-            <div class="flex justify-between items-end px-2">
-                <h3 class="text-sm font-black text-slate-800 flex items-center gap-2">
-                    <span class="w-1.5 h-4 bg-orange-500 rounded-full"></span> 嚴選美食 (4★+)
-                </h3>
-                <button onclick="pickRandomFood()" class="text-[0.65rem] font-bold text-orange-600 bg-orange-50 px-3 py-1 rounded-full border border-orange-200 shadow-sm active:bg-orange-100">隨機選餐</button>
-            </div>
-            <div id="food-grid" class="grid grid-cols-1 gap-3"></div>
-        </section>
-
-        <!-- 小筆記 -->
-        <section class="bg-stone-100 rounded-3xl p-5 border border-stone-200">
-            <h4 class="text-xs font-black text-stone-600 mb-3 flex items-center gap-2">💡 隨行小筆記</h4>
-            <ul id="daily-notes" class="text-xs font-medium text-stone-600 space-y-2 leading-relaxed"></ul>
-        </section>
-
-    </main>
-
-    <!-- 懸浮按鈕 -->
-    <a id="fab-map-link" href="#" target="_blank" class="fab-map bg-emerald-600 text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-xl transition-transform active:scale-90 border-2 border-white">
-        🗺️
-    </a>
-
-    <!-- 刷卡/租車攻略 Modal -->
+    <!-- ========================================= -->
+    <!-- MODAL: 刷卡/租車攻略 (來自 App B) -->
+    <!-- ========================================= -->
     <div id="card-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] hidden items-end sm:items-center justify-center p-0 sm:p-4">
         <div class="bg-white w-full max-w-md rounded-t-[2rem] sm:rounded-[2.5rem] p-6 shadow-2xl relative h-[85vh] sm:h-auto flex flex-col">
             <!-- Header -->
@@ -228,7 +435,6 @@
 
             <!-- Content -->
             <div class="overflow-y-auto flex-1 space-y-6 px-1">
-                
                 <!-- 租車資訊 -->
                 <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
                     <h4 class="text-sm font-black text-emerald-600 mb-3 flex items-center gap-2">
@@ -263,7 +469,7 @@
                         </div>
                     </div>
 
-                    <!-- Slide 1: 熊本熊 一般消費 -->
+                    <!-- Slide 1 -->
                     <div id="slide-0" class="slide-container active bg-gradient-to-br from-slate-900 to-slate-800 text-white p-5 rounded-2xl shadow-lg relative overflow-hidden min-h-[200px]">
                         <div class="absolute -right-4 -top-4 text-8xl opacity-10">🇯🇵</div>
                         <div class="relative z-10">
@@ -276,108 +482,65 @@
                         </div>
                     </div>
 
-                    <!-- Slide 2: 熊本熊 指定通路 -->
+                    <!-- Slide 2 -->
                     <div id="slide-1" class="slide-container hidden bg-gradient-to-br from-red-600 to-red-500 text-white p-5 rounded-2xl shadow-lg relative overflow-hidden min-h-[200px]">
                         <div class="absolute -right-4 -top-4 text-8xl opacity-10">🛍️</div>
                         <div class="relative z-10">
                             <h5 class="text-lg font-black text-white mb-1">Slide 2: 熊本熊 (指定)</h5>
                             <div class="text-3xl font-black mb-2">8.5% <span class="text-sm font-medium opacity-80">最高</span></div>
                             <p class="text-[0.65rem] mb-3 bg-red-700/50 inline-block px-2 py-1 rounded">加碼 6% 上限 500元/期</p>
-                            
                             <div class="grid grid-cols-2 gap-2 text-[0.65rem] font-bold">
-                                <div class="bg-white/20 p-1.5 rounded">
-                                    🚗 <span class="text-yellow-200">交通/租車</span><br>
-                                    SUICA/ICOCA、OTS、TOYOTA
-                                </div>
-                                <div class="bg-white/20 p-1.5 rounded">
-                                    💊 <span class="text-yellow-200">藥妝/購物</span><br>
-                                    BicCamera、唐吉訶德、松本清、UQ、GU
-                                </div>
-                                <div class="bg-white/20 p-1.5 rounded col-span-2">
-                                    🍱 <span class="text-yellow-200">餐飲</span><br>
-                                    敘敘苑、牛角、一蘭、松屋、壽司郎
-                                </div>
+                                <div class="bg-white/20 p-1.5 rounded">🚗 <span class="text-yellow-200">交通/租車</span><br>OTS, TOYOTA</div>
+                                <div class="bg-white/20 p-1.5 rounded">💊 <span class="text-yellow-200">藥妝/購物</span><br>Bic, 松本清, UQ</div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Slide 3: 國泰 Cube 卡 -->
+                    <!-- Slide 3 -->
                     <div id="slide-2" class="slide-container hidden bg-gradient-to-br from-[#008740] to-[#005c2b] text-white p-5 rounded-2xl shadow-lg relative overflow-hidden min-h-[200px]">
                         <div class="absolute -right-4 -top-4 text-8xl opacity-10">🌲</div>
                         <div class="relative z-10">
-                            <h5 class="text-lg font-black text-white mb-1 flex items-center gap-2">
-                                Slide 3: 國泰 CUBE <span class="text-[0.6rem] bg-white/20 px-2 rounded">需切換/登錄</span>
-                            </h5>
-                            
-                            <div class="space-y-2 mt-3">
-                                <div class="bg-white/10 p-2 rounded flex justify-between items-center">
-                                    <span class="text-[0.7rem] font-bold">🛍️ 唐吉訶德</span>
-                                    <span class="text-[0.8rem] font-black text-yellow-300">滿萬送千 (10%)</span>
-                                </div>
-                                <div class="bg-white/10 p-2 rounded flex justify-between items-center">
-                                    <span class="text-[0.7rem] font-bold">🔌 EDION 家電</span>
-                                    <span class="text-[0.8rem] font-black text-yellow-300">滿3萬送2千</span>
-                                </div>
-                                <div class="bg-white/10 p-2 rounded flex justify-between items-center">
-                                    <span class="text-[0.7rem] font-bold">💊 松本清</span>
-                                    <span class="text-[0.8rem] font-black text-yellow-300">滿2萬送2千</span>
-                                </div>
-                                <div class="grid grid-cols-2 gap-2 mt-1">
-                                    <div class="bg-white/10 p-2 rounded text-[0.65rem]">
-                                        <b>🏪 7-11</b><br>滿¥1500送¥150
-                                    </div>
-                                    <div class="bg-white/10 p-2 rounded text-[0.65rem]">
-                                        <b>💳 Suica 密技</b><br>手機儲值¥4000送¥200
-                                    </div>
-                                </div>
+                            <h5 class="text-lg font-black text-white mb-1 flex items-center gap-2">Slide 3: 國泰 CUBE <span class="text-[0.6rem] bg-white/20 px-2 rounded">需切換</span></h5>
+                            <div class="space-y-2 mt-3 text-xs">
+                                <div class="bg-white/10 p-2 rounded flex justify-between"><span>🛍️ 唐吉訶德</span><span class="text-yellow-300">滿萬送千(10%)</span></div>
+                                <div class="bg-white/10 p-2 rounded flex justify-between"><span>💊 松本清</span><span class="text-yellow-300">滿2萬送2千</span></div>
                             </div>
                         </div>
                     </div>
                     
-                    <button onclick="nextSlide()" class="w-full mt-3 bg-slate-100 text-slate-600 text-xs font-bold py-2 rounded-xl hover:bg-slate-200 transition-colors">
-                        切換下一張規則卡片 ➡️
-                    </button>
+                    <button onclick="nextSlide()" class="w-full mt-3 bg-slate-100 text-slate-600 text-xs font-bold py-2 rounded-xl hover:bg-slate-200 transition-colors">切換下一張規則卡片 ➡️</button>
                 </div>
-
-                <!-- 其他重要提醒 -->
-                <div class="grid grid-cols-2 gap-3 mt-4">
-                    <div class="bg-blue-50 p-3 rounded-xl border border-blue-100">
-                        <h6 class="text-xs font-black text-blue-600 mb-1">Costco 提醒</h6>
-                        <p class="text-[0.65rem] text-blue-900 font-bold leading-tight">
-                            ⚠️ 僅收 Mastercard<br>
-                            <span class="opacity-70">熊本熊/Cube 若非 Master 無法刷</span>
-                        </p>
-                    </div>
-                    <div class="bg-red-50 p-3 rounded-xl border border-red-100">
-                        <h6 class="text-xs font-black text-red-600 mb-1">BicCamera 警語</h6>
-                        <p class="text-[0.65rem] text-red-900 font-bold leading-tight">
-                            沖繩多為 Kojima 聯名店<br>
-                            <span class="opacity-70">Cube卡恐無回饋，建議去 EDION</span>
-                        </p>
-                    </div>
-                </div>
-
             </div>
         </div>
     </div>
 
+    <!-- JAVASCRIPT MERGED LOGIC -->
     <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('PWA Service Worker 註冊成功'))
-                    .catch(err => console.log('PWA 註冊失敗', err));
-            });
-        }
+        // ============================================
+        // GLOBAL CONFIG & DATA
+        // ============================================
+        const config = {
+            esun_cap_twd: 8333,
+            jcb_threshold_jpy: 100000,
+            paypay_cap_twd: 3428,
+            paypay_single_limit_twd: 857,
+            realtime_rate: 0.21,
+            // 順序更新：媽媽 -> 朱三 -> 朱一 -> 朱二
+            members: {
+                mom: { name: '媽媽', rate: 0.2040, spentTWD: 0, jcbSpentJPY: 0, paypaySpentTWD: 0, generalPreJCB_TWD: 0, priority: 1 },
+                chu3: { name: '朱三', rate: 0.1992, spentTWD: 0, jcbSpentJPY: 0, paypaySpentTWD: 0, generalPreJCB_TWD: 0, priority: 2 },
+                chu1: { name: '朱一', rate: 0.2039, spentTWD: 0, jcbSpentJPY: 0, paypaySpentTWD: 0, generalPreJCB_TWD: 0, priority: 3 },
+                chu2: { name: '朱二', rate: 0.2040, spentTWD: 0, jcbSpentJPY: 0, paypaySpentTWD: 0, generalPreJCB_TWD: 0, priority: 4 }
+            }
+        };
 
-        let currentZoom = 115;
-        function adjustFontSize(delta) {
-            currentZoom += delta;
-            if (currentZoom < 85) currentZoom = 85;
-            if (currentZoom > 140) currentZoom = 140; 
-            document.documentElement.style.fontSize = currentZoom + '%';
-        }
+        // 設定您的 GAS 後端網址
+        const DEFAULT_GAS_URL = "https://script.google.com/macros/s/AKfycbyKnFTlKYAYD6Zjs1y5Q3UKsGtbp4Ggd8Z6zkBiCUewjsiT0j9h4Qkr0BnC8yk4DNuq/exec";
+        let transactions = JSON.parse(localStorage.getItem('okinawa_tx')) || [];
+        let gasUrl = localStorage.getItem('okinawa_gas_url') || DEFAULT_GAS_URL;
+        const simDate = new Date(); 
 
+        // Trip Data for Itinerary
         const tripData = [
             {
                 day: 1, date: "1/28", fullDate: "2026-01-28", title: "落地與取車",
@@ -390,12 +553,11 @@
                 ],
                 food: [
                     { name: "Agu 豬排 豚々 (Ton-don)", type: "豬排", note: "4.2★ 離機場近，在地 Agu 豬名店", tonkatsu: true },
-                    { name: "傑克牛排 Jack's Steakhouse", type: "牛排", note: "4.1★ 老牌美式，適合深夜首餐" },
-                    { name: "琉球新麵 通堂 小祿本店", type: "拉麵", note: "4.1★ 男人麵與女人麵的對決" }
+                    { name: "傑克牛排 Jack's Steakhouse", type: "牛排", note: "4.1★ 老牌美式，適合深夜首餐" }
                 ],
                 shoppingItems: ["Workman Plus 豐見城店 (4.1★)", "iias 2F (UNIQLO/GU 8.5%回饋)"],
                 hotel: { name: "Yukureba Maejima Hotel", loc: "那霸市前島" },
-                stats: [30, 70], notes: ["OTS 取車人多時需耐心等候", "Toyota Roomy 後座空間很大，放行李很方便"]
+                notes: ["OTS 取車人多時需耐心等候", "Toyota Roomy 後座空間很大"]
             },
             {
                 day: 2, date: "1/29", fullDate: "2026-01-29", title: "魚市場早餐 ‧ 名護櫻花",
@@ -408,13 +570,11 @@
                 ],
                 food: [
                     { name: "泊いゆまち (魚市場)", type: "海鮮", note: "4.1★ 必吃海鮮丼、握壽司早餐", special: true },
-                    { name: "Tonkatsu Taro 北谷店", type: "豬排", note: "4.1★ 品質穩定，高麗菜絲極佳", tonkatsu: true },
-                    { name: "濱屋蕎麥麵 Hamaya Soba", type: "麵食", note: "4.5★ 必吃超軟嫩軟骨麵" },
-                    { name: "壽司郎 名護店", type: "壽司", note: "4.0★ 熊本熊卡指定通路 (若有吃的話)", kumamon: true }
+                    { name: "壽司郎 名護店", type: "壽司", note: "4.0★ 熊本熊卡指定通路", kumamon: true }
                 ],
                 shoppingItems: ["AEON Chatan (大型 UQ - 熊本熊卡)", "Workman Plus 名護店"],
                 hotel: { name: "Lieta Nakayama", loc: "名護市區" },
-                stats: [50, 50], notes: ["名護櫻花多在階梯處，注意腳步", "許田休息站下午人多"]
+                notes: ["名護櫻花多在階梯處，注意腳步"]
             },
             {
                 day: 3, date: "1/30", fullDate: "2026-01-30", title: "水族館與世界遺產夜櫻",
@@ -422,81 +582,403 @@
                 itinerary: [
                     { time: "12:00", loc: "美麗海水族館", desc: "🐋 完整觀賞黑潮之海" },
                     { time: "16:30", loc: "古宇利島", desc: "跨海大橋、心型岩夕陽" },
-                    { time: "18:30", loc: "今歸仁城跡", desc: "🌸 賞櫻重點：世界遺產夜櫻點燈", sakura: true },
-                    { time: "20:30", loc: "Lieta Nakayama", desc: "回飯店休息" }
+                    { time: "18:30", loc: "今歸仁城跡", desc: "🌸 賞櫻重點：世界遺產夜櫻點燈", sakura: true }
                 ],
                 food: [
-                    { name: "炸豬排 島豚 七々 (Nannan)", type: "豬排", note: "4.4★ 特選 Agu 豬，油脂香濃", tonkatsu: true },
-                    { name: "海人料理 海邦丸", type: "海鮮", note: "4.2★ 水族館旁人氣海鮮丼" },
-                    { name: "花人逢 Kajinhou", type: "披薩", note: "4.4★ 山頂海景老宅，氛圍滿分" }
+                    { name: "炸豬排 島豚 七々 (Nannan)", type: "豬排", note: "4.4★ 特選 Agu 豬", tonkatsu: true },
+                    { name: "花人逢 Kajinhou", type: "披薩", note: "4.4★ 山頂海景老宅" }
                 ],
                 shoppingItems: ["水族館紀念品", "古宇利島限定農產品"],
                 hotel: { name: "Lieta Nakayama", loc: "名護市區" },
-                stats: [40, 60], notes: ["今歸仁城跡 18:00 點燈", "美麗海水族館建議先買好優惠票"]
+                notes: ["今歸仁城跡 18:00 點燈"]
             },
             {
                 day: 4, date: "1/31", fullDate: "2026-01-31", title: "Costco 南下 ‧ 狂歡購物",
                 fullMap: "https://www.google.com/maps/dir/Lieta+Nakayama/Busena+Marine+Park/Aeon+Mall+Okinawa+Rycom/Workman+Plus+Ginowan/Costco+Wholesale+Okinawa+Nanjo/Hotel+Chula+Vista+SENAGA",
                 itinerary: [
                     { time: "10:30", loc: "部瀨名海中公園", desc: "玻璃底船珊瑚礁探索" },
-                    { time: "14:00", loc: "永旺夢樂城來客夢", desc: "🛍️ 一站式狂逛 Bic/UQ/GU", shopping: true, kumamon: true, cube_warning: true },
-                    { time: "18:30", loc: "Costco 沖繩南城店", desc: "🛒 沖繩首間 Costco\n⚠️ 僅收 Mastercard，請注意卡別", shopping: true },
-                    { time: "21:00", loc: "Hotel Chula Vista SENAGA", desc: "南部飯店入住" }
+                    { time: "14:00", loc: "永旺夢樂城來客夢", desc: "🛍️ 一站式狂逛 Bic/UQ/GU", shopping: true, kumamon: true, cube: true },
+                    { time: "18:30", loc: "Costco 沖繩南城店", desc: "🛒 沖繩首間 Costco\n⚠️ 僅收 Mastercard", shopping: true }
                 ],
                 food: [
-                    { name: "炸豬排餐館 島豚 (恩納店)", type: "豬排", note: "4.1★ 份量巨大，飽足感爆表", tonkatsu: true },
-                    { name: "Kamezen Sobakan", type: "麵食", note: "4.2★ 美國村內道地沖繩麵" },
-                    { name: "迴轉壽司市場 美濱店", type: "壽司", note: "4.3★ 食材鮮甜，常需排隊" }
+                    { name: "炸豬排餐館 島豚 (恩納店)", type: "豬排", note: "4.1★ 份量巨大", tonkatsu: true },
+                    { name: "迴轉壽司市場 美濱店", type: "壽司", note: "4.3★ 食材鮮甜" }
                 ],
-                shoppingItems: ["Bic Camera (⚠️ Cube卡請改去EDION)", "Workman Plus 宜野灣店", "Costco 熟食區 (Mastercard)"],
+                shoppingItems: ["Bic Camera (⚠️ Cube卡請改去EDION)", "Costco (Mastercard Only)"],
                 hotel: { name: "Hotel Chula Vista SENAGA", loc: "豐見城市" },
-                stats: [70, 30], notes: ["Cube卡注意：來客夢Bic為Kojima聯名，建議改去EDION", "Costco 僅收 Mastercard"]
+                notes: ["Cube卡注意：來客夢Bic為Kojima聯名，建議改去EDION"]
             },
             {
                 day: 5, date: "2/01", fullDate: "2026-02-01", title: "JCB 活動開跑 ‧ 南部櫻花",
                 fullMap: "https://www.google.com/maps/dir/糸満漁市場/Okinawa+World/Yakiniku+King+Naha+Kumoji/八重瀬公園/Senaga+Island/Don+Quijote+Itoman/Hotel+Chula+Vista+SENAGA",
                 itinerary: [
                     { time: "10:00", loc: "糸滿魚市場", desc: "🦞 必點海膽生蠔、烤龍蝦" },
-                    { time: "11:30", loc: "玉泉洞", desc: "壯觀鍾乳石與文化園區" },
-                    { time: "14:00", loc: "燒肉王 那霸久茂地店", desc: "🥩 預約號碼：1841\n⚠️ 需現場機器報到，非保留席", kumamon: true },
+                    { time: "14:00", loc: "燒肉王 那霸久茂地店", desc: "🥩 預約號碼：1841", kumamon: true },
                     { time: "16:30", loc: "八重瀬公園", desc: "🌸 南部櫻花祭會場", sakura: true },
-                    { time: "18:00", loc: "瀨長島 Umikaji Terrace", desc: "看飛機起降夕陽" },
-                    { time: "19:30", loc: "唐吉訶德 糸滿店", desc: "🛍️ 熊本熊卡 8.5% 或 Cube卡 10%\n(JCB 滿10萬日圓回饋10%)", shopping: true, kumamon: true, cube: true }
+                    { time: "19:30", loc: "唐吉訶德 糸滿店", desc: "🛍️ 熊本熊卡 8.5% 或 Cube卡 10%", shopping: true, kumamon: true, cube: true }
                 ],
                 food: [
                     { name: "燒肉王 那霸久茂地店", type: "燒肉", note: "4.1★ 已預約 14:00 (No.1841)", special: true },
-                    { name: "Agu Tonkatsu Coshira", type: "豬排", note: "4.3★ 南部隱藏強店，肉質極嫩", tonkatsu: true },
-                    { name: "幸福鬆餅 瀨長島店", type: "甜點", note: "4.1★ 必預約，海景舒芙蕾" }
+                    { name: "Agu Tonkatsu Coshira", type: "豬排", note: "4.3★ 南部隱藏強店", tonkatsu: true }
                 ],
-                shoppingItems: ["唐吉訶德 (Cube卡 10% / JCB 10%)", "Workman Plus 糸滿店"],
+                shoppingItems: ["唐吉訶德 (Cube卡 10% / JCB 10%)"],
                 hotel: { name: "Hotel Chula Vista SENAGA", loc: "豐見城市" },
-                stats: [45, 55], notes: ["唐吉訶德用 Cube 卡滿萬送千(10%) 最划算", "燒肉王預約號碼 1841，請務必準時"]
+                notes: ["唐吉訶德用 Cube 卡滿萬送千(10%) 最划算"]
             },
             {
                 day: 6, date: "2/02", fullDate: "2026-02-02", title: "公設市場 ‧ 15:00 還車",
                 fullMap: "https://www.google.com/maps/dir/第一牧志公設市場/Naminoue+Shrine/Kokusai+Dori/Kojima+x+Bic+Camera+Naha/Naha+Airport",
                 itinerary: [
                     { time: "11:00", loc: "波上宮", desc: "神社參拜與海邊最後留影" },
-                    { time: "13:00", loc: "國際通", desc: "松本清/Bic Camera\n(松本清 Cube卡滿額回饋)", shopping: true, kumamon: true, cube: true },
-                    { time: "15:00", loc: "OTS 臨空豐崎", desc: "🚙 15:00 準時還車\n(Toyota Roomy)" }
+                    { time: "13:00", loc: "國際通", desc: "松本清/Bic Camera", shopping: true, kumamon: true, cube: true },
+                    { time: "15:00", loc: "OTS 臨空豐崎", desc: "🚙 15:00 準時還車" }
                 ],
                 food: [
-                    { name: "第一牧志公設市場", type: "海鮮", note: "4.1★ 推薦鮮魚湯或生魚片早餐", special: true },
-                    { name: "炸豬排 山助 Yamasuke", type: "豬排", note: "4.4★ 那霸評價最高豬排", tonkatsu: true },
-                    { name: "Zooton's Burger", type: "漢堡", note: "4.4★ 酪梨起司漢堡極推" },
-                    { name: "一蘭拉麵", type: "拉麵", note: "4.0★ 國際通店 (指定通路8.5%)", kumamon: true }
+                    { name: "第一牧志公設市場", type: "海鮮", note: "4.1★ 推薦鮮魚湯", special: true },
+                    { name: "炸豬排 山助 Yamasuke", type: "豬排", note: "4.4★ 那霸評價最高豬排", tonkatsu: true }
                 ],
-                shoppingItems: ["松本清 (Cube卡 滿2萬送2千)", "Bic Camera 那霸店"],
+                shoppingItems: ["松本清 (Cube卡 滿2萬送2千)"],
                 hotel: { name: "台北 (TPE)", loc: "溫暖的家" },
-                stats: [20, 80], notes: ["還車前請加滿油", "松本清用 Cube 卡滿額回饋優"]
+                notes: ["還車前請加滿油"]
             }
         ];
 
-        let currentDayIdx = 0;
-        let paceChart = null;
-        let currentSlide = 0;
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        function init() {
+            // Setup Date
+            document.getElementById('current-date-display').innerText = simDate.toLocaleDateString('zh-TW', { month: 'short', day: 'numeric', weekday: 'short' });
+            
+            // Check GAS
+            if (gasUrl && gasUrl !== DEFAULT_GAS_URL) {
+                const icon = document.getElementById('gas-icon');
+                if(icon) icon.classList.replace('text-blue-600', 'text-green-600');
+            }
 
+            // Init Accounting Data
+            calculateStats();
+            updateAccountingUI();
+            updateLiveAdvice();
+
+            // Init Itinerary Data
+            autoSelectDay();
+        }
+
+        // ============================================
+        // TAB SWITCHING LOGIC
+        // ============================================
+        function switchTab(tabName) {
+            // Hide all views
+            ['schedule', 'accounting', 'records'].forEach(t => {
+                document.getElementById(`view-${t}`).classList.remove('active');
+                document.getElementById(`btn-${t}`).classList.remove('active');
+            });
+
+            // Show selected
+            document.getElementById(`view-${tabName}`).classList.add('active');
+            document.getElementById(`btn-${tabName}`).classList.add('active');
+
+            // Scroll top
+            window.scrollTo(0, 0);
+
+            // Re-calc specific data if needed
+            if(tabName === 'records') {
+                updateAccountingUI();
+            }
+        }
+
+        // ============================================
+        // ACCOUNTING LOGIC (From App A)
+        // ============================================
+        function setGasUrl() {
+            const url = prompt("請輸入 Google Apps Script URL:", gasUrl);
+            if (url !== null && url !== "") {
+                gasUrl = url;
+                localStorage.setItem('okinawa_gas_url', url);
+                alert("GAS URL 已更新！");
+            }
+        }
+
+        function handleStoreChange() {
+            const store = document.getElementById('input-store').value;
+            const typeInput = document.getElementById('input-type');
+            if (store === '一般消費') {
+                typeInput.value = 'general';
+            } else if (store === 'PayPay消費') {
+                typeInput.value = 'paypay';
+            } else {
+                typeInput.value = 'special';
+            }
+            updateLiveAdvice();
+        }
+
+        function calculateStats() {
+            let totalJPY = 0;
+            Object.keys(config.members).forEach(m => {
+                config.members[m].spentTWD = 0;
+                config.members[m].jcbSpentJPY = 0;
+                config.members[m].paypaySpentTWD = 0;
+                config.members[m].generalPreJCB_TWD = 0; // Reset new stat
+            });
+
+            transactions.forEach(tx => {
+                const m = config.members[tx.member];
+                const date = new Date(tx.date);
+                totalJPY += tx.amountJPY;
+                
+                const isJcbPeriod = date >= new Date('2026-02-01');
+
+                if (tx.type === 'special') m.spentTWD += tx.amountJPY * m.rate;
+                if (tx.type === 'paypay') m.paypaySpentTWD += tx.amountJPY * config.realtime_rate;
+                
+                // JCB Logic: Only accumulate if date >= 2/1 and not paypay
+                if (isJcbPeriod && tx.type !== 'paypay') {
+                    m.jcbSpentJPY += tx.amountJPY;
+                }
+                
+                // General (Non-Special, Non-JCB Period) Logic for Progress Bar
+                // Condition: Type is General AND Date < 2/1
+                if (tx.type === 'general' && !isJcbPeriod) {
+                    m.generalPreJCB_TWD += tx.amountJPY * m.rate;
+                }
+            });
+            document.getElementById('total-jpy-spent').innerText = Math.round(totalJPY).toLocaleString();
+        }
+
+        function updateLiveAdvice() {
+            const store = document.getElementById('input-store').value;
+            const amountJPY = parseFloat(document.getElementById('input-jpy').value) || 0;
+            const type = document.getElementById('input-type').value;
+            const adviceEl = document.getElementById('advice-text');
+            const warningEl = document.getElementById('paypay-warning');
+            const memberSelect = document.getElementById('input-member');
+            
+            const isFeb = simDate >= new Date('2026-02-01');
+            warningEl.classList.add('hidden');
+
+            if (!store) {
+                adviceEl.innerHTML = "等待輸入...";
+                return;
+            }
+
+            // Priority Sort
+            const sortedMembers = Object.keys(config.members).sort((a,b) => config.members[a].priority - config.members[b].priority);
+
+            if (type === 'paypay') {
+                const currentTWD = amountJPY * config.realtime_rate;
+                if (currentTWD > config.paypay_single_limit_twd) warningEl.classList.remove('hidden');
+                
+                let recommended = sortedMembers.find(k => config.members[k].paypaySpentTWD < config.paypay_cap_twd) || 'mom';
+                
+                adviceEl.innerHTML = `💸 全民 PayPay<br>請用 <span class="text-blue-600">${config.members[recommended].name}</span>`;
+                memberSelect.value = recommended;
+                return;
+            }
+
+            let recommended;
+            if (type === 'special') {
+                // Special Store: Check 8333 cap
+                recommended = sortedMembers.find(k => config.members[k].spentTWD < config.esun_cap_twd) || sortedMembers[0];
+                adviceEl.innerHTML = `🐻 熊本熊 8.5%<br>請用 <span class="text-red-600">${config.members[recommended].name}</span>`;
+            } else {
+                // General Store
+                if (isFeb) {
+                    // JCB Period: Check 100k JPY cap
+                    recommended = sortedMembers.find(k => config.members[k].jcbSpentJPY < config.jcb_threshold_jpy) || sortedMembers[0];
+                    adviceEl.innerHTML = `🚀 JCB 10% 任務<br>請用 <span class="text-indigo-600">${config.members[recommended].name}</span>`;
+                } else {
+                    // Pre-JCB General: 2.5% Unlimited.
+                    // Default to Priority 1 (Mom) unless user changes manually.
+                    recommended = sortedMembers[0]; 
+                    adviceEl.innerHTML = `🛍️ 一般店 2.5%<br>請用 <span class="text-green-600">${config.members[recommended].name}</span>`;
+                }
+            }
+            memberSelect.value = recommended;
+        }
+
+        async function addTransaction() {
+            const store = document.getElementById('input-store').value;
+            const jpy = parseFloat(document.getElementById('input-jpy').value);
+            const member = document.getElementById('input-member').value;
+            const type = document.getElementById('input-type').value;
+
+            if (!store || !jpy) return;
+
+            const btn = document.getElementById('add-btn');
+            btn.disabled = true;
+            btn.innerText = "同步中...";
+
+            const newTx = {
+                id: Date.now(),
+                date: simDate.toISOString(),
+                store: store,
+                amountJPY: jpy,
+                member: member,
+                type: type,
+                synced: false
+            };
+
+            transactions.push(newTx);
+            localStorage.setItem('okinawa_tx', JSON.stringify(transactions));
+
+            if (gasUrl) {
+                try {
+                    await fetch(gasUrl, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        body: JSON.stringify(newTx),
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    newTx.synced = true;
+                    const idx = transactions.findIndex(t => t.id === newTx.id);
+                    if (idx !== -1) transactions[idx].synced = true;
+                    localStorage.setItem('okinawa_tx', JSON.stringify(transactions));
+                } catch (e) {
+                    console.error("同步失敗:", e);
+                }
+            }
+
+            document.getElementById('input-jpy').value = '';
+            calculateStats();
+            updateAccountingUI();
+            updateLiveAdvice();
+            
+            btn.disabled = false;
+            btn.innerText = "確認入帳 🐻";
+            
+            alert('已入帳！');
+        }
+
+        function updateAccountingUI() {
+            const statsDiv = document.getElementById('member-stats');
+            statsDiv.innerHTML = '';
+
+            Object.keys(config.members).forEach(key => {
+                const m = config.members[key];
+                const esunProgress = Math.min((m.spentTWD / config.esun_cap_twd) * 100, 100);
+                const jcbProgress = Math.min((m.jcbSpentJPY / config.jcb_threshold_jpy) * 100, 100);
+                const payProgress = Math.min((m.paypaySpentTWD / config.paypay_cap_twd) * 100, 100);
+                
+                // For General Pre-JCB, set a visual reference of 20k TWD just for the bar, but text shows actual
+                const generalVisualCap = 20000;
+                const generalProgress = Math.min((m.generalPreJCB_TWD / generalVisualCap) * 100, 100);
+
+                statsDiv.innerHTML += `
+                    <div class="bg-white p-6 rounded-[2rem] shadow-md border border-gray-50">
+                        <div class="flex justify-between items-center mb-5">
+                            <span class="font-black text-2xl text-gray-900">${m.name}</span>
+                            <span class="text-xs px-3 py-1 bg-gray-100 text-gray-500 rounded-full font-mono font-bold">匯率 ${key === 'chu3' ? '0.1992' : m.rate}</span>
+                        </div>
+                        <div class="space-y-4">
+                            <!-- Kumamon Special -->
+                            <div>
+                                <div class="flex justify-between text-[9px] mb-1 font-black text-red-500 uppercase tracking-widest">
+                                    <span>熊本熊特店 (NT 8.3k)</span>
+                                    <span>${Math.round(m.spentTWD)} / 8.3k</span>
+                                </div>
+                                <div class="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
+                                    <div class="kumamon-red-bg h-full progress-bar" style="width: ${esunProgress}%"></div>
+                                </div>
+                            </div>
+                            <!-- JCB -->
+                            <div>
+                                <div class="flex justify-between text-[9px] mb-1 font-black text-blue-600 uppercase tracking-widest">
+                                    <span>JCB 10% (100k 日圓)</span>
+                                    <span>${Math.round(m.jcbSpentJPY).toLocaleString()} / 100k</span>
+                                </div>
+                                <div class="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
+                                    <div class="bg-blue-600 h-full progress-bar" style="width: ${jcbProgress}%"></div>
+                                </div>
+                            </div>
+                            <!-- New General (Pre-JCB) -->
+                            <div>
+                                <div class="flex justify-between text-[9px] mb-1 font-black text-emerald-600 uppercase tracking-widest">
+                                    <span>熊本熊一般 (非JCB期間)</span>
+                                    <span>NT$ ${Math.round(m.generalPreJCB_TWD).toLocaleString()}</span>
+                                </div>
+                                <div class="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
+                                    <div class="general-green-bg h-full progress-bar" style="width: ${generalProgress}%"></div>
+                                </div>
+                            </div>
+                            <!-- PayPay -->
+                            <div>
+                                <div class="flex justify-between text-[9px] mb-1 font-black text-blue-400 uppercase tracking-widest">
+                                    <span>全支付每月上限</span>
+                                    <span>NT$ ${Math.round(m.paypaySpentTWD)} / 3.4k</span>
+                                </div>
+                                <div class="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
+                                    <div class="pluspay-blue-bg h-full progress-bar" style="width: ${payProgress}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            const historyDiv = document.getElementById('history-list');
+            if (historyDiv) {
+                historyDiv.innerHTML = transactions.length === 0 ? '<p class="text-center text-gray-400 py-10 font-bold">尚無任何消費紀錄</p>' : 
+                transactions.slice().reverse().map(tx => `
+                    <div class="flex justify-between items-center bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+                        <div class="flex flex-col">
+                            <div class="flex items-center">
+                                <span class="font-black text-gray-800 text-base leading-none">${tx.store}</span>
+                                ${tx.synced ? '<i class="fa-solid fa-cloud text-[10px] text-blue-400 ml-2"></i>' : '<i class="fa-solid fa-cloud-slash text-[10px] text-gray-300 ml-2"></i>'}
+                            </div>
+                            <span class="text-[10px] text-gray-400 font-bold mt-1 uppercase">
+                                ${config.members[tx.member].name} | 
+                                <span class="${tx.type === 'special' ? 'text-red-500' : (tx.type === 'paypay' ? 'text-blue-500' : 'text-gray-500')}">
+                                    ${tx.type === 'special' ? '熊加碼' : (tx.type === 'paypay' ? 'PayPay' : '一般')}
+                                </span>
+                            </span>
+                            <span class="text-[8px] text-gray-300 mt-1">${new Date(tx.date).toLocaleString([], {month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit'})}</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="font-mono font-black text-red-600 text-xl">${Math.round(tx.amountJPY).toLocaleString()}</span>
+                            <span class="text-[10px] font-black text-gray-400 ml-0.5">JPY</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function copyCSV() {
+            if (transactions.length === 0) return alert('目前沒有資料可以複製');
+            const header = '日期,商店,日幣金額,執行人,類型\n';
+            const rows = transactions.map(tx => `${new Date(tx.date).toLocaleDateString()},${tx.store},${tx.amountJPY},${config.members[tx.member].name},${tx.type}`).join('\n');
+            const csv = header + rows;
+            const tempInput = document.createElement('textarea');
+            tempInput.value = csv;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            alert('消費明細已轉為 CSV 並複製！');
+        }
+
+        function resetData() {
+            if (confirm('確定清空？這會刪掉所有已記帳的數據喔！')) {
+                transactions = [];
+                localStorage.removeItem('okinawa_tx');
+                init();
+            }
+        }
+
+        // ============================================
+        // ITINERARY LOGIC (From App B)
+        // ============================================
+        let currentZoom = 100;
+        function adjustFontSize(delta) {
+            currentZoom += delta;
+            if (currentZoom < 85) currentZoom = 85;
+            if (currentZoom > 140) currentZoom = 140; 
+            document.documentElement.style.fontSize = currentZoom + '%';
+        }
+        
         const getSearchUrl = (query) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query + " 沖繩")}`;
+        let currentDayIdx = 0;
+        let currentSlide = 0;
 
         function autoSelectDay() {
             const today = new Date();
@@ -504,27 +986,25 @@
             const foundIdx = tripData.findIndex(d => d.fullDate === dateString);
             
             if (foundIdx !== -1) {
-                updateApp(foundIdx);
+                updateItineraryView(foundIdx);
             } else {
                 const firstDayDate = new Date(tripData[0].fullDate);
                 if (today < firstDayDate) {
-                    updateApp(0); 
+                    updateItineraryView(0); 
                 } else {
-                    updateApp(tripData.length - 1); 
+                    updateItineraryView(tripData.length - 1); 
                 }
             }
         }
 
-        function updateApp(idx) {
+        function updateItineraryView(idx) {
             currentDayIdx = idx;
             const data = tripData[idx];
             
             const elements = {
                 'display-date': data.fullDate.replace(/-/g, '/'),
                 'header-subtitle': data.title,
-                'daily-image-label': `Day ${data.day}`,
-                'hotel-name': data.hotel.name,
-                'hotel-loc': data.hotel.loc
+                'daily-image-label': `Day ${data.day}`
             };
 
             for (const [id, val] of Object.entries(elements)) {
@@ -532,12 +1012,17 @@
                 if (el) el.innerText = val;
             }
 
-            const imgId = 3 + idx; 
+            const imgId = 3 + idx; // Logic from original code: first day image is 3.jpg?
+            // Actually in original code it was imgId = 3 + idx. (Day 1 -> 3.jpg)
+            // Let's keep it but handle if file missing.
             const imgEl = document.getElementById('daily-image');
             const imgLink = document.getElementById('daily-image-link');
             
             if (imgEl && imgLink) {
-                const imgPath = `images/${imgId}.jpg`;
+                // Assuming images are 3.jpg, 4.jpg etc as per original logic
+                // If original images started at 1, logic should be adjusted. 
+                // Based on provided code: const imgId = 3 + idx;
+                const imgPath = `images/${3 + idx}.jpg`; 
                 imgEl.src = imgPath;
                 imgLink.href = imgPath;
             }
@@ -562,7 +1047,7 @@
             const container = document.getElementById('day-nav');
             if (!container) return;
             container.innerHTML = tripData.map((d, i) => `
-                <button onclick="updateApp(${i})" class="nav-tab flex-shrink-0 px-8 py-3 rounded-2xl text-xs font-bold transition-all ${i === currentDayIdx ? 'active' : 'bg-slate-50 text-slate-500'}">
+                <button onclick="updateItineraryView(${i})" class="nav-tab flex-shrink-0 px-8 py-3 rounded-2xl text-xs font-bold transition-all ${i === currentDayIdx ? 'active' : 'bg-slate-50 text-slate-500'}">
                     DAY ${d.day}<br><span class="text-[0.6rem] opacity-70 font-medium whitespace-nowrap">${d.date}</span>
                 </button>
             `).join('');
@@ -650,7 +1135,7 @@
             document.body.appendChild(modal);
         }
 
-        // Modal Logic
+        // Card Modal Logic
         function openCardModal() {
             document.getElementById('card-modal').classList.remove('hidden');
             document.getElementById('card-modal').classList.add('flex');
@@ -664,7 +1149,7 @@
         }
 
         function nextSlide() {
-            currentSlide = currentSlide === 2 ? 0 : currentSlide + 1; // Cycle 0 -> 1 -> 2 -> 0
+            currentSlide = currentSlide === 2 ? 0 : currentSlide + 1;
             updateSlides();
         }
 
@@ -698,9 +1183,8 @@
             });
         }
 
-        window.onload = function() {
-            autoSelectDay();
-        };
+        // Init App
+        window.onload = init;
     </script>
 </body>
 </html>
