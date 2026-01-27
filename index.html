@@ -26,6 +26,7 @@
             --ocean-blue: #0ea5e9;
             --kumamon-black: #1a1a1a;
             --kumamon-red: #ef4444;
+            --cathay-green: #008740; /* 國泰綠 */
         }
         /* 預設根字體大小 */
         html {
@@ -84,6 +85,19 @@
             align-items: center;
             gap: 2px;
             border: 1px solid var(--kumamon-red);
+        }
+
+        .cube-tag {
+            background-color: var(--cathay-green);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.7rem; 
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            border: 1px solid #006400;
         }
 
         .slide-container {
@@ -236,24 +250,24 @@
                     </div>
                 </div>
 
-                <!-- 熊本熊卡 Slides -->
+                <!-- 刷卡攻略 Slides -->
                 <div>
                     <div class="flex justify-between items-center mb-2">
                         <h4 class="text-sm font-black text-slate-900 flex items-center gap-2">
-                            🐻 熊本熊卡規則
-                            <span class="text-[0.65rem] bg-red-100 text-red-600 px-2 py-0.5 rounded-full">需登錄</span>
+                            💳 信用卡優惠 (需登錄)
                         </h4>
                         <div class="flex gap-1">
                             <button onclick="switchSlide(0)" id="dot-0" class="w-2 h-2 rounded-full bg-slate-800 transition-all"></button>
                             <button onclick="switchSlide(1)" id="dot-1" class="w-2 h-2 rounded-full bg-slate-300 transition-all"></button>
+                            <button onclick="switchSlide(2)" id="dot-2" class="w-2 h-2 rounded-full bg-slate-300 transition-all"></button>
                         </div>
                     </div>
 
-                    <!-- Slide 1: 一般消費 -->
-                    <div id="slide-0" class="slide-container active bg-gradient-to-br from-slate-900 to-slate-800 text-white p-5 rounded-2xl shadow-lg relative overflow-hidden min-h-[180px]">
+                    <!-- Slide 1: 熊本熊 一般消費 -->
+                    <div id="slide-0" class="slide-container active bg-gradient-to-br from-slate-900 to-slate-800 text-white p-5 rounded-2xl shadow-lg relative overflow-hidden min-h-[200px]">
                         <div class="absolute -right-4 -top-4 text-8xl opacity-10">🇯🇵</div>
                         <div class="relative z-10">
-                            <h5 class="text-lg font-black text-yellow-400 mb-1">Slide 1: 日本一般消費</h5>
+                            <h5 class="text-lg font-black text-yellow-400 mb-1">Slide 1: 熊本熊 (一般)</h5>
                             <div class="text-3xl font-black mb-2">2.5% <span class="text-sm font-medium opacity-80">回饋無上限</span></div>
                             <ul class="text-xs space-y-1 opacity-90 list-disc list-inside">
                                 <li>含 1.5% 國外交易服務費</li>
@@ -262,18 +276,18 @@
                         </div>
                     </div>
 
-                    <!-- Slide 2: 指定通路 -->
-                    <div id="slide-1" class="slide-container hidden bg-gradient-to-br from-red-600 to-red-500 text-white p-5 rounded-2xl shadow-lg relative overflow-hidden min-h-[180px]">
+                    <!-- Slide 2: 熊本熊 指定通路 -->
+                    <div id="slide-1" class="slide-container hidden bg-gradient-to-br from-red-600 to-red-500 text-white p-5 rounded-2xl shadow-lg relative overflow-hidden min-h-[200px]">
                         <div class="absolute -right-4 -top-4 text-8xl opacity-10">🛍️</div>
                         <div class="relative z-10">
-                            <h5 class="text-lg font-black text-white mb-1">Slide 2: 指定通路 (需登錄)</h5>
+                            <h5 class="text-lg font-black text-white mb-1">Slide 2: 熊本熊 (指定)</h5>
                             <div class="text-3xl font-black mb-2">8.5% <span class="text-sm font-medium opacity-80">最高</span></div>
-                            <p class="text-[0.65rem] mb-3 bg-red-700/50 inline-block px-2 py-1 rounded">加碼 6% 上限 500元/期 (約刷 8333 台幣)</p>
+                            <p class="text-[0.65rem] mb-3 bg-red-700/50 inline-block px-2 py-1 rounded">加碼 6% 上限 500元/期</p>
                             
                             <div class="grid grid-cols-2 gap-2 text-[0.65rem] font-bold">
                                 <div class="bg-white/20 p-1.5 rounded">
                                     🚗 <span class="text-yellow-200">交通/租車</span><br>
-                                    SUICA/ICOCA、OTS、TOYOTA租車、JR、JAL
+                                    SUICA/ICOCA、OTS、TOYOTA
                                 </div>
                                 <div class="bg-white/20 p-1.5 rounded">
                                     💊 <span class="text-yellow-200">藥妝/購物</span><br>
@@ -281,7 +295,40 @@
                                 </div>
                                 <div class="bg-white/20 p-1.5 rounded col-span-2">
                                     🍱 <span class="text-yellow-200">餐飲</span><br>
-                                    敘敘苑、牛角、一蘭、松屋、壽司郎、藏壽司
+                                    敘敘苑、牛角、一蘭、松屋、壽司郎
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 3: 國泰 Cube 卡 -->
+                    <div id="slide-2" class="slide-container hidden bg-gradient-to-br from-[#008740] to-[#005c2b] text-white p-5 rounded-2xl shadow-lg relative overflow-hidden min-h-[200px]">
+                        <div class="absolute -right-4 -top-4 text-8xl opacity-10">🌲</div>
+                        <div class="relative z-10">
+                            <h5 class="text-lg font-black text-white mb-1 flex items-center gap-2">
+                                Slide 3: 國泰 CUBE <span class="text-[0.6rem] bg-white/20 px-2 rounded">需切換/登錄</span>
+                            </h5>
+                            
+                            <div class="space-y-2 mt-3">
+                                <div class="bg-white/10 p-2 rounded flex justify-between items-center">
+                                    <span class="text-[0.7rem] font-bold">🛍️ 唐吉訶德</span>
+                                    <span class="text-[0.8rem] font-black text-yellow-300">滿萬送千 (10%)</span>
+                                </div>
+                                <div class="bg-white/10 p-2 rounded flex justify-between items-center">
+                                    <span class="text-[0.7rem] font-bold">🔌 EDION 家電</span>
+                                    <span class="text-[0.8rem] font-black text-yellow-300">滿3萬送2千</span>
+                                </div>
+                                <div class="bg-white/10 p-2 rounded flex justify-between items-center">
+                                    <span class="text-[0.7rem] font-bold">💊 松本清</span>
+                                    <span class="text-[0.8rem] font-black text-yellow-300">滿2萬送2千</span>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2 mt-1">
+                                    <div class="bg-white/10 p-2 rounded text-[0.65rem]">
+                                        <b>🏪 7-11</b><br>滿¥1500送¥150
+                                    </div>
+                                    <div class="bg-white/10 p-2 rounded text-[0.65rem]">
+                                        <b>💳 Suica 密技</b><br>手機儲值¥4000送¥200
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -298,14 +345,14 @@
                         <h6 class="text-xs font-black text-blue-600 mb-1">Costco 提醒</h6>
                         <p class="text-[0.65rem] text-blue-900 font-bold leading-tight">
                             ⚠️ 僅收 Mastercard<br>
-                            <span class="opacity-70">熊本熊卡若非 Master 無法刷</span>
+                            <span class="opacity-70">熊本熊/Cube 若非 Master 無法刷</span>
                         </p>
                     </div>
-                    <div class="bg-orange-50 p-3 rounded-xl border border-orange-100">
-                        <h6 class="text-xs font-black text-orange-600 mb-1">JCB 活動 (2/1起)</h6>
-                        <p class="text-[0.65rem] text-orange-900 font-bold leading-tight">
-                            滿 10萬日圓 回饋 10%<br>
-                            <span class="opacity-70">Day 5-6 適用</span>
+                    <div class="bg-red-50 p-3 rounded-xl border border-red-100">
+                        <h6 class="text-xs font-black text-red-600 mb-1">BicCamera 警語</h6>
+                        <p class="text-[0.65rem] text-red-900 font-bold leading-tight">
+                            沖繩多為 Kojima 聯名店<br>
+                            <span class="opacity-70">Cube卡恐無回饋，建議去 EDION</span>
                         </p>
                     </div>
                 </div>
@@ -392,7 +439,7 @@
                 fullMap: "https://www.google.com/maps/dir/Lieta+Nakayama/Busena+Marine+Park/Aeon+Mall+Okinawa+Rycom/Workman+Plus+Ginowan/Costco+Wholesale+Okinawa+Nanjo/Hotel+Chula+Vista+SENAGA",
                 itinerary: [
                     { time: "10:30", loc: "部瀨名海中公園", desc: "玻璃底船珊瑚礁探索" },
-                    { time: "14:00", loc: "永旺夢樂城來客夢", desc: "🛍️ 一站式狂逛 Bic/UQ/GU (刷熊本熊卡)", shopping: true, kumamon: true },
+                    { time: "14:00", loc: "永旺夢樂城來客夢", desc: "🛍️ 一站式狂逛 Bic/UQ/GU", shopping: true, kumamon: true, cube_warning: true },
                     { time: "18:30", loc: "Costco 沖繩南城店", desc: "🛒 沖繩首間 Costco\n⚠️ 僅收 Mastercard，請注意卡別", shopping: true },
                     { time: "21:00", loc: "Hotel Chula Vista SENAGA", desc: "南部飯店入住" }
                 ],
@@ -401,9 +448,9 @@
                     { name: "Kamezen Sobakan", type: "麵食", note: "4.2★ 美國村內道地沖繩麵" },
                     { name: "迴轉壽司市場 美濱店", type: "壽司", note: "4.3★ 食材鮮甜，常需排隊" }
                 ],
-                shoppingItems: ["來客夢 Bic Camera (8.5%)", "Workman Plus 宜野灣店", "Costco 熟食區 (Mastercard)"],
+                shoppingItems: ["Bic Camera (⚠️ Cube卡請改去EDION)", "Workman Plus 宜野灣店", "Costco 熟食區 (Mastercard)"],
                 hotel: { name: "Hotel Chula Vista SENAGA", loc: "豐見城市" },
-                stats: [70, 30], notes: ["Costco 僅收 Mastercard，熊本熊卡若是 Visa/JCB 無法刷", "Bic Camera 位於來客夢 Kojima 層"]
+                stats: [70, 30], notes: ["Cube卡注意：來客夢Bic為Kojima聯名，建議改去EDION", "Costco 僅收 Mastercard"]
             },
             {
                 day: 5, date: "2/01", fullDate: "2026-02-01", title: "JCB 活動開跑 ‧ 南部櫻花",
@@ -414,23 +461,23 @@
                     { time: "14:00", loc: "燒肉王 那霸久茂地店", desc: "🥩 預約號碼：1841\n⚠️ 需現場機器報到，非保留席", kumamon: true },
                     { time: "16:30", loc: "八重瀬公園", desc: "🌸 南部櫻花祭會場", sakura: true },
                     { time: "18:00", loc: "瀨長島 Umikaji Terrace", desc: "看飛機起降夕陽" },
-                    { time: "19:30", loc: "唐吉訶德 糸滿店", desc: "🛍️ 熊本熊卡 8.5% 或 JCB 活動\n(JCB 滿10萬日圓回饋10%)", shopping: true, kumamon: true }
+                    { time: "19:30", loc: "唐吉訶德 糸滿店", desc: "🛍️ 熊本熊卡 8.5% 或 Cube卡 10%\n(JCB 滿10萬日圓回饋10%)", shopping: true, kumamon: true, cube: true }
                 ],
                 food: [
                     { name: "燒肉王 那霸久茂地店", type: "燒肉", note: "4.1★ 已預約 14:00 (No.1841)", special: true },
                     { name: "Agu Tonkatsu Coshira", type: "豬排", note: "4.3★ 南部隱藏強店，肉質極嫩", tonkatsu: true },
                     { name: "幸福鬆餅 瀨長島店", type: "甜點", note: "4.1★ 必預約，海景舒芙蕾" }
                 ],
-                shoppingItems: ["唐吉訶德 (8.5% / JCB 10%)", "Workman Plus 糸滿店"],
+                shoppingItems: ["唐吉訶德 (Cube卡 10% / JCB 10%)", "Workman Plus 糸滿店"],
                 hotel: { name: "Hotel Chula Vista SENAGA", loc: "豐見城市" },
-                stats: [45, 55], notes: ["今日起 JCB 累積滿 10萬日圓享 10% 回饋", "燒肉王預約號碼 1841，請務必準時"]
+                stats: [45, 55], notes: ["唐吉訶德用 Cube 卡滿萬送千(10%) 最划算", "燒肉王預約號碼 1841，請務必準時"]
             },
             {
                 day: 6, date: "2/02", fullDate: "2026-02-02", title: "公設市場 ‧ 15:00 還車",
                 fullMap: "https://www.google.com/maps/dir/第一牧志公設市場/Naminoue+Shrine/Kokusai+Dori/Kojima+x+Bic+Camera+Naha/Naha+Airport",
                 itinerary: [
                     { time: "11:00", loc: "波上宮", desc: "神社參拜與海邊最後留影" },
-                    { time: "13:00", loc: "國際通", desc: "Bic Camera/松本清 (熊本熊8.5%)", shopping: true, kumamon: true },
+                    { time: "13:00", loc: "國際通", desc: "松本清/Bic Camera\n(松本清 Cube卡滿額回饋)", shopping: true, kumamon: true, cube: true },
                     { time: "15:00", loc: "OTS 臨空豐崎", desc: "🚙 15:00 準時還車\n(Toyota Roomy)" }
                 ],
                 food: [
@@ -439,9 +486,9 @@
                     { name: "Zooton's Burger", type: "漢堡", note: "4.4★ 酪梨起司漢堡極推" },
                     { name: "一蘭拉麵", type: "拉麵", note: "4.0★ 國際通店 (指定通路8.5%)", kumamon: true }
                 ],
-                shoppingItems: ["Bic Camera 那霸店 (8.5%)", "松本清 (8.5%)"],
+                shoppingItems: ["松本清 (Cube卡 滿2萬送2千)", "Bic Camera 那霸店"],
                 hotel: { name: "台北 (TPE)", loc: "溫暖的家" },
-                stats: [20, 80], notes: ["還車前請加滿油", "JCB 活動最後衝刺機會"]
+                stats: [20, 80], notes: ["還車前請加滿油", "松本清用 Cube 卡滿額回饋優"]
             }
         ];
 
@@ -475,7 +522,9 @@
             const elements = {
                 'display-date': data.fullDate.replace(/-/g, '/'),
                 'header-subtitle': data.title,
-                'daily-image-label': `Day ${data.day}`
+                'daily-image-label': `Day ${data.day}`,
+                'hotel-name': data.hotel.name,
+                'hotel-loc': data.hotel.loc
             };
 
             for (const [id, val] of Object.entries(elements)) {
@@ -532,7 +581,10 @@
                     <div class="flex-1 pt-1">
                         <div class="flex items-center justify-between">
                             <span class="text-[0.65rem] font-mono font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded">${item.time}</span>
-                            ${item.kumamon ? '<span class="kumamon-tag">🐻 熊本熊 8.5%</span>' : ''}
+                            <div class="flex gap-1">
+                                ${item.kumamon ? '<span class="kumamon-tag">🐻 熊本熊</span>' : ''}
+                                ${item.cube ? '<span class="cube-tag">🌲 Cube卡</span>' : ''}
+                            </div>
                         </div>
                         <a href="${getSearchUrl(item.loc)}" target="_blank" class="block font-black text-slate-800 text-sm active:text-pink-500 py-1 mt-1">
                             ${item.loc}
@@ -612,7 +664,7 @@
         }
 
         function nextSlide() {
-            currentSlide = currentSlide === 0 ? 1 : 0;
+            currentSlide = currentSlide === 2 ? 0 : currentSlide + 1; // Cycle 0 -> 1 -> 2 -> 0
             updateSlides();
         }
 
@@ -622,28 +674,28 @@
         }
 
         function updateSlides() {
-            const slide0 = document.getElementById('slide-0');
-            const slide1 = document.getElementById('slide-1');
-            const dot0 = document.getElementById('dot-0');
-            const dot1 = document.getElementById('dot-1');
+            const slides = [
+                document.getElementById('slide-0'),
+                document.getElementById('slide-1'),
+                document.getElementById('slide-2')
+            ];
+            const dots = [
+                document.getElementById('dot-0'),
+                document.getElementById('dot-1'),
+                document.getElementById('dot-2')
+            ];
 
-            if (currentSlide === 0) {
-                slide0.classList.remove('hidden');
-                slide0.classList.add('active');
-                slide1.classList.add('hidden');
-                slide1.classList.remove('active');
-                
-                dot0.classList.replace('bg-slate-300', 'bg-slate-800');
-                dot1.classList.replace('bg-slate-800', 'bg-slate-300');
-            } else {
-                slide0.classList.add('hidden');
-                slide0.classList.remove('active');
-                slide1.classList.remove('hidden');
-                slide1.classList.add('active');
-
-                dot0.classList.replace('bg-slate-800', 'bg-slate-300');
-                dot1.classList.replace('bg-slate-300', 'bg-slate-800');
-            }
+            slides.forEach((slide, idx) => {
+                if (idx === currentSlide) {
+                    slide.classList.remove('hidden');
+                    slide.classList.add('active');
+                    dots[idx].classList.replace('bg-slate-300', 'bg-slate-800');
+                } else {
+                    slide.classList.add('hidden');
+                    slide.classList.remove('active');
+                    dots[idx].classList.replace('bg-slate-800', 'bg-slate-300');
+                }
+            });
         }
 
         window.onload = function() {
