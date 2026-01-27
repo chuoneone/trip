@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>2026沖繩行程</title>
-    <link rel="icon" type="image/png" href="images/japan.png">
-
+    <title>2026沖繩猋猋美少女</title>
     
     <!-- PWA Settings -->
     <link rel="manifest" href="manifest.json">
@@ -123,6 +121,10 @@
             animation: pulse 2s infinite;
             border-width: 3px;
         }
+        
+        .loading-spin {
+            animation: spin 1s linear infinite;
+        }
 
         /* --- 共用動畫 --- */
         @keyframes pulse {
@@ -133,6 +135,10 @@
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         /* --- 頁面切換控制 --- */
@@ -156,9 +162,31 @@
         .bottom-nav-btn.active i {
             filter: drop-shadow(0 4px 6px rgba(230, 0, 18, 0.3));
         }
+        
+        /* 同步狀態提示 */
+        #sync-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 100;
+            font-size: 0.7rem;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 99px;
+            display: none;
+            align-items: center;
+            gap: 4px;
+        }
     </style>
 </head>
 <body>
+
+    <!-- 同步狀態提示 -->
+    <div id="sync-indicator">
+        <i class="fa-solid fa-arrows-rotate loading-spin"></i>
+        <span>同步中...</span>
+    </div>
 
     <!-- ========================================= -->
     <!-- VIEW 1: 行程 (ITINERARY) - 來自 App B -->
@@ -387,6 +415,9 @@
                          <button onclick="copyCSV()" class="text-[10px] font-bold bg-gray-200 px-3 py-1 rounded-full text-gray-600 active:bg-gray-300">
                             <i class="fa-solid fa-copy mr-1"></i> CSV
                         </button>
+                        <button onclick="syncData()" class="text-[10px] font-bold bg-green-100 px-3 py-1 rounded-full text-green-600 active:bg-green-200">
+                             <i class="fa-solid fa-rotate mr-1"></i> 同步
+                        </button>
                         <button onclick="setGasUrl()" class="text-[10px] font-bold bg-blue-100 px-3 py-1 rounded-full text-blue-600 active:bg-blue-200">
                              <i id="gas-icon" class="fa-solid fa-link mr-1"></i> GAS
                         </button>
@@ -537,7 +568,7 @@
         };
 
         // 設定您的 GAS 後端網址
-        const DEFAULT_GAS_URL = "https://script.google.com/macros/s/AKfycbyKnFTlKYAYD6Zjs1y5Q3UKsGtbp4Ggd8Z6zkBiCUewjsiT0j9h4Qkr0BnC8yk4DNuq/exec";
+        const DEFAULT_GAS_URL = "https://script.google.com/macros/s/AKfycby8geBCFCjBZ6bE4t0uGWa_T409ngfclcKHAJMZGblRPN3QXqm3MaqxUL4camiLxuHHFw/exec";
         let transactions = JSON.parse(localStorage.getItem('okinawa_tx')) || [];
         let gasUrl = localStorage.getItem('okinawa_gas_url') || DEFAULT_GAS_URL;
         const simDate = new Date(); 
@@ -662,6 +693,11 @@
             calculateStats();
             updateAccountingUI();
             updateLiveAdvice();
+            
+            // Auto Sync on Init
+            if (gasUrl) {
+                syncData(true); // true = silent mode (no alert)
+            }
 
             // Init Itinerary Data
             autoSelectDay();
@@ -698,8 +734,65 @@
             if (url !== null && url !== "") {
                 gasUrl = url;
                 localStorage.setItem('okinawa_gas_url', url);
-                alert("GAS URL 已更新！");
+                alert("GAS URL 已更新！請確保您的 GAS 腳本已更新為支援雙向同步的版本。");
+                syncData(); // Trigger sync after update
             }
+        }
+
+        async function syncData(silent = false) {
+            if (!gasUrl) return;
+            
+            const indicator = document.getElementById('sync-indicator');
+            indicator.style.display = 'flex';
+            
+            try {
+                // Fetch data from GAS (GET request)
+                // Appending timestamp to prevent caching
+                const response = await fetch(`${gasUrl}?t=${Date.now()}`);
+                const cloudData = await response.json();
+                
+                if (Array.isArray(cloudData)) {
+                    mergeTransactions(cloudData);
+                    if (!silent) alert('同步成功！已更新至最新資料。');
+                } else {
+                    console.error("GAS 回傳格式錯誤", cloudData);
+                }
+            } catch (e) {
+                console.error("同步失敗:", e);
+                if (!silent) alert("同步失敗，請檢查網路或 GAS 設定。");
+            } finally {
+                indicator.style.display = 'none';
+                calculateStats();
+                updateAccountingUI();
+            }
+        }
+
+        function mergeTransactions(cloudData) {
+            // 1. 建立一個 Map 來存放最終資料，以 ID 為 Key
+            const txMap = new Map();
+            
+            // 2. 先放入本地資料 (保留本地未同步的狀態)
+            transactions.forEach(tx => {
+                txMap.set(String(tx.id), tx);
+            });
+            
+            // 3. 放入雲端資料 (覆蓋本地，因為雲端視為已確認的同步資料)
+            // 雲端資料回傳時應該要有 id
+            cloudData.forEach(cloudTx => {
+                // 確保數值型別正確
+                cloudTx.amountJPY = parseFloat(cloudTx.amountJPY);
+                // 雲端來的資料一定是 synced = true
+                cloudTx.synced = true;
+                
+                // 如果本地有這筆資料且標記為未同步，雲端覆蓋後就變成已同步
+                txMap.set(String(cloudTx.id), cloudTx);
+            });
+            
+            // 4. 轉回陣列並依照 ID 排序 (舊到新)
+            transactions = Array.from(txMap.values()).sort((a, b) => a.id - b.id);
+            
+            // 5. 存回 LocalStorage
+            localStorage.setItem('okinawa_tx', JSON.stringify(transactions));
         }
 
         function handleStoreChange() {
@@ -821,23 +914,30 @@
                 synced: false
             };
 
+            // 1. 先存本地
             transactions.push(newTx);
             localStorage.setItem('okinawa_tx', JSON.stringify(transactions));
 
+            // 2. 嘗試同步到 GAS (POST)
             if (gasUrl) {
                 try {
                     await fetch(gasUrl, {
                         method: 'POST',
-                        mode: 'no-cors',
+                        mode: 'no-cors', // 這裡很重要，GAS 預設跨域限制
                         body: JSON.stringify(newTx),
                         headers: { 'Content-Type': 'application/json' }
                     });
                     newTx.synced = true;
+                    // 更新本地狀態
                     const idx = transactions.findIndex(t => t.id === newTx.id);
                     if (idx !== -1) transactions[idx].synced = true;
                     localStorage.setItem('okinawa_tx', JSON.stringify(transactions));
                 } catch (e) {
-                    console.error("同步失敗:", e);
+                    console.error("寫入同步失敗:", e);
+                    // 寫入失敗沒關係，本地已有資料，下次讀取時或許能補救(如果GAS沒寫入成功)，
+                    // 或者依賴之後的同步機制。
+                    // 嚴格來說這裡應該要在下次 syncData 時檢查未同步的資料並重傳，
+                    // 但為了保持 GAS 腳本簡單，我們暫時依賴即時 POST。
                 }
             }
 
