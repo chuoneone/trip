@@ -174,6 +174,25 @@ const dayContainer = document.querySelector("#days");
 const filterButtons = document.querySelectorAll(".filter");
 const viewPanels = document.querySelectorAll(".view-panel");
 const viewLinks = document.querySelectorAll("[data-view-link]");
+const packingList = document.querySelector("#packingList");
+const packingStatus = document.querySelector("#packingStatus");
+const sharePackingButton = document.querySelector("#sharePacking");
+const packingStorageKey = "fukuokaPackingState";
+
+const packingGroups = [
+  {
+    title: "共用",
+    items: ["護照 4 本", "機票與住宿資料", "日幣現金", "信用卡", "Wi-Fi / eSIM 設定", "轉接頭", "行動電源", "雨傘或輕便雨衣"]
+  },
+  {
+    title: "每人",
+    items: ["夏季衣物", "薄外套", "睡衣", "盥洗用品", "常備藥", "防曬用品", "帽子或墨鏡", "舒適好走的鞋"]
+  },
+  {
+    title: "福岡行程",
+    items: ["購物摺疊袋", "環保袋", "濕紙巾", "小毛巾", "麵包超人博物館門票確認", "行李秤", "伴手禮空間"]
+  }
+];
 
 function showView(viewName, updateHash = true) {
   viewPanels.forEach((panel) => {
@@ -291,14 +310,108 @@ viewLinks.forEach((link) => {
 });
 
 const initialView = location.hash.replace("#", "");
-if (["overview", "itinerary", "transport", "booking"].includes(initialView)) {
+  if (["overview", "itinerary", "transport", "booking", "packing"].includes(initialView)) {
   showView(initialView, false);
 } else {
   showView("overview", false);
 }
 
+function getPackingState() {
+  try {
+    return JSON.parse(localStorage.getItem(packingStorageKey) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function setPackingState(state) {
+  localStorage.setItem(packingStorageKey, JSON.stringify(state));
+}
+
+function encodePackingState(state) {
+  return btoa(unescape(encodeURIComponent(JSON.stringify(state))));
+}
+
+function decodePackingState(value) {
+  return JSON.parse(decodeURIComponent(escape(atob(value))));
+}
+
+function importPackingFromUrl() {
+  const pack = new URLSearchParams(location.search).get("pack");
+  if (!pack) return;
+
+  try {
+    const state = decodePackingState(pack);
+    setPackingState(state);
+    if (packingStatus) packingStatus.textContent = "已從同步連結帶入行李清單。";
+  } catch {
+    if (packingStatus) packingStatus.textContent = "同步連結讀取失敗，已保留本機清單。";
+  }
+}
+
+function renderPackingList() {
+  if (!packingList) return;
+
+  const state = getPackingState();
+  packingList.innerHTML = packingGroups
+    .map(
+      (group) => `
+        <div class="packing-group">
+          <h4>${group.title}</h4>
+          ${group.items
+            .map((item) => {
+              const id = `${group.title}-${item}`;
+              return `
+                <label class="packing-item">
+                  <input type="checkbox" data-pack-id="${id}" ${state[id] ? "checked" : ""} />
+                  <span>${item}</span>
+                </label>
+              `;
+            })
+            .join("")}
+        </div>
+      `
+    )
+    .join("");
+}
+
+function copyPackingLink() {
+  const state = getPackingState();
+  const url = new URL(location.href);
+  url.hash = "packing";
+  url.searchParams.set("pack", encodePackingState(state));
+  url.searchParams.delete("date");
+
+  navigator.clipboard
+    ?.writeText(url.toString())
+    .then(() => {
+      if (packingStatus) packingStatus.textContent = "已複製同步連結，可傳到 LINE 給其他手機開啟。";
+    })
+    .catch(() => {
+      if (packingStatus) packingStatus.textContent = url.toString();
+    });
+}
+
+importPackingFromUrl();
+renderPackingList();
+
+packingList?.addEventListener("change", (event) => {
+  const input = event.target;
+  if (!(input instanceof HTMLInputElement) || !input.dataset.packId) return;
+
+  const state = getPackingState();
+  state[input.dataset.packId] = input.checked;
+  setPackingState(state);
+  if (packingStatus) packingStatus.textContent = "已儲存在這台手機。要換手機請複製同步連結。";
+});
+
+sharePackingButton?.addEventListener("click", copyPackingLink);
+
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js").catch(() => {});
+    navigator.serviceWorker
+      .register(`./sw.js?v=${Date.now()}`)
+      .then((registration) => registration.update())
+      .catch(() => {});
   });
 }

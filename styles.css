@@ -60,7 +60,8 @@ img {
 
 #itinerary.view-panel.active,
 #transport.view-panel.active,
-#booking.view-panel.active {
+#booking.view-panel.active,
+#packing.view-panel.active {
   display: block;
 }
 
@@ -120,6 +121,11 @@ img {
 
 .button.ghost {
   color: var(--teal-dark);
+}
+
+.button.compact {
+  min-height: 40px;
+  padding-inline: 14px;
 }
 
 .trip-card,
@@ -204,6 +210,12 @@ img {
   grid-template-columns: 1.1fr 0.9fr;
 }
 
+.packing-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+  gap: 18px;
+}
+
 .panel {
   padding: 24px;
 }
@@ -219,6 +231,77 @@ img {
 .booking-card p {
   margin: 0;
   color: var(--muted);
+}
+
+.packing-head {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 16px;
+}
+
+.packing-head h3 {
+  margin: 0;
+}
+
+.packing-head p,
+.sync-note {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.packing-list {
+  display: grid;
+  gap: 18px;
+}
+
+.packing-group {
+  display: grid;
+  gap: 10px;
+}
+
+.packing-group h4 {
+  margin: 0;
+  color: var(--teal-dark);
+  font-size: 14px;
+}
+
+.packing-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: start;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.packing-item input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--teal);
+  margin-top: 2px;
+}
+
+.packing-item span {
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.packing-item input:checked + span {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.compact-list {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: var(--muted);
+}
+
+.compact-list li + li {
+  margin-top: 8px;
 }
 
 .section-head {
@@ -465,7 +548,7 @@ img {
   left: 18px;
   z-index: 20;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 4px;
   width: min(420px, calc(100% - 36px));
   margin: 0 auto;
@@ -504,6 +587,7 @@ img {
   .grid-two,
   .transport-grid,
   .booking-grid,
+  .packing-layout,
   .notes,
   .day-card {
     grid-template-columns: 1fr;
