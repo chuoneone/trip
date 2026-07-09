@@ -178,6 +178,7 @@ const packingList = document.querySelector("#packingList");
 const packingStatus = document.querySelector("#packingStatus");
 const sharePackingButton = document.querySelector("#sharePacking");
 const packingStorageKey = "fukuokaPackingState";
+const PACKING_GAS_URL = "https://script.google.com/macros/s/AKfycbyQnK7V1mzFet86YJyRIoNMluM0u0_lYFAptz8olKYZFr2Xawc9CUc2VSHmjEXOanPjJg/exec";
 
 const packingGroups = [
   {
@@ -328,6 +329,10 @@ function setPackingState(state) {
   localStorage.setItem(packingStorageKey, JSON.stringify(state));
 }
 
+function hasPackingCloud() {
+  return PACKING_GAS_URL && PACKING_GAS_URL.startsWith("https://script.google.com/");
+}
+
 function encodePackingState(state) {
   return btoa(unescape(encodeURIComponent(JSON.stringify(state))));
 }
@@ -343,9 +348,83 @@ function importPackingFromUrl() {
   try {
     const state = decodePackingState(pack);
     setPackingState(state);
+    savePackingToCloud(state);
     if (packingStatus) packingStatus.textContent = "已從同步連結帶入行李清單。";
   } catch {
     if (packingStatus) packingStatus.textContent = "同步連結讀取失敗，已保留本機清單。";
+  }
+}
+
+function loadPackingJsonp() {
+  return new Promise((resolve, reject) => {
+    const callbackName = `__packingSync${Date.now()}${Math.floor(Math.random() * 1000)}`;
+    const script = document.createElement("script");
+    const separator = PACKING_GAS_URL.includes("?") ? "&" : "?";
+    const timeout = window.setTimeout(() => {
+      cleanup();
+      reject(new Error("Packing sync timed out"));
+    }, 10000);
+
+    function cleanup() {
+      window.clearTimeout(timeout);
+      delete window[callbackName];
+      script.remove();
+    }
+
+    window[callbackName] = (cloudData) => {
+      cleanup();
+      resolve(cloudData);
+    };
+
+    script.onerror = () => {
+      cleanup();
+      reject(new Error("Packing sync failed"));
+    };
+    script.src = `${PACKING_GAS_URL}${separator}callback=${encodeURIComponent(callbackName)}&t=${Date.now()}`;
+    document.head.appendChild(script);
+  });
+}
+
+async function loadPackingFromCloud() {
+  if (!hasPackingCloud()) {
+    if (packingStatus) packingStatus.textContent = "尚未設定雲端同步，目前使用本機清單。";
+    return;
+  }
+
+  try {
+    if (packingStatus) packingStatus.textContent = "雲端同步中...";
+    const cloudData = await loadPackingJsonp();
+    const cloudState = cloudData.items || cloudData;
+
+    if (cloudState && typeof cloudState === "object" && !Array.isArray(cloudState)) {
+      setPackingState(cloudState);
+      renderPackingList();
+      if (packingStatus) packingStatus.textContent = "已連結雲端清單。";
+    }
+  } catch {
+    if (packingStatus) packingStatus.textContent = "雲端讀取失敗，暫用本機清單。";
+  }
+}
+
+async function savePackingToCloud(state = getPackingState()) {
+  if (!hasPackingCloud()) {
+    return;
+  }
+
+  try {
+    if (packingStatus) packingStatus.textContent = "正在同步雲端...";
+    await fetch(PACKING_GAS_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        items: state,
+        updatedAt: new Date().toISOString()
+      })
+    });
+    if (packingStatus) packingStatus.textContent = "已同步雲端。";
+  } catch {
+    if (packingStatus) packingStatus.textContent = "雲端同步失敗，已保留本機清單。";
   }
 }
 
@@ -394,6 +473,7 @@ function copyPackingLink() {
 
 importPackingFromUrl();
 renderPackingList();
+loadPackingFromCloud();
 
 packingList?.addEventListener("change", (event) => {
   const input = event.target;
@@ -402,7 +482,8 @@ packingList?.addEventListener("change", (event) => {
   const state = getPackingState();
   state[input.dataset.packId] = input.checked;
   setPackingState(state);
-  if (packingStatus) packingStatus.textContent = "已儲存在這台手機。要換手機請複製同步連結。";
+  if (packingStatus) packingStatus.textContent = hasPackingCloud() ? "已儲存，準備同步雲端。" : "已儲存在這台手機。要換手機請複製同步連結。";
+  savePackingToCloud(state);
 });
 
 sharePackingButton?.addEventListener("click", copyPackingLink);
