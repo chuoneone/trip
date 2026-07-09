@@ -1,18 +1,14 @@
 {
-  "name": "2026 沖繩櫻花賞",
-  "short_name": "沖繩櫻花賞",
+  "name": "福岡 2026 旅程",
+  "short_name": "福岡旅程",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#ffffff",
+  "background_color": "#fbf8ef",
+  "theme_color": "#0f766e",
+  "lang": "zh-Hant",
   "icons": [
     {
-      "src": "images/japan.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "images/japan.png",
+      "src": "./assets/japan.png",
       "sizes": "512x512",
       "type": "image/png"
     }
