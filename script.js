@@ -1,7 +1,50 @@
 const mapLink = (query) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+const placeImage = (slug) => `./assets/place-images/${slug}.jpg`;
+
+function imageForPlace(title, query) {
+  const text = `${title} ${query}`;
+  const rules = [
+    [/桃園|Taoyuan/i, "taoyuan-airport"],
+    [/福岡機場|Fukuoka Airport/i, "fukuoka-airport"],
+    [/LuxurySweet|Hakozaki 812-0053/i, "./assets/hotel.jpg"],
+    [/MaxValu 箱崎|Hakozaki Miyamae/i, "maxvalu-hakozaki"],
+    [/Pain Stock/i, "pain-stock"],
+    [/麵包超人|Anpanman/i, "./assets/place-images/bread.jpg"],
+    [/櫛田|Kushida/i, "kushida"],
+    [/Full Full/i, "fullfull-hakata"],
+    [/Canal City|一蘭|Ichiran/i, "canal-city"],
+    [/西鐵福岡天神|Nishitetsu|Tenjin Station/i, "tenjin-station"],
+    [/太宰府|Dazaifu/i, "dazaifu"],
+    [/九州國立|Kyushu National/i, "kyushu-museum"],
+    [/博多站|Hakata Station/i, "hakata-station"],
+    [/大濠|Ohori/i, "ohori-park"],
+    [/福岡城|Fukuoka Castle/i, "fukuoka-castle"],
+    [/Mina Tenjin|GU Tenjin/i, "mina-tenjin"],
+    [/天神地下|Hakata Marui|UQ/i, "tenjin-underground"],
+    [/Shin Shin/i, "shinshin"],
+    [/筑前前原|Chikuzen/i, "chikuzen-maebaru"],
+    [/櫻井二見浦|Sakurai Futamigaura/i, "sakuraifutamigaura"],
+    [/糸島海景|Itoshima beach/i, "itoshima-cafe"],
+    [/MARK IS|Momochi|Fukuoka Tower/i, "mark-is"],
+    [/能古渡船|Meinohama/i, "meinohama-ferry"],
+    [/能古島|Nokonoshima/i, "nokonoshima"],
+    [/LaLaport/i, "lalaport"],
+    [/南藏院|Nanzoin/i, "nanzoin"],
+    [/Yodobashi/i, "yodobashi-hakata"],
+    [/Sunny|supermarket/i, "sunny-supermarket"],
+    [/KITTE/i, "kitte-hakata"]
+  ];
+  const match = rules.find(([pattern]) => pattern.test(text));
+  if (!match) {
+    return placeImage("hakata-station");
+  }
+
+  return match[1].startsWith(".") ? match[1] : placeImage(match[1]);
+}
 
 const days = [
   {
+    isoDate: "2026-07-21",
     date: "7/21",
     weekday: "星期二",
     tag: "arrival",
@@ -16,6 +59,7 @@ const days = [
     ]
   },
   {
+    isoDate: "2026-07-22",
     date: "7/22",
     weekday: "星期三",
     tag: "city",
@@ -32,6 +76,7 @@ const days = [
     ]
   },
   {
+    isoDate: "2026-07-23",
     date: "7/23",
     weekday: "星期四",
     tag: "daytrip",
@@ -46,6 +91,7 @@ const days = [
     ]
   },
   {
+    isoDate: "2026-07-24",
     date: "7/24",
     weekday: "星期五",
     tag: "city",
@@ -61,6 +107,7 @@ const days = [
     ]
   },
   {
+    isoDate: "2026-07-25",
     date: "7/25",
     weekday: "星期六",
     tag: "daytrip",
@@ -75,6 +122,7 @@ const days = [
     ]
   },
   {
+    isoDate: "2026-07-26",
     date: "7/26",
     weekday: "星期日",
     tag: "relax",
@@ -89,6 +137,7 @@ const days = [
     ]
   },
   {
+    isoDate: "2026-07-27",
     date: "7/27",
     weekday: "星期一",
     tag: "daytrip",
@@ -104,6 +153,7 @@ const days = [
     ]
   },
   {
+    isoDate: "2026-07-28",
     date: "7/28",
     weekday: "星期二",
     tag: "departure",
@@ -139,6 +189,42 @@ function showView(viewName, updateHash = true) {
   }
 
   window.scrollTo({ top: 0, behavior: "auto" });
+
+  if (viewName === "itinerary") {
+    requestAnimationFrame(scrollToTripDay);
+  }
+}
+
+function getLocalDateKey(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function getActiveDateKey() {
+  const dateParam = new URLSearchParams(location.search).get("date");
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateParam || "")) {
+    return dateParam;
+  }
+
+  return getLocalDateKey();
+}
+
+function scrollToTripDay() {
+  const todayKey = getActiveDateKey();
+  const dayIndex = days.findIndex((day) => day.isoDate === todayKey);
+
+  if (dayIndex === -1) {
+    return;
+  }
+
+  const target = dayContainer.querySelector(`[data-date="${todayKey}"]`);
+  if (!target) {
+    return;
+  }
+
+  target.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function renderDays(filter = "all") {
@@ -147,7 +233,7 @@ function renderDays(filter = "all") {
   dayContainer.innerHTML = visibleDays
     .map(
       (day) => `
-        <article class="day-card">
+        <article class="day-card" data-date="${day.isoDate}">
           <div class="day-meta">
             <div>
               <div class="date">${day.date}</div>
@@ -166,6 +252,7 @@ function renderDays(filter = "all") {
                   ([time, title, detail, query, transfer]) => `
                     <li>
                       <a class="map-item" href="${mapLink(query)}" target="_blank" rel="noreferrer">
+                        <img class="place-thumb" src="${imageForPlace(title, query)}" alt="${title} 預覽圖" loading="lazy" />
                         <span class="time">${time}</span>
                         <span class="item">
                           <strong>${title}</strong>
