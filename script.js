@@ -1,4 +1,7 @@
-const mapLink = (query) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+const mapLink = (query) =>
+  /^https?:\/\//i.test(query)
+    ? query
+    : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 const placeImage = (slug) => `./assets/place-images/${slug}.jpg`;
 
 function imageForPlace(title, query) {
@@ -32,7 +35,7 @@ function imageForPlace(title, query) {
     [/南藏院|Nanzoin/i, "nanzoin"],
     [/Yodobashi/i, "yodobashi-hakata"],
     [/Sunny|supermarket/i, "sunny-supermarket"],
-    [/KITTE/i, "kitte-hakata"]
+    [/KITTE/i, "hakata-station"]
   ];
   const match = rules.find(([pattern]) => pattern.test(text));
   if (!match) {
@@ -101,9 +104,9 @@ const days = [
     items: [
       ["08:30", "大濠公園晨走", "早上湖邊比較涼，適合慢步調。", "Ohori Park Fukuoka", "住宿 → 大濠公園：地鐵約 25-35 分鐘，計程車約 20-30 分鐘。"],
       ["10:30", "福岡城跡與舞鶴公園", "短距離散步，視體力增減。", "Fukuoka Castle Ruins", "大濠公園 → 福岡城跡：步行約 10-15 分鐘。"],
-      ["13:30", "Mina Tenjin GU", "安排你們愛逛的 GU，天神店位置順。", "GU Tenjin Mina Tenjin Fukuoka", "福岡城跡 → Mina Tenjin：地鐵/公車約 15-25 分鐘，計程車約 10-15 分鐘。"],
+      ["13:30", "Mina Tenjin GU", "安排你們愛逛的 GU，天神店位置順。", "https://www.google.com/maps/place/GU+Mina+Tenjin/@33.5929786,130.3957987,17z/data=!3m2!4b1!5s0x3541918e7b649f07:0x3316f504ccb6ecd0!4m6!3m5!1s0x354191e961936f35:0x5303711a154af99e!8m2!3d33.5929742!4d130.3983736!16s%2Fg%2F11st7clcrm?authuser=0&entry=ttu&g_ep=EgoyMDI2MDcwOC4wIKXMDSoASAFQAw%3D%3D", "福岡城跡 → Mina Tenjin：地鐵/公車約 15-25 分鐘，計程車約 10-15 分鐘。"],
       ["15:30", "天神地下街與 UQ 備案", "逛街避暑，若要找 UQ 可改去博多丸井 au Style。", "au Style HAKATA UQ mobile Hakata Marui", "Mina Tenjin → 天神地下街：步行約 5-10 分鐘；若去博多丸井，地鐵約 10-15 分鐘。"],
-      ["18:00", "Hakata Ramen Shin Shin 天神本店", "第二間拉麵：熱門博多豚骨，建議避開正餐尖峰。", "Hakata Ramen Shin Shin Tenjin Honten", "天神地下街 → Shin Shin 天神本店：步行約 8-12 分鐘。"]
+      ["18:00", "Shin-Shin 博多拉麵 KITTE博多店", "在 KITTE 博多享用人氣博多豚骨拉麵；晚餐時段可能需要排隊。", "Shin-Shin Hakata Ramen KITTE Hakata", "博多丸井／UQ 店 → KITTE 博多店：步行約 3–8 分鐘。"]
     ]
   },
   {
@@ -163,7 +166,7 @@ const days = [
     items: [
       ["06:00-11:00", "LuxurySweet East71 退房", "依住宿規定完成退房，行李可寄博多站或直接放機場。", "1 Chome-41-41 Hakozaki Higashi Ward Fukuoka 812-0053 Japan", "住宿內整理：預留 30-60 分鐘退房與叫車。"],
       ["11:30", "博多站午餐與最後採買", "選擇車站周邊，避免離機場太遠。", "Hakata Station", "住宿 → 博多站：地鐵/計程車約 15-25 分鐘。"],
-      ["14:00", "KITTE 博多 / 博多丸井 UQ 備案", "若還有通訊或採買需求，最後集中在博多站處理。", "au Style HAKATA UQ mobile Hakata Marui", "博多站 → KITTE/博多丸井：站體連通，步行約 3-8 分鐘。"],
+      ["14:00", "購物中心 KITTE 博多", "回程前到 KITTE 博多逛街、採買；若有通訊需求可順道前往博多丸井 au Style。", "https://www.google.com/maps/place/購物中心KITTE/@33.5888023,130.4168701,17z/data=!4m2!3m1!1s0x354191b86e6aaaab:0x887b4281aae84f78?authuser=0&entry=ttu&g_ep=EgoyMDI2MDcwOC4wIKXMDSoASAFQAw%3D%3D", "博多站 → KITTE 博多：站體連通，步行約 3–8 分鐘。"],
       ["16:30", "前往福岡機場", "國際線建議保守抓 2 小時以上報到時間。", "Fukuoka Airport International Terminal", "博多站 → 福岡機場國際線：地鐵+接駁約 20-35 分鐘，計程車約 15-25 分鐘。"],
       ["19:10", "CI129 福岡起飛", "20:35 抵達台北桃園第 2 航廈。", "Fukuoka Airport International Terminal", "機場報到/安檢/登機：建議預留 2 小時以上。"]
     ]
@@ -311,10 +314,10 @@ viewLinks.forEach((link) => {
 });
 
 const initialView = location.hash.replace("#", "");
-  if (["overview", "itinerary", "transport", "booking", "packing"].includes(initialView)) {
+  if (["itinerary", "transport", "packing"].includes(initialView)) {
   showView(initialView, false);
 } else {
-  showView("overview", false);
+  showView("itinerary", false);
 }
 
 function getPackingState() {
