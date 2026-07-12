@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>福岡慢活之旅 - 行程規劃</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #F5F2EB;
+            color: #2C2520;
+            -webkit-tap-highlight-color: transparent;
+            overflow: hidden; /* Prevent body scroll on mobile for better app experience */
+        }
+        .serif-font {
+            font-family: 'Playfair Display', 'Noto Sans TC', serif;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .premium-shadow {
+            box-shadow: 0 4px 20px -2px rgba(44, 37, 32, 0.05);
+        }
+        /* Smooth height transition for collapsible card */
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, opacity 0.2s ease-out;
+            opacity: 0;
+        }
+        .collapsible-content.expanded {
+            max-height: 400px;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="flex justify-center min-h-screen">
+
+    <!-- Mobile-First Container -->
+    <div class="w-full max-w-md bg-[#F5F2EB] flex flex-col justify-between relative shadow-2xl h-screen border-x border-[#EBE5DC]">
+        
+        <!-- Header Section -->
+        <header class="pt-5 px-5 pb-2">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <!-- Home / Reset Button -->
+                    <button class="w-10 h-10 flex items-center justify-center rounded-full bg-white bg-opacity-60 text-[#2C2520] hover:bg-opacity-80 transition" onclick="resetToToday()">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                        </svg>
+                    </button>
+                    <div>
+                        <h1 class="text-lg font-bold tracking-wider flex items-baseline">
+                            福岡行 <span class="text-[10px] text-[#8D725C] ml-1.5 font-light tracking-widest uppercase">FUKUOKA</span>
+                        </h1>
+                    </div>
+                </div>
+                <!-- Countdown Badge -->
+                <div class="text-xs bg-white bg-opacity-70 border border-[#E1DCD3] text-[#2C2520] px-3 py-1 rounded-full font-medium shadow-sm">
+                    距出發 <span id="countdown-days" class="text-amber-700 font-bold">--</span> 天
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content (Scrollable & Swipeable) -->
+        <main id="swipe-container" class="flex-grow px-5 pb-28 overflow-y-auto space-y-4 flex flex-col justify-start">
+            
+            <!-- COLLAPSIBLE ACCOMMODATION BAR (Only shows full details when clicked) -->
+            <div class="bg-white rounded-[20px] premium-shadow border border-[#EBE5DC]">
+                <!-- Clickable Bar Head -->
+                <button onclick="toggleHotelCollapse()" class="w-full px-4 py-3.5 flex items-center justify-between text-left focus:outline-none">
+                    <div class="flex items-center space-x-2.5">
+                        <span class="p-1.5 bg-[#FAF8F5] rounded-lg border border-[#F2EDE4]">
+                            🏨
+                        </span>
+                        <div>
+                            <span class="block text-xs text-[#8D725C] font-semibold tracking-wider">住宿酒店</span>
+                            <span class="text-sm font-bold text-[#2C2520]">LuxurySweet East71</span>
+                        </div>
+                    </div>
+                    <!-- Indicator Arrow -->
+                    <svg id="hotel-arrow" class="w-4 h-4 text-[#8D725C] transform transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+
+                <!-- Hidden Content -->
+                <div id="hotel-content" class="collapsible-content border-t border-[#F5F2EB]">
+                    <div class="p-4 space-y-3.5 text-xs text-[#5C534C] bg-[#FCFAF7]">
+                        <p class="leading-relaxed border-l-2 border-[#8D725C] pl-2.5">
+                            位於福岡東區箱崎，提供舒適的小豪宅生活感。離最近的「箱崎站」步行僅需約幾分鐘。
+                        </p>
+                        <!-- Check In/Out Details -->
+                        <div class="grid grid-cols-2 gap-2 text-[11px] bg-[#FAF8F5] p-2.5 rounded-xl border border-[#EFECE6]">
+                            <div>
+                                <span class="block text-[9px] text-[#8D725C] font-medium mb-0.5">入住 Check-in</span>
+                                <strong class="text-[#2C2520]">7/21 15:00 - 23:00</strong>
+                            </div>
+                            <div class="border-l border-[#EBE5DC] pl-2.5">
+                                <span class="block text-[9px] text-[#8D725C] font-medium mb-0.5">退房 Check-out</span>
+                                <strong class="text-[#2C2520]">7/28 06:00 - 11:00</strong>
+                            </div>
+                        </div>
+                        <!-- Actions -->
+                        <div class="flex space-x-2">
+                            <button onclick="toggleMapModal()" class="flex-1 py-2 bg-white border border-[#D5CECE] hover:bg-[#FAF9F6] rounded-lg text-[11px] font-medium flex items-center justify-center space-x-1 transition text-[#5C534C]">
+                                <span>完整地址</span>
+                            </button>
+                            <a href="https://www.google.com/maps/search/?api=1&query=LuxurySweet+East71+Fukuoka" target="_blank" class="flex-1 py-2 bg-white border border-[#D5CECE] hover:bg-[#FAF9F6] rounded-lg text-[11px] font-medium flex items-center justify-center space-x-1 transition text-[#5C534C]">
+                                <span>導航路線</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DAILY ITINERARY CARD (Takes main focus) -->
+            <div class="space-y-3 flex-grow flex flex-col justify-start">
+                <div class="flex justify-between items-center px-1">
+                    <div>
+                        <h3 class="text-sm font-bold text-[#2C2520] tracking-wide">當日計劃</h3>
+                    </div>
+                    <button onclick="openAddEventModal()" class="text-xs text-amber-700 hover:text-amber-800 font-medium flex items-center space-x-1 py-1 px-2.5 bg-white rounded-full border border-[#E2DDD5]">
+                        <span>＋ 新增行程</span>
+                    </button>
+                </div>
+
+                <!-- MAIN DAY CARD -->
+                <div id="day-card" class="bg-white rounded-[24px] p-5 premium-shadow border border-[#EBE5DC] flex-grow flex flex-col justify-between min-h-[340px]">
+                    
+                    <div>
+                        <!-- Card Header -->
+                        <div class="flex justify-between items-start mb-4 pb-3 border-b border-[#F5F2EB]">
+                            <div>
+                                <div class="flex items-center space-x-2 text-xs font-semibold text-[#8D725C]">
+                                    <span id="card-day-num" class="uppercase tracking-wider">DAY 1</span>
+                                    <span id="card-date-label">7/21 週二</span>
+                                </div>
+                                <h4 id="card-day-title" class="text-base font-bold text-[#2C2520] mt-0.5">抵達 · 福岡初見</h4>
+                            </div>
+                            <div class="flex flex-col items-end">
+                                <span id="card-area-tag" class="text-[10px] bg-[#8D725C] text-white px-2.5 py-0.5 rounded-full font-light">博多</span>
+                                <div class="flex items-center space-x-1 mt-1 text-xs text-[#5C534C]">
+                                    <svg class="w-3 h-3 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464-4.95l.707.707a1 1 0 01-1.414 1.414l-.707-.707a1 1 0 011.414-1.414zm2.122 12.02a1 1 0 010 1.415l-.707.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zm-12.02-2.121a1 1 0 011.415 0l.707.707a1 1 0 11-1.414 1.414l-.707-.707a1 1 0 010-1.414zm-.707-9.9a1 1 0 011.414-1.414l.707.707a1 1 0 01-1.414 1.414l-.707-.707z" /></svg>
+                                    <span id="card-weather" class="text-[11px]">31°/25°</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Timeline List Container -->
+                        <div id="timeline-list" class="space-y-4.5 relative pl-4 border-l border-[#F0EBE1] ml-1.5 py-1">
+                            <!-- Dynamic items generated here -->
+                        </div>
+                    </div>
+
+                    <!-- Day Footnote -->
+                    <div id="day-footnote" class="mt-5 pt-3 border-t border-[#F5F2EB] text-[11px] text-[#8D725C] italic">
+                        「第一天不硬排，放完行李、散步吃飽後早睡。」
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- BOTTOM DATE TABS (Compact: Day Numbers and Weekday only) -->
+        <nav class="absolute bottom-0 left-0 right-0 bg-[#251F1B] text-[#DED9D2] border-t border-[#1C1714] px-4 pt-2.5 pb-5 rounded-t-[24px] shadow-2xl z-20">
+            <div id="date-tabs-container" class="flex space-x-2 overflow-x-auto no-scrollbar py-1 justify-between">
+                <!-- Date tabs will be rendered here -->
+            </div>
+        </nav>
+
+        <!-- ADD/EDIT EVENT MODAL -->
+        <div id="edit-modal" class="hidden fixed inset-0 bg-[#2C2520] bg-opacity-40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
+            <div class="bg-white rounded-[24px] w-full max-w-sm p-6 shadow-xl border border-[#EBE5DC]">
+                <h4 id="modal-mode-title" class="text-base font-bold text-[#2C2520] mb-4">編輯行程</h4>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-[#8D725C] mb-1">時間</label>
+                        <input type="text" id="modal-input-time" placeholder="例如：15:00" class="w-full px-3 py-2 bg-[#F9F7F3] border border-[#E2DDD5] rounded-xl text-sm focus:outline-none focus:border-amber-700">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-[#8D725C] mb-1">行程內容</label>
+                        <input type="text" id="modal-input-title" placeholder="例如：飯店辦理入住" class="w-full px-3 py-2 bg-[#F9F7F3] border border-[#E2DDD5] rounded-xl text-sm focus:outline-none focus:border-amber-700">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-[#8D725C] mb-1">補充備註 (選填)</label>
+                        <input type="text" id="modal-input-note" placeholder="例如：注意攜帶護照" class="w-full px-3 py-2 bg-[#F9F7F3] border border-[#E2DDD5] rounded-xl text-sm focus:outline-none focus:border-amber-700">
+                    </div>
+                </div>
+
+                <div class="flex space-x-2 mt-6">
+                    <button onclick="closeEditModal()" class="flex-1 py-2.5 border border-[#E2DDD5] rounded-xl text-xs font-medium text-[#5C534C] hover:bg-[#F9F7F3] transition">取消</button>
+                    <button id="modal-delete-btn" onclick="deleteCurrentEvent()" class="flex-1 py-2.5 border border-red-200 text-red-600 rounded-xl text-xs font-medium hover:bg-red-50 transition">刪除</button>
+                    <button onclick="saveEvent()" class="flex-1 py-2.5 bg-[#8D725C] hover:bg-[#735D4B] text-white rounded-xl text-xs font-medium transition shadow-sm">儲存</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADDRESS DETAILS MODAL -->
+        <div id="map-modal" class="hidden fixed inset-0 bg-[#2C2520] bg-opacity-40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
+            <div class="bg-white rounded-[24px] w-full max-w-sm p-6 shadow-xl border border-[#EBE5DC]">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="text-base font-bold text-[#2C2520]">飯店地址詳情</h4>
+                    <button onclick="toggleMapModal()" class="text-[#8D725C] hover:text-[#2C2520]">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="bg-[#FAF8F5] p-4 rounded-2xl border border-[#EFECE6] space-y-3">
+                        <div>
+                            <span class="block text-[10px] text-[#8D725C] font-semibold tracking-wider">英文地址 ADDRESS EN</span>
+                            <span class="text-xs text-[#2C2520] select-all block mt-0.5">1 Chome-41-41 Hakozaki, Higashi Ward, Fukuoka, 812-0053 Japan</span>
+                        </div>
+                        <div class="border-t border-[#EBE5DC] pt-3">
+                            <span class="block text-[10px] text-[#8D725C] font-semibold tracking-wider">日文地址 ADDRESS JA</span>
+                            <span class="text-xs text-[#2C2520] select-all block mt-0.5">〒812-0053 福岡県福岡市東区箱崎１丁目４１−４１</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex space-x-2">
+                    <button onclick="copyToClipboard('1 Chome-41-41 Hakozaki, Higashi Ward, Fukuoka')" class="flex-1 py-2.5 border border-[#E2DDD5] rounded-xl text-xs font-medium text-[#5C534C] hover:bg-[#F9F7F3] transition">複製英文</button>
+                    <button onclick="toggleMapModal()" class="flex-1 py-2.5 bg-[#8D725C] hover:bg-[#735D4B] text-white rounded-xl text-xs font-medium transition shadow-sm">關閉</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Script Section -->
+    <script>
+        // TRIPS DATA
+        const tripData = {
+            "7/21": {
+                dateLabel: "7/21 週二",
+                title: "出發 · 福岡初見",
+                area: "博多",
+                weather: "晴朗 31° / 25°",
+                footnote: "第一天安頓好住宿後不急著跑行程，在箱崎周邊散步享用暖心晚餐。",
+                events: [
+                    { id: 11, time: "12:40", title: "抵達桃園機場 T2 報到", note: "CI128 起飛前 2 小時完成託運與通關" },
+                    { id: 12, time: "14:40", title: "CI128 起飛 ✈️", note: "台北桃園 T2 → 福岡 T I (飛行 2h 25m)" },
+                    { id: 13, time: "18:05", title: "抵達福岡機場 T I", note: "辦理入境並提取行李" },
+                    { id: 14, time: "19:00", title: "前往飯店 LuxurySweet East71", note: "可搭乘地鐵至箱崎站，或直接搭計程車" },
+                    { id: 15, time: "19:40", title: "入住 LuxurySweet East71", note: "自助入房，稍微整理行李" },
+                    { id: 16, time: "20:30", title: "箱崎周邊日常晚餐", note: "在住所周圍吃點博多地道美食" }
+                ]
+            },
+            "7/22": {
+                dateLabel: "7/22 週三",
+                title: "繁華博多與天神探索",
+                area: "天神",
+                weather: "晴天 32° / 24°",
+                footnote: "午後留白，體驗福岡最繁華的鬧區步調。",
+                events: [
+                    { id: 1, time: "09:30", title: "大濠公園散步 ＆ 晨間咖啡", note: "感受市區綠洲氛圍" },
+                    { id: 2, time: "12:00", title: "天神地下街與博多運河城午餐", note: "購物、品嚐在地美食" },
+                    { id: 3, time: "15:00", title: "午後自由散步時間", note: "累了就回公寓稍微休息" },
+                    { id: 4, time: "18:00", title: "博多車站頂樓燕之杜廣場看夕陽", note: "晚餐可在車站美食街享用牛腸鍋" }
+                ]
+            },
+            "7/23": {
+                dateLabel: "7/23 週四",
+                title: "太宰府古風與柳川遊船",
+                area: "太宰府",
+                weather: "多雲 29° / 23°",
+                footnote: "享受悠閒地撐篙遊船，和學問之神的洗禮。",
+                events: [
+                    { id: 1, time: "08:30", title: "出發太宰府天滿宮", note: "參道品嚐梅枝餅" },
+                    { id: 2, time: "12:30", title: "柳川享用鰻魚飯 ＆ 乘船體驗", note: "百年經典蒸鰻魚" },
+                    { id: 3, time: "17:00", title: "返回箱崎飯店稍微整頓", note: "洗個澡消暑" }
+                ]
+            },
+            "7/24": {
+                dateLabel: "7/24 週五",
+                title: "海之中道與海洋世界",
+                area: "東區",
+                weather: "晴天 30° / 25°",
+                footnote: "靠海的沁涼行程，看海豚表演放空。",
+                events: [
+                    { id: 1, time: "09:00", title: "搭乘電車至海之中道海濱公園", note: "租自行車在園區兜風" },
+                    { id: 2, time: "13:30", title: "海洋世界水族館參觀", note: "全日本最大全景水槽" },
+                    { id: 3, time: "18:00", title: "箱崎周邊居酒屋晚餐", note: "體驗當地生活氣息" }
+                ]
+            },
+            "7/25": {
+                dateLabel: "7/25 週六",
+                title: "糸島海景與日落之旅",
+                area: "糸島",
+                weather: "多雲轉晴 28° / 22°",
+                footnote: "糸島夕陽是絕景，放慢步調盡情拍照吧。",
+                events: [
+                    { id: 1, time: "10:00", title: "前往糸島海邊散策", note: "尋找櫻井二見浦夫妻岩" },
+                    { id: 2, time: "12:30", title: "海景咖啡廳享受悠閒午餐", note: "絕美海景搭配美味簡餐" },
+                    { id: 3, time: "18:00", title: "欣賞黃金落日", note: "感受滿滿療癒感" }
+                ]
+            },
+            "7/26": {
+                dateLabel: "7/26 週日",
+                title: "百道濱海灘與福岡塔",
+                area: "百道濱",
+                weather: "晴 31° / 24°",
+                footnote: "夕陽染紅人工沙灘，登高俯瞰城市海濱。",
+                events: [
+                    { id: 1, time: "14:00", title: "福岡城跡與舞鶴公園散步", note: "了解福岡歷史足跡" },
+                    { id: 2, time: "16:30", title: "海之百道海濱公園", note: "感受充滿異國風情的沙灘廣場" },
+                    { id: 3, time: "18:30", title: "登上福岡塔俯瞰夜景", note: "超浪漫的點燈秀" }
+                ]
+            },
+            "7/27": {
+                dateLabel: "7/27 週一",
+                title: "回顧日常與最後採購",
+                area: "天神",
+                weather: "晴 32° / 25°",
+                footnote: "最後採買與準備打包，重溫最愛的美味。",
+                events: [
+                    { id: 1, time: "10:00", title: "藥妝店、伴手禮最後大採購", note: "確認行李剩餘重量" },
+                    { id: 2, time: "14:00", title: "漫步博多老街川端通商店街", note: "吃一碗紅豆年糕湯" },
+                    { id: 3, time: "19:00", title: "本次旅行最後大餐", note: "好好犒賞自己的一週" }
+                ]
+            },
+            "7/28": {
+                dateLabel: "7/28 週二",
+                title: "收拾回憶 · 返台歸途",
+                area: "機場",
+                weather: "晴朗 31° / 24°",
+                footnote: "最後一天的白天空檔，可以再去市區補齊沒買足的紀念品。",
+                events: [
+                    { id: 81, time: "10:30", title: "辦理退房辦手續 Check-out", note: "最晚退房時間為 11:00 前" },
+                    { id: 82, time: "11:30", title: "寄放行李於博多車站，最後半日遊", note: "博多車站周邊午餐及補採購" },
+                    { id: 83, time: "17:10", title: "抵達福岡機場 T I 報到", note: "CI129 起飛前 2 小時完成報到與託運" },
+                    { id: 84, time: "19:10", title: "CI129 起飛 ✈️", note: "福岡 T I → 台北桃園 T2" },
+                    { id: 85, time: "20:35", title: "返抵桃園國際機場", note: "平安到家，結束美好的福岡放鬆之旅！" }
+                ]
+            }
+        };
+
+        // Current Active Day State
+        let currentDayKey = "7/21";
+        let editingEventId = null;
+
+        // Variables for touch swipe
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        window.onload = function() {
+            calculateCountdown();
+            determineTodayDay(); // Auto routing to today
+            renderDateTabs();
+            renderDayCard(currentDayKey);
+            setupSwipeGestures();
+        };
+
+        // Determine if current real date falls within travel dates
+        function determineTodayDay() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = today.getMonth() + 1; // 1-12
+            const date = today.getDate();
+
+            // Check if current date is within the trip duration (2026/7/21 - 2026/7/28)
+            if (year === 2026 && month === 7 && date >= 21 && date <= 28) {
+                currentDayKey = `7/${date}`;
+            } else {
+                currentDayKey = "7/21"; // Otherwise default to Day 1
+            }
+        }
+
+        // Dynamically compute the countdown
+        function calculateCountdown() {
+            const today = new Date();
+            const tripStartDate = new Date("2026/07/21T14:40:00");
+            
+            const diffTime = tripStartDate - today;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            const countdownEl = document.getElementById("countdown-days");
+            if (diffDays > 0) {
+                countdownEl.innerText = diffDays;
+            } else if (diffDays === 0) {
+                countdownEl.innerText = "今";
+            } else {
+                countdownEl.innerText = "已";
+            }
+        }
+
+        // Toggle Hotel Details Smooth Dropdown
+        function toggleHotelCollapse() {
+            const hotelContent = document.getElementById("hotel-content");
+            const hotelArrow = document.getElementById("hotel-arrow");
+            
+            if (hotelContent.classList.contains("expanded")) {
+                hotelContent.classList.remove("expanded");
+                hotelArrow.style.transform = "rotate(0deg)";
+            } else {
+                hotelContent.classList.add("expanded");
+                hotelArrow.style.transform = "rotate(180deg)";
+            }
+        }
+
+        // Setup Swipe Touch Gestures
+        function setupSwipeGestures() {
+            const swipeContainer = document.getElementById("swipe-container");
+            
+            swipeContainer.addEventListener("touchstart", e => {
+                touchStartX = e.changedTouches[0].clientX;
+            }, { passive: true });
+
+            swipeContainer.addEventListener("touchend", e => {
+                touchEndX = e.changedTouches[0].clientX;
+                handleSwipeGesture();
+            }, { passive: true });
+        }
+
+        function handleSwipeGesture() {
+            const threshold = 60; // Min pixels to trigger swipe
+            const keys = Object.keys(tripData);
+            let currentIndex = keys.indexOf(currentDayKey);
+
+            if (touchStartX - touchEndX > threshold) {
+                // Swiped Left -> Load Next Day
+                if (currentIndex < keys.length - 1) {
+                    selectDay(keys[currentIndex + 1]);
+                }
+            } else if (touchEndX - touchStartX > threshold) {
+                // Swiped Right -> Load Previous Day
+                if (currentIndex > 0) {
+                    selectDay(keys[currentIndex - 1]);
+                }
+            }
+        }
+
+        // Render Date Selection Tabs (NO MONTH PREFIX, ONLY DAY NUMBER & WEEKDAY)
+        function renderDateTabs() {
+            const container = document.getElementById("date-tabs-container");
+            container.innerHTML = "";
+
+            const weekdayShortMap = {
+                "7/21": "二",
+                "7/22": "三",
+                "7/23": "四",
+                "7/24": "五",
+                "7/25": "六",
+                "7/26": "日",
+                "7/27": "一",
+                "7/28": "二"
+            };
+
+            Object.keys(tripData).forEach(key => {
+                const parts = key.split('/');
+                const dateNum = parts[1]; // Only the day number
+                const isActive = key === currentDayKey;
+                const weekday = weekdayShortMap[key] || "";
+
+                const tab = document.createElement("button");
+                tab.onclick = () => selectDay(key);
+                
+                tab.className = `flex-1 h-[48px] rounded-xl flex flex-col items-center justify-center text-xs transition-all duration-200 border ${
+                    isActive 
+                    ? "bg-[#8D725C] text-white border-[#8D725C] font-bold shadow-md scale-105" 
+                    : "bg-[#332C28] text-[#9E968F] border-[#3D3530] hover:bg-[#3D3530]"
+                }`;
+                
+                tab.innerHTML = `
+                    <span class="text-[9px] tracking-widest opacity-60 font-light">${weekday}</span>
+                    <span class="text-sm font-semibold -mt-0.5">${dateNum}</span>
+                `;
+                
+                container.appendChild(tab);
+            });
+        }
+
+        function selectDay(key) {
+            currentDayKey = key;
+            renderDateTabs();
+            renderDayCard(key);
+        }
+
+        function resetToToday() {
+            determineTodayDay();
+            renderDateTabs();
+            renderDayCard(currentDayKey);
+            showToast("已跳轉至今日行程");
+        }
+
+        // Render Specific Day Data Into Main Itinerary Card
+        function renderDayCard(key) {
+            const data = tripData[key];
+            if (!data) return;
+
+            const index = Object.keys(tripData).indexOf(key) + 1;
+            document.getElementById("card-day-num").innerText = `DAY ${index}`;
+            document.getElementById("card-date-label").innerText = data.dateLabel;
+            document.getElementById("card-day-title").innerText = data.title;
+            document.getElementById("card-area-tag").innerText = data.area;
+            document.getElementById("card-weather").innerText = data.weather;
+            document.getElementById("day-footnote").innerText = `「 ${data.footnote} 」`;
+
+            const timelineList = document.getElementById("timeline-list");
+            timelineList.innerHTML = "";
+
+            if (data.events.length === 0) {
+                timelineList.innerHTML = `
+                    <div class="text-center py-8 text-xs text-[#8D725C] italic">
+                        今天暫無安排行程。點擊右上方「＋ 新增行程」增添計劃！
+                    </div>`;
+                return;
+            }
+
+            const sortedEvents = [...data.events].sort((a, b) => a.time.localeCompare(b.time));
+
+            sortedEvents.forEach(evt => {
+                const itemDiv = document.createElement("div");
+                itemDiv.className = "group relative pb-1 cursor-pointer select-none";
+                itemDiv.onclick = () => openEditEventModal(evt.id);
+
+                itemDiv.innerHTML = `
+                    <!-- Left Timeline Dot Indicator -->
+                    <div class="absolute -left-[20.5px] top-1.5 w-2 h-2 bg-[#8D725C] group-hover:bg-[#C2AA96] rounded-full ring-4 ring-white transition"></div>
+                    
+                    <!-- Content Details -->
+                    <div class="flex items-start justify-between">
+                        <div class="space-y-0.5">
+                            <span class="text-[11px] font-bold font-mono tracking-wider text-[#2C2520] bg-[#F2EDE4] px-1.5 py-0.5 rounded-md">${evt.time}</span>
+                            <h5 class="text-xs font-semibold text-[#2C2520] pt-1 group-hover:text-[#8D725C] transition">${evt.title}</h5>
+                            ${evt.note ? `<p class="text-[10px] text-[#8D725C]">${evt.note}</p>` : ''}
+                        </div>
+                        
+                        <div class="text-[#8D725C] opacity-0 group-hover:opacity-100 transition pr-2">
+                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+                        </div>
+                    </div>
+                `;
+                timelineList.appendChild(itemDiv);
+            });
+        }
+
+        // Open Modal to edit existing event or add new
+        function openEditEventModal(eventId = null) {
+            editingEventId = eventId;
+            const modal = document.getElementById("edit-modal");
+            const deleteBtn = document.getElementById("modal-delete-btn");
+            const modalTitle = document.getElementById("modal-mode-title");
+
+            if (eventId) {
+                modalTitle.innerText = "修改或調整行程";
+                deleteBtn.style.display = "block";
+                const evt = tripData[currentDayKey].events.find(e => e.id === eventId);
+                if (evt) {
+                    document.getElementById("modal-input-time").value = evt.time;
+                    document.getElementById("modal-input-title").value = evt.title;
+                    document.getElementById("modal-input-note").value = evt.note || "";
+                }
+            } else {
+                modalTitle.innerText = "為今日新增一項行程";
+                deleteBtn.style.display = "none";
+                document.getElementById("modal-input-time").value = "10:00";
+                document.getElementById("modal-input-title").value = "";
+                document.getElementById("modal-input-note").value = "";
+            }
+
+            modal.classList.remove("hidden");
+        }
+
+        function openAddEventModal() {
+            openEditEventModal(null);
+        }
+
+        function closeEditModal() {
+            document.getElementById("edit-modal").classList.add("hidden");
+            editingEventId = null;
+        }
+
+        // Save event
+        function saveEvent() {
+            const timeVal = document.getElementById("modal-input-time").value.trim() || "12:00";
+            const titleVal = document.getElementById("modal-input-title").value.trim();
+            const noteVal = document.getElementById("modal-input-note").value.trim();
+
+            if (!titleVal) {
+                showToast("請填寫行程內容唷！");
+                return;
+            }
+
+            if (editingEventId) {
+                const evt = tripData[currentDayKey].events.find(e => e.id === editingEventId);
+                if (evt) {
+                    evt.time = timeVal;
+                    evt.title = titleVal;
+                    evt.note = noteVal;
+                }
+            } else {
+                const newId = Date.now();
+                tripData[currentDayKey].events.push({
+                    id: newId,
+                    time: timeVal,
+                    title: titleVal,
+                    note: noteVal
+                });
+            }
+
+            closeEditModal();
+            renderDayCard(currentDayKey);
+            showToast("行程已安全儲存！");
+        }
+
+        // Delete event
+        function deleteCurrentEvent() {
+            if (!editingEventId) return;
+
+            tripData[currentDayKey].events = tripData[currentDayKey].events.filter(e => e.id !== editingEventId);
+            closeEditModal();
+            renderDayCard(currentDayKey);
+            showToast("行程已刪除");
+        }
+
+        function toggleMapModal() {
+            const modal = document.getElementById("map-modal");
+            modal.classList.toggle("hidden");
+        }
+
+        function copyToClipboard(text) {
+            const tempInput = document.createElement("input");
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+            showToast("已複製英文地址！");
+        }
+
+        function showToast(message) {
+            const existingToast = document.getElementById("app-toast");
+            if (existingToast) existingToast.remove();
+
+            const toast = document.createElement("div");
+            toast.id = "app-toast";
+            toast.className = "fixed bottom-24 left-1/2 transform -translate-x-1/2 bg-[#2C2520] text-white text-[11px] px-4 py-2.5 rounded-full shadow-lg z-50 transition duration-300 opacity-0";
+            toast.innerText = message;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.remove("opacity-0");
+                toast.classList.add("opacity-100");
+            }, 50);
+
+            setTimeout(() => {
+                toast.classList.remove("opacity-100");
+                toast.classList.add("opacity-0");
+                setTimeout(() => toast.remove(), 300);
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

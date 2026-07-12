@@ -174,9 +174,8 @@ const days = [
 ];
 
 const dayContainer = document.querySelector("#days");
-const filterButtons = document.querySelectorAll(".filter");
-const viewPanels = document.querySelectorAll(".view-panel");
-const viewLinks = document.querySelectorAll("[data-view-link]");
+const dateTabBar = document.querySelector("#date-tab-bar");
+const dayCounterEl = document.querySelector("#day-counter");
 const packingList = document.querySelector("#packingList");
 const packingStatus = document.querySelector("#packingStatus");
 const sharePackingButton = document.querySelector("#sharePacking");
@@ -198,25 +197,14 @@ const packingGroups = [
   }
 ];
 
-function showView(viewName, updateHash = true) {
-  viewPanels.forEach((panel) => {
-    panel.classList.toggle("active", panel.dataset.view === viewName);
-  });
 
-  viewLinks.forEach((link) => {
-    link.classList.toggle("active", link.dataset.viewLink === viewName);
-  });
 
-  if (updateHash) {
-    history.replaceState(null, "", `#${viewName}`);
-  }
+// --- Single-day display state ---
+let currentDayIndex = 0;
 
-  window.scrollTo({ top: 0, behavior: "auto" });
-
-  if (viewName === "itinerary") {
-    requestAnimationFrame(scrollToTripDay);
-  }
-}
+// Touch swipe state
+let touchStartX = 0;
+let touchStartY = 0;
 
 function getLocalDateKey(date = new Date()) {
   const year = date.getFullYear();
@@ -225,99 +213,183 @@ function getLocalDateKey(date = new Date()) {
   return `${year}-${month}-${day}`;
 }
 
-function getActiveDateKey() {
+function getActiveDateIndex() {
   const dateParam = new URLSearchParams(location.search).get("date");
-  if (/^\d{4}-\d{2}-\d{2}$/.test(dateParam || "")) {
-    return dateParam;
-  }
-
-  return getLocalDateKey();
+  const key = /^\d{4}-\d{2}-\d{2}$/.test(dateParam || "") ? dateParam : getLocalDateKey();
+  const idx = days.findIndex((d) => d.isoDate === key);
+  return idx !== -1 ? idx : 0;
 }
 
-function scrollToTripDay() {
-  const todayKey = getActiveDateKey();
-  const dayIndex = days.findIndex((day) => day.isoDate === todayKey);
+// Weekday short labels
+const weekdayShortMap = ["日", "一", "二", "三", "四", "五", "六"];
 
-  if (dayIndex === -1) {
-    return;
-  }
+function renderDateTabs() {
+  if (!dateTabBar) return;
+  dateTabBar.innerHTML = "";
 
-  const target = dayContainer.querySelector(`[data-date="${todayKey}"]`);
-  if (!target) {
-    return;
-  }
+  days.forEach((day, index) => {
+    const isActive = index === currentDayIndex;
+    const dateObj = new Date(day.isoDate + "T00:00:00");
+    const weekday = weekdayShortMap[dateObj.getDay()];
+    const dayNum = dateObj.getDate();
 
-  target.scrollIntoView({ behavior: "smooth", block: "start" });
-}
-
-function renderDays(filter = "all") {
-  const visibleDays = filter === "all" ? days : days.filter((day) => day.filter === filter);
-
-  dayContainer.innerHTML = visibleDays
-    .map(
-      (day) => `
-        <article class="day-card" data-date="${day.isoDate}">
-          <div class="day-meta">
-            <div>
-              <div class="date">${day.date}</div>
-              <div class="weekday">${day.weekday}</div>
-            </div>
-            <span class="tag">${day.tag}</span>
-          </div>
-          <div class="day-body">
-            <div class="day-title">
-              <h3>${day.title}</h3>
-              <span class="route">${day.route}</span>
-            </div>
-            <ul class="timeline">
-              ${day.items
-                .map(
-                  ([time, title, detail, query, transfer]) => `
-                    <li>
-                      <a class="map-item" href="${mapLink(query)}" target="_blank" rel="noreferrer">
-                        <img class="place-thumb" src="${imageForPlace(title, query)}" alt="${title} 預覽圖" loading="lazy" />
-                        <span class="time">${time}</span>
-                        <span class="item">
-                          <strong>${title}</strong>
-                          <span>${detail}</span>
-                          <span class="transfer">${transfer}</span>
-                        </span>
-                        <span class="map-hint" aria-hidden="true">MAP</span>
-                      </a>
-                    </li>
-                  `
-                )
-                .join("")}
-            </ul>
-          </div>
-        </article>
-      `
-    )
-    .join("");
-}
-
-filterButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    filterButtons.forEach((item) => item.classList.remove("active"));
-    button.classList.add("active");
-    renderDays(button.dataset.filter);
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "date-tab" + (isActive ? " active" : "");
+    btn.setAttribute("aria-label", `${day.date} ${day.weekday}`);
+    btn.innerHTML = `<span class="tab-weekday">${weekday}</span><span class="tab-day">${dayNum}</span>`;
+    btn.addEventListener("click", () => selectDayByIndex(index));
+    dateTabBar.appendChild(btn);
   });
-});
+}
 
+function selectDayByIndex(index) {
+  currentDayIndex = index;
+  renderDateTabs();
+  renderDays();
+  if (dayCounterEl) dayCounterEl.textContent = `DAY ${index + 1} / ${days.length}`;
+  dayContainer.scrollTop = 0;
+}
+
+function renderDays() {
+  const day = days[currentDayIndex];
+  if (!day) return;
+
+  dayContainer.innerHTML = `
+    <article class="day-card" data-date="${day.isoDate}">
+      <div class="day-meta">
+        <div>
+          <div class="date">${day.date}</div>
+          <div class="weekday">${day.weekday}</div>
+        </div>
+        <span class="tag">${day.tag}</span>
+      </div>
+      <div class="day-body">
+        <div class="day-title">
+          <h3>${day.title}</h3>
+          <span class="route">${day.route}</span>
+        </div>
+        <ul class="timeline">
+          ${day.items
+            .map(
+              ([time, title, detail, query, transfer]) => `
+                <li>
+                  <a class="map-item" href="${mapLink(query)}" target="_blank" rel="noreferrer">
+                    <img class="place-thumb" src="${imageForPlace(title, query)}" alt="${title} 預覽圖" loading="lazy" />
+                    <span class="time">${time}</span>
+                    <span class="item">
+                      <strong>${title}</strong>
+                      <span>${detail}</span>
+                      <span class="transfer">${transfer}</span>
+                    </span>
+                    <span class="map-hint" aria-hidden="true">MAP</span>
+                  </a>
+                </li>
+              `
+            )
+            .join("")}
+        </ul>
+      </div>
+    </article>
+  `;
+}
+
+// Init itinerary
+currentDayIndex = getActiveDateIndex();
+if (dayCounterEl) dayCounterEl.textContent = `DAY ${currentDayIndex + 1} / ${days.length}`;
+renderDateTabs();
 renderDays();
 
-viewLinks.forEach((link) => {
-  link.addEventListener("click", (event) => {
-    event.preventDefault();
-    showView(link.dataset.viewLink);
-  });
+// Touch swipe on day container
+if (dayContainer) {
+  dayContainer.addEventListener("touchstart", (e) => {
+    touchStartX = e.changedTouches[0].clientX;
+    touchStartY = e.changedTouches[0].clientY;
+  }, { passive: true });
+
+  dayContainer.addEventListener("touchend", (e) => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      if (dx < 0 && currentDayIndex < days.length - 1) {
+        selectDayByIndex(currentDayIndex + 1);
+      } else if (dx > 0 && currentDayIndex > 0) {
+        selectDayByIndex(currentDayIndex - 1);
+      }
+    }
+  }, { passive: true });
+}
+
+// Single-page: always show itinerary on load
+
+// ─── Modal helpers ───────────────────────────────────────
+function openModal(type) {
+  const modal = document.getElementById(`modal-${type}`);
+  if (!modal) return;
+  modal.classList.add("open");
+  document.body.style.overflow = "hidden";
+  // Re-render packing list each time modal opens
+  if (type === "packing") renderPackingList();
+}
+
+function closeModal(type) {
+  const modal = document.getElementById(`modal-${type}`);
+  if (!modal) return;
+  modal.classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+// ESC to close any open modal
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    document.querySelectorAll(".info-modal.open").forEach((m) => {
+      m.classList.remove("open");
+    });
+    document.body.style.overflow = "";
+  }
 });
 
-const initialView = location.hash.replace("#", "");
-  if (["itinerary", "transport", "packing"].includes(initialView)) {
-  showView(initialView, false);
-} else {
-  showView("itinerary", false);
+// Enter key to add packing item
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && document.activeElement?.id === "packingNewItem") {
+    addPackingItem();
+  }
+});
+
+
+// ─── Info Bar Collapsibles ──────────────────────────────
+function toggleInfoBar(type) {
+  const content = document.getElementById(`${type}-content`);
+  const arrow = document.getElementById(`${type}-arrow`);
+  const btn = content?.previousElementSibling;
+  if (!content) return;
+
+  const isExpanded = content.classList.contains("expanded");
+  content.classList.toggle("expanded", !isExpanded);
+  if (arrow) arrow.classList.toggle("expanded", !isExpanded);
+  if (btn) btn.setAttribute("aria-expanded", String(!isExpanded));
+}
+
+function copyHotelAddr(lang = "ja") {
+  const addresses = {
+    ja: "\u3012812-0053 \u798f\u5ca1\u770c\u798f\u5ca1\u5e02\u6771\u533a\u7b87\u5d0e\uff11\u4e01\u76ee41\u221241",
+    en: "1 Chome-41-41 Hakozaki, Higashi Ward, Fukuoka, 812-0053 Japan"
+  };
+  const addr = addresses[lang] || addresses.ja;
+  navigator.clipboard?.writeText(addr).catch(() => {
+    const el = document.createElement("input");
+    el.value = addr;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand("copy");
+    document.body.removeChild(el);
+  });
+  const btn = document.querySelector(`[onclick="copyHotelAddr('${lang}')"]`);
+  if (btn) {
+    const orig = btn.textContent;
+    btn.textContent = "\u2713 \u5df2\u8907\u88fd";
+    setTimeout(() => { btn.textContent = orig; }, 1800);
+  }
 }
 
 function getPackingState() {
@@ -431,31 +503,81 @@ async function savePackingToCloud(state = getPackingState()) {
   }
 }
 
+function getCustomPackingItems() {
+  try { return JSON.parse(localStorage.getItem("fukuokaCustomPacking") || "[]"); }
+  catch { return []; }
+}
+
+function setCustomPackingItems(items) {
+  localStorage.setItem("fukuokaCustomPacking", JSON.stringify(items));
+}
+
+function addPackingItem() {
+  const input = document.getElementById("packingNewItem");
+  const text = input?.value.trim();
+  if (!text) return;
+  const items = getCustomPackingItems();
+  items.push(text);
+  setCustomPackingItems(items);
+  input.value = "";
+  renderPackingList();
+}
+
+function deleteCustomPackingItem(index, itemText) {
+  const items = getCustomPackingItems();
+  items.splice(index, 1);
+  setCustomPackingItems(items);
+  const state = getPackingState();
+  delete state[`custom-${itemText}`];
+  setPackingState(state);
+  renderPackingList();
+}
+
 function renderPackingList() {
   if (!packingList) return;
 
   const state = getPackingState();
-  packingList.innerHTML = packingGroups
-    .map(
-      (group) => `
-        <div class="packing-group">
-          <h4>${group.title}</h4>
-          ${group.items
-            .map((item) => {
-              const id = `${group.title}-${item}`;
-              return `
-                <label class="packing-item">
-                  <input type="checkbox" data-pack-id="${id}" ${state[id] ? "checked" : ""} />
-                  <span>${item}</span>
-                </label>
-              `;
-            })
-            .join("")}
-        </div>
-      `
-    )
-    .join("");
+  const customItems = getCustomPackingItems();
+
+  const builtInHTML = packingGroups.map((group) => `
+    <div class="packing-group">
+      <h4>${group.title}</h4>
+      ${group.items.map((item) => {
+        const id = `${group.title}-${item}`;
+        return `<label class="packing-item">
+          <input type="checkbox" data-pack-id="${id}" ${state[id] ? "checked" : ""} />
+          <span>${item}</span>
+        </label>`;
+      }).join("")}
+    </div>
+  `).join("");
+
+  const customHTML = customItems.length > 0 ? `
+    <div class="packing-group">
+      <h4>自訂項目</h4>
+      ${customItems.map((item, i) => {
+        const id = `custom-${item}`;
+        return `<label class="packing-item packing-item--custom">
+          <input type="checkbox" data-pack-id="${id}" ${state[id] ? "checked" : ""} />
+          <span>${item}</span>
+          <button type="button" class="packing-delete-btn" data-custom-index="${i}" aria-label="刪除">×</button>
+        </label>`;
+      }).join("")}
+    </div>
+  ` : "";
+
+  packingList.innerHTML = builtInHTML + customHTML;
+
+  packingList.querySelectorAll(".packing-delete-btn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const idx = parseInt(btn.dataset.customIndex, 10);
+      deleteCustomPackingItem(idx, customItems[idx]);
+    });
+  });
 }
+
 
 function copyPackingLink() {
   const state = getPackingState();
