@@ -473,18 +473,20 @@ async function loadPackingFromCloud() {
 
     if (cloudState && typeof cloudState === "object" && !Array.isArray(cloudState)) {
       setPackingState(cloudState);
-      renderPackingList();
-      if (packingStatus) packingStatus.textContent = "已連結雲端清單。";
     }
+    // 同步自訂項目
+    if (Array.isArray(cloudData.customItems)) {
+      setCustomPackingItems(cloudData.customItems);
+    }
+    renderPackingList();
+    if (packingStatus) packingStatus.textContent = "已連結雲端清單。";
   } catch {
     if (packingStatus) packingStatus.textContent = "雲端讀取失敗，暫用本機清單。";
   }
 }
 
 async function savePackingToCloud(state = getPackingState()) {
-  if (!hasPackingCloud()) {
-    return;
-  }
+  if (!hasPackingCloud()) return;
 
   try {
     if (packingStatus) packingStatus.textContent = "正在同步雲端...";
@@ -494,6 +496,7 @@ async function savePackingToCloud(state = getPackingState()) {
       headers: { "Content-Type": "text/plain;charset=utf-8" },
       body: JSON.stringify({
         items: state,
+        customItems: getCustomPackingItems(),
         updatedAt: new Date().toISOString()
       })
     });
@@ -521,6 +524,7 @@ function addPackingItem() {
   setCustomPackingItems(items);
   input.value = "";
   renderPackingList();
+  savePackingToCloud(); // 同步自訂項目到雲端
 }
 
 function deleteCustomPackingItem(index, itemText) {
@@ -531,6 +535,7 @@ function deleteCustomPackingItem(index, itemText) {
   delete state[`custom-${itemText}`];
   setPackingState(state);
   renderPackingList();
+  savePackingToCloud(); // 同步到雲端
 }
 
 function renderPackingList() {
