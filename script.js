@@ -35,7 +35,8 @@ function imageForPlace(title, query) {
     [/南藏院|Nanzoin/i, "nanzoin"],
     [/Yodobashi/i, "yodobashi-hakata"],
     [/Sunny|supermarket/i, "sunny-supermarket"],
-    [/KITTE/i, "hakata-station"]
+    [/KITTE/i, "hakata-station"],
+    [/燒肉|Yakiniku|ワンカルビ/i, "yakiniku"]
   ];
   const match = rules.find(([pattern]) => pattern.test(text));
   if (!match) {
@@ -58,7 +59,7 @@ const days = [
       ["14:40", "CI128 桃園起飛", "桃園國際機場第 2 航廈。", "Taoyuan International Airport Terminal 2", "從台北市區到桃園機場：約 40-70 分鐘，依出發地與交通方式調整。"],
       ["18:05", "抵達福岡機場", "國際線入境後領行李，4 人建議直接搭計程車。", "Fukuoka Airport International Terminal", "飛行時間：約 2 小時 25 分鐘。"],
       ["19:00", "前往 LuxurySweet East71", "車程約 15-25 分鐘，視入境與車流調整。", "1 Chome-41-41 Hakozaki Higashi Ward Fukuoka 812-0053 Japan", "福岡機場國際線 → 箱崎住宿：計程車約 15-25 分鐘。"],
-      ["20:00", "MaxValu 箱崎宮前補給", "第一晚買水、早餐、零食，回住宿整理。", "MaxValu Hakozaki Miyamae Fukuoka", "住宿 → MaxValu 箱崎宮前：步行約 5-8 分鐘。"]
+      ["20:00", "MaxValu 箱崎宮前補給", "第一晚買水、早餐、零食，回住宿整理。晚餐可就近選擇清單中的八起 (Yaoki) 或春陽軒拉麵。", "MaxValu Hakozaki Miyamae Fukuoka", "住宿 → MaxValu 箱崎宮前：步行約 5-8 分鐘。"]
     ]
   },
   {
@@ -67,15 +68,15 @@ const days = [
     weekday: "星期三",
     tag: "city",
     filter: "city",
-    title: "箱崎麵包、博多與 Canal City",
+    title: "箱崎麵包、博多運河城逛街",
     route: "地鐵 + 步行",
     items: [
       ["09:00", "Pain Stock 箱崎本店", "先吃福岡名物明太法國麵包，離住宿區不遠。", "pain stock Hakozaki Fukuoka", "住宿 → Pain Stock：步行或計程車約 8-12 分鐘。"],
-      ["10:00", "福岡麵包超人兒童博物館", "中洲川端站直通，通常 10:00-17:00，最後入場 16:00。", "Fukuoka Anpanman Children's Museum in Mall", "Pain Stock → 麵包超人博物館：地鐵+步行約 20-30 分鐘，計程車約 15-20 分鐘。"],
-      ["12:30", "川端商店街與櫛田神社", "博物館後往川端、櫛田神社慢慢走。", "Kushida Shrine Fukuoka", "麵包超人博物館 → 川端/櫛田神社：步行約 8-12 分鐘。"],
-      ["14:00", "The Full Full Hakata", "第二間明太子麵包備選，靠近 Canal City。", "THE FULL FULL HAKATA Fukuoka", "櫛田神社 → The Full Full Hakata：步行約 8-12 分鐘。"],
-      ["15:00", "Canal City + au/UQ 取扱店", "逛街、避暑，也可處理 UQ 相關需求。", "au Canal City Hakata UQ mobile", "The Full Full Hakata → Canal City：步行約 5-8 分鐘。"],
-      ["18:00", "Ichiran Canal City Hakata", "第一間拉麵：Canal City 地下的一蘭。", "Ichiran Canal City Hakata", "Canal City 館內移動：約 3-8 分鐘。"]
+      ["10:30", "櫛田神社 (本日唯一景點)", "福岡歷史悠久的守護神，參觀巨大的山笠。", "Kushida Shrine Fukuoka", "Pain Stock → 櫛田神社：地鐵+步行約 20 分鐘。"],
+      ["12:00", "川端商店街散策", "櫛田神社旁的商店街，午餐可在此解決或去運河城。", "Kawabata Shopping Street Fukuoka", "櫛田神社 → 川端商店街：步行約 3-5 分鐘。"],
+      ["13:30", "The Full Full Hakata", "品嚐清單中的明太子法國麵包，休息片刻。", "THE FULL FULL HAKATA Fukuoka", "川端商店街 → The Full Full Hakata：步行約 8-12 分鐘。"],
+      ["14:30", "博多運河城逛街", "逛街避暑，有各大品牌與 UQ Mobile 門市。", "au Canal City Hakata UQ mobile", "The Full Full Hakata → 博多運河城：步行約 5 分鐘。"],
+      ["18:00", "一蘭拉麵 博多運河城店", "晚餐在運河城內享用特色方形碗的一蘭拉麵。", "Ichiran Canal City Hakata", "運河城內移動。"]
     ]
   },
   {
@@ -84,13 +85,13 @@ const days = [
     weekday: "星期四",
     tag: "daytrip",
     filter: "daytrip",
-    title: "太宰府天滿宮與九州國立博物館",
-    route: "地鐵 + 西鐵",
+    title: "太宰府天滿宮與天神逛街、國產牛燒肉",
+    route: "地鐵 + 西鐵 + 步行",
     items: [
-      ["08:45", "西鐵福岡天神站出發", "避開正午炎熱，早點到參道比較舒服。", "Nishitetsu Fukuoka Tenjin Station", "住宿 → 西鐵福岡天神站：地鐵約 20-30 分鐘，計程車約 15-25 分鐘。"],
-      ["10:00", "太宰府天滿宮與參道", "梅枝餅、伴手禮、小店慢逛。", "Dazaifu Tenmangu", "天神 → 太宰府：西鐵約 35-45 分鐘，含轉乘抓約 50-60 分鐘。"],
-      ["12:30", "九州國立博物館", "午後轉室內，減少曝曬。", "Kyushu National Museum", "太宰府天滿宮 → 九州國立博物館：步行約 8-12 分鐘。"],
-      ["17:30", "博多站超市補貨", "回程在站內或周邊買水果、飲料、宵夜。", "MaxValu Express Hakata Ekiminami Fukuoka", "九州國立博物館 → 博多站周邊：西鐵+地鐵約 55-70 分鐘。"]
+      ["09:00", "前往太宰府天滿宮", "避開最炎熱的正午，早點前往參道漫步。", "Dazaifu Tenmangu", "住宿 → 太宰府：西鐵約 50-60 分鐘。"],
+      ["10:00", "太宰府天滿宮參道 (本日唯一景點)", "吃梅枝餅，參觀天滿宮，悠閒散步。", "Dazaifu Tenmangu", "參道與本殿周邊步行。"],
+      ["13:30", "天神商圈逛街", "搭西鐵返回天神，開逛福岡PARCO與Mina天神、The Full Full麵包店。", "福岡PARCO", "太宰府 → 天神：西鐵約 40-50 分鐘。"],
+      ["18:00", "國產牛燒肉 (ワンカルビ PREMIUM 天神店)", "第三晚大餐：品嚐美味的國產牛燒肉吃到飽 (建議提前預約)。", "ワンカルビ PREMIUM 天神", "天神商圈步行約 5-10 分鐘。"]
     ]
   },
   {
@@ -99,14 +100,13 @@ const days = [
     weekday: "星期五",
     tag: "city",
     filter: "city",
-    title: "大濠公園、天神 GU 與 Shin Shin",
-    route: "地鐵 + 公車",
+    title: "大濠公園散步與天神、博多商圈開逛",
+    route: "地鐵 + 步行",
     items: [
-      ["08:30", "大濠公園晨走", "早上湖邊比較涼，適合慢步調。", "Ohori Park Fukuoka", "住宿 → 大濠公園：地鐵約 25-35 分鐘，計程車約 20-30 分鐘。"],
-      ["10:30", "福岡城跡與舞鶴公園", "短距離散步，視體力增減。", "Fukuoka Castle Ruins", "大濠公園 → 福岡城跡：步行約 10-15 分鐘。"],
-      ["13:30", "Mina Tenjin GU", "安排你們愛逛的 GU，天神店位置順。", "https://www.google.com/maps/place/GU+Mina+Tenjin/@33.5929786,130.3957987,17z/data=!3m2!4b1!5s0x3541918e7b649f07:0x3316f504ccb6ecd0!4m6!3m5!1s0x354191e961936f35:0x5303711a154af99e!8m2!3d33.5929742!4d130.3983736!16s%2Fg%2F11st7clcrm?authuser=0&entry=ttu&g_ep=EgoyMDI2MDcwOC4wIKXMDSoASAFQAw%3D%3D", "福岡城跡 → Mina Tenjin：地鐵/公車約 15-25 分鐘，計程車約 10-15 分鐘。"],
-      ["15:30", "天神地下街與 UQ 備案", "逛街避暑，若要找 UQ 可改去博多丸井 au Style。", "au Style HAKATA UQ mobile Hakata Marui", "Mina Tenjin → 天神地下街：步行約 5-10 分鐘；若去博多丸井，地鐵約 10-15 分鐘。"],
-      ["18:00", "Shin-Shin 博多拉麵 KITTE博多店", "在 KITTE 博多享用人氣博多豚骨拉麵；晚餐時段可能需要排隊。", "Shin-Shin Hakata Ramen KITTE Hakata", "博多丸井／UQ 店 → KITTE 博多店：步行約 3–8 分鐘。"]
+      ["09:00", "大濠公園 (本日唯一景點)", "福岡市中心的美麗湖泊，早晨涼爽適合散步。", "Ohori Park Fukuoka", "住宿 → 大濠公園：地鐵約 25-35 分鐘。"],
+      ["11:30", "Mina 天神 GU 逛街", "前往天神區開逛 Mina 天神，包含超大 GU 與其他服飾店。", "GU Mina Tenjin", "大濠公園 → Mina 天神：地鐵約 15 分鐘。"],
+      ["14:00", "天神地下街與福岡 PARCO", "在地下街與 PARCO 逛街避暑，享受各式日系雜貨與美食。", "福岡PARCO", "Mina 天神 → 天神地下街/PARCO：步行約 5 分鐘。"],
+      ["18:00", "Shin-Shin 博多拉麵 KITTE博多店", "前往博多站的 KITTE 博多，享用超人氣的博多拉麵。", "Shin-Shin Hakata Ramen KITTE Hakata", "天神 → 博多/KITTE：地鐵約 10-15 分鐘。"]
     ]
   },
   {
@@ -115,13 +115,13 @@ const days = [
     weekday: "星期六",
     tag: "daytrip",
     filter: "daytrip",
-    title: "糸島海岸半日小旅行",
+    title: "糸島海岸半日小旅行與百道購物",
     route: "JR + 計程車",
     items: [
-      ["09:00", "筑前前原站", "從博多或天神轉 JR，抵達後用計程車串點。", "Chikuzen-Maebaru Station", "住宿 → 筑前前原站：地鐵/JR 約 55-75 分鐘。"],
-      ["10:30", "櫻井二見浦夫婦岩", "海邊拍照，注意防曬與補水。", "Sakurai Futamigaura Couple Stones", "筑前前原站 → 櫻井二見浦：計程車約 20-30 分鐘。"],
-      ["12:00", "糸島海景午餐", "熱門店建議先預約，或保留備案咖啡。", "Itoshima beach cafe lunch", "櫻井二見浦 → 海景午餐店：計程車約 10-20 分鐘，依餐廳位置調整。"],
-      ["15:30", "MARK IS 福岡百道", "天候不佳時改成室內商場與 teamLab Forest。", "MARK IS Fukuoka Momochi", "糸島 → MARK IS 福岡百道：JR/地鐵+公車約 60-80 分鐘，計程車約 40-60 分鐘。"]
+      ["09:00", "出發前往筑前前原站", "搭地鐵轉乘 JR 抵達前原站，隨後叫計程車前往海邊。", "Chikuzen-Maebaru Station", "住宿 → 筑前前原站：地鐵/JR 約 55-75 分鐘。"],
+      ["10:30", "櫻井二見浦 夫婦岩 (本日唯一景點)", "欣賞美麗海上鳥居與夫婦岩，拍照打卡。", "Sakurai Futamigaura Couple Stones", "筑前前原站 → 二見浦：計程車約 20-30 分鐘。"],
+      ["12:00", "糸島海景午餐與咖啡", "在二見浦海岸邊的海景餐廳享用悠閒午餐與午茶。", "Itoshima beach cafe lunch", "夫婦岩周邊步行。"],
+      ["15:30", "MARK IS 福岡百道", "下午返回市區，逛逛百道大型商場，避暑兼購物。", "MARK IS Fukuoka Momochi", "糸島 → MARK IS 百道：計程車約 40-50 分鐘，或大眾運輸約 60-80 分鐘。"]
     ]
   },
   {
@@ -130,13 +130,12 @@ const days = [
     weekday: "星期日",
     tag: "relax",
     filter: "relax",
-    title: "能古島或 LaLaport 購物備案",
-    route: "公車 + 渡輪",
+    title: "能古島海景半日遊與 LaLaport 購物",
+    route: "公車 + 渡輪 + 步行",
     items: [
-      ["09:30", "能古渡船場", "天氣穩定就搭船到能古島，慢慢散步看海。", "Meinohama Ferry Terminal Noko Island", "住宿 → 能古渡船場：地鐵+公車約 50-65 分鐘，計程車約 30-45 分鐘。"],
-      ["11:00", "能古島 Island Park", "夏天注意遮陽，也可只排半日。", "Nokonoshima Island Park", "渡船場 → 能古島 Island Park：渡輪約 10 分鐘，島上巴士約 13 分鐘，含等待抓 30-45 分鐘。"],
-      ["15:30", "LaLaport Fukuoka GU", "若天氣不好，整天可改成 LaLaport，裡面也有 GU。", "GU LaLaport Fukuoka", "能古島 → LaLaport：渡輪+公車/地鐵約 70-90 分鐘；雨天直接從住宿到 LaLaport 約 25-40 分鐘。"],
-      ["17:30", "LaLaport 超市補給", "採買晚餐、飲料與伴手禮零食。", "LaLaport Fukuoka supermarket", "LaLaport 館內移動：約 5-10 分鐘。"]
+      ["09:30", "姪濱渡船場搭船", "搭乘渡輪前往福岡近郊的能古島。", "Meinohama Ferry Terminal Noko Island", "住宿 → 渡船場：地鐵+公車約 50-65 分鐘。"],
+      ["10:30", "能古島 Island Park (本日唯一景點)", "島上滿滿的四季花卉與無敵海景，悠閒散步。", "Nokonoshima Island Park", "渡船場 → Island Park：渡輪約 10 分鐘，轉島上巴士約 13 分鐘。"],
+      ["14:30", "LaLaport 福岡", "返回市區後前往 LaLaport，看 1:1 鋼彈，逛 GU、超市與各類商店。", "GU LaLaport Fukuoka", "能古島 → LaLaport：渡輪+公車/地鐵約 70-90 分鐘。"]
     ]
   },
   {
@@ -145,14 +144,14 @@ const days = [
     weekday: "星期一",
     tag: "daytrip",
     filter: "daytrip",
-    title: "南藏院臥佛與最後採買",
+    title: "南藏院臥佛參拜與博多最後大採買",
     route: "JR + 地鐵",
     items: [
-      ["08:45", "博多搭 JR 前往城戶南藏院前", "車站到寺院步行約 3 分鐘。", "Hakata Station JR", "住宿 → 博多站：地鐵/計程車約 15-25 分鐘。"],
-      ["09:30", "南藏院參拜", "佛像區 9:00-17:00，早上安排最穩。", "Nanzoin Temple Fukuoka", "博多站 → 城戶南藏院前：JR 約 20-30 分鐘；下車步行約 3-5 分鐘。"],
-      ["13:30", "博多 Yodobashi GU", "回博多後補一段 GU 與電器賣場時間。", "GU Yodobashi Hakata", "南藏院 → 博多 Yodobashi：JR 回博多約 25-35 分鐘，出站步行約 5-8 分鐘。"],
-      ["16:00", "博多站最後採買", "藥妝、食品、伴手禮，晚上整理行李。", "Hakata Station souvenir shopping", "Yodobashi Hakata → 博多站商圈：步行約 5-10 分鐘。"],
-      ["18:00", "Sunny 或 MaxValu 晚間補貨", "最後補水、早餐、零食，回住宿打包。", "Sunny supermarket Hakata Fukuoka", "博多站 → 超市/住宿周邊：地鐵或計程車約 15-25 分鐘。"]
+      ["08:45", "博多站搭乘 JR 前往南藏院", "搭乘篠栗線前往城戶南藏院前站。", "Hakata Station JR", "住宿 → 博多站：地鐵約 15-20 分鐘。"],
+      ["09:30", "南藏院 (本日唯一景點)", "參拜世界最大的青銅涅槃佛，感受莊嚴與寧靜。", "Nanzoin Temple Fukuoka", "城戶南藏院前站 → 南藏院：步行約 3-5 分鐘。"],
+      ["12:30", "博多 Yodobashi 與博多站逛街", "回博多站享用午餐，隨後在 Yodobashi（有 GU）及站內商圈補貨。", "GU Yodobashi Hakata", "南藏院 → 博多：JR 約 25 分鐘。"],
+      ["16:00", "博多站最後大採買", "藥妝、伴手禮一次買齊，買完後回住宿處打包行李。", "Hakata Station souvenir shopping", "博多站商圈步行。"],
+      ["18:00", "箱崎超市與周邊晚餐", "在住宿附近的 MaxValu 箱崎店或當地的食堂/拉麵店解決最後晚餐。", "MaxValu Hakozaki Miyamae Fukuoka", "博多站 → 箱崎住宿：地鐵約 15 分鐘。"]
     ]
   },
   {
@@ -161,14 +160,13 @@ const days = [
     weekday: "星期二",
     tag: "departure",
     filter: "relax",
-    title: "退房、寄物與返台",
+    title: "退房與博多站最後購物、返台",
     route: "計程車 + 地鐵",
     items: [
-      ["06:00-11:00", "LuxurySweet East71 退房", "依住宿規定完成退房，行李可寄博多站或直接放機場。", "1 Chome-41-41 Hakozaki Higashi Ward Fukuoka 812-0053 Japan", "住宿內整理：預留 30-60 分鐘退房與叫車。"],
-      ["11:30", "博多站午餐與最後採買", "選擇車站周邊，避免離機場太遠。", "Hakata Station", "住宿 → 博多站：地鐵/計程車約 15-25 分鐘。"],
-      ["14:00", "購物中心 KITTE 博多", "回程前到 KITTE 博多逛街、採買；若有通訊需求可順道前往博多丸井 au Style。", "https://www.google.com/maps/place/購物中心KITTE/@33.5888023,130.4168701,17z/data=!4m2!3m1!1s0x354191b86e6aaaab:0x887b4281aae84f78?authuser=0&entry=ttu&g_ep=EgoyMDI2MDcwOC4wIKXMDSoASAFQAw%3D%3D", "博多站 → KITTE 博多：站體連通，步行約 3–8 分鐘。"],
-      ["16:30", "前往福岡機場", "國際線建議保守抓 2 小時以上報到時間。", "Fukuoka Airport International Terminal", "博多站 → 福岡機場國際線：地鐵+接駁約 20-35 分鐘，計程車約 15-25 分鐘。"],
-      ["19:10", "CI129 福岡起飛", "20:35 抵達台北桃園第 2 航廈。", "Fukuoka Airport International Terminal", "機場報到/安檢/登機：建議預留 2 小時以上。"]
+      ["06:00-11:00", "LuxurySweet East71 退房", "退房後叫計程車或地鐵前往博多站置物。", "1 Chome-41-41 Hakozaki Higashi Ward Fukuoka 812-0053 Japan", "箱崎 → 博多站：計程車或地鐵約 15-20 分鐘。"],
+      ["11:30", "博多站商圈與 KITTE 博多最後逛街", "最後補買、吃午餐，準備前往機場。", "購物中心KITTE", "博多站周邊步行。"],
+      ["16:30", "前往福岡機場", "建議保守提早 2 小時抵達機場辦理登機與免稅店購物。", "Fukuoka Airport International Terminal", "博多站 → 福岡機場國際線：計程車約 15-25 分鐘。"],
+      ["19:10", "CI129 福岡起飛", "搭乘華航班機返回台灣，預計 20:35 抵達桃園。", "Fukuoka Airport International Terminal", "飛行時間約 2 小時 25 分鐘。"]
     ]
   }
 ];
