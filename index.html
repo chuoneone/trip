@@ -28,6 +28,9 @@
         <button class="quick-icon-btn" onclick="openModal('flight')" aria-label="班機時間">
           <span class="quick-icon-circle">✈️</span>
         </button>
+        <button class="quick-icon-btn" onclick="openModal('musteat')" aria-label="必吃美食">
+          <span class="quick-icon-circle">🍜</span>
+        </button>
       </div>
     </nav>
 
@@ -149,6 +152,20 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ Modal: 必吃美食清單 ══════════════════════════ -->
+    <div class="info-modal" id="modal-musteat" onclick="closeModal('musteat')">
+      <div class="info-modal-card" onclick="event.stopPropagation()">
+        <div class="info-modal-handle"></div>
+        <div class="info-modal-header">
+          <span class="info-modal-title">🍜 必吃美食清單</span>
+          <button class="info-modal-close" onclick="closeModal('musteat')" aria-label="關閉">✕</button>
+        </div>
+        <div class="info-modal-body">
+          <div class="musteat-list" id="musteatList"></div>
         </div>
       </div>
     </div>
