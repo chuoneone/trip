@@ -79,13 +79,14 @@ const days = [
     weekday: "星期三",
     tag: "city",
     filter: "city",
-    title: "櫛田神社 · 博多運河城",
+    title: "櫛田神社 · 麵包超人博物館 · 運河城",
     route: "地鐵 + 步行",
     items: [
       ["09:00", "🍽️ 早餐：Pain Stock 箱崎本店", "先吃福岡名物明太法國麵包，離住宿區不遠。", "pain stock Hakozaki Fukuoka", "住宿 → Pain Stock：步行或計程車約 8-12 分鐘。"],
-      ["10:30", "🏛️ 櫛田神社", "福岡歷史悠久的守護神，參觀巨大的山笠，逛川端商店街。", "Kushida Shrine Fukuoka", "Pain Stock → 櫛田神社：地鐵＋步行約 20 分鐘。"],
-      ["13:00", "🍞 備選：THE FULL FULL HAKATA／運河城周邊午餐", "先看博多店現場排隊狀況；隊伍可接受就吃 Full Full，排太久就改到運河城附近用餐。", "THE FULL FULL HAKATA Fukuoka", "櫛田神社 → THE FULL FULL HAKATA：步行約 5-10 分鐘；再到運河城約 5 分鐘。"],
-      ["14:30", "博多運河城逛街", "逛街避暑，有各大品牌與 UQ Mobile 門市。", "au Canal City Hakata UQ mobile", "運河城周邊午餐 → 博多運河城：步行約 5 分鐘。"],
+      ["10:00", "🏛️ 櫛田神社", "福岡歷史悠久的守護神，參觀巨大的山笠，安排短暫參拜。", "Kushida Shrine Fukuoka", "Pain Stock → 櫛田神社：步行或地鐵約 20 分鐘。"],
+      ["10:45", "🎈 麵包超人博物館", "在博多Riverain逛福岡麵包超人兒童博物館，預留約2.5小時。", "Fukuoka Anpanman Children's Museum", "櫛田神社 → 博多Riverain：步行約 7-10 分鐘。"],
+      ["13:30", "🍞 備選：THE FULL FULL HAKATA／運河城周邊午餐", "先看博多店現場排隊狀況；隊伍可接受就吃 Full Full，排太久就改到運河城附近用餐。", "THE FULL FULL HAKATA Fukuoka", "麵包超人博物館 → Full Full／運河城：步行約 5-10 分鐘。"],
+      ["15:00", "博多運河城逛街", "逛街避暑，有各大品牌與 UQ Mobile 門市。", "au Canal City Hakata UQ mobile", "運河城周邊午餐 → 博多運河城：步行約 5 分鐘。"],
       ["18:00", "🛒 Lopia 博多ヨドバシ店：買晚餐", "從運河城前往博多ヨドバシ 4 樓，買熟食、壽司、肉品與飲料，當作今晚晚餐。", "Lopia Hakata Yodobashi", "博多運河城 → 博多ヨドバシ：步行或地鐵約 10-15 分鐘。"],
       ["19:30", "返回箱崎住宿", "買好晚餐後直接回住宿，晚上不再安排其他景點。", "LuxurySweet East71 Hakozaki", "博多 → 箱崎：地鐵約 15-20 分鐘。"]
     ]
