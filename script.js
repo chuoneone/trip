@@ -601,54 +601,23 @@ function deleteCustomPackingItem(index, itemText) {
   savePackingToCloud(); // 同步到雲端
 }
 
-function getDeletedBuiltInItems() {
-  try { return JSON.parse(localStorage.getItem("fukuokaDeletedBuiltIn") || "[]"); }
-  catch { return []; }
-}
-
-function setDeletedBuiltInItems(items) {
-  localStorage.setItem("fukuokaDeletedBuiltIn", JSON.stringify(items));
-}
-
-function deleteBuiltInPackingItem(groupTitle, itemText) {
-  const deleted = getDeletedBuiltInItems();
-  const key = `${groupTitle}::${itemText}`;
-  if (!deleted.includes(key)) deleted.push(key);
-  setDeletedBuiltInItems(deleted);
-  // Also remove its checked state
-  const state = getPackingState();
-  delete state[`${groupTitle}-${itemText}`];
-  setPackingState(state);
-  renderPackingList();
-  savePackingToCloud();
-}
-
 function renderPackingList() {
   if (!packingList) return;
 
   const state = getPackingState();
   const customItems = getCustomPackingItems();
-  const deletedBuiltIn = getDeletedBuiltInItems();
-
-  const builtInHTML = packingGroups.map((group) => {
-    const visibleItems = group.items.filter(
-      (item) => !deletedBuiltIn.includes(`${group.title}::${item}`)
-    );
-    if (visibleItems.length === 0) return "";
-    return `
+  const builtInHTML = packingGroups.map((group) => `
     <div class="packing-group">
       <h4>${group.title}</h4>
-      ${visibleItems.map((item) => {
+      ${group.items.map((item) => {
         const id = `${group.title}-${item}`;
-        return `<label class="packing-item packing-item--custom">
+        return `<label class="packing-item">
           <input type="checkbox" data-pack-id="${id}" ${state[id] ? "checked" : ""} />
           <span>${item}</span>
-          <button type="button" class="packing-delete-btn" data-builtin-group="${group.title}" data-builtin-item="${item}" aria-label="刪除">×</button>
         </label>`;
       }).join("")}
     </div>
-  `;
-  }).join("");
+  `).join("");
 
   const customHTML = customItems.length > 0 ? `
     <div class="packing-group">
@@ -673,8 +642,6 @@ function renderPackingList() {
       if (btn.dataset.customIndex !== undefined) {
         const idx = parseInt(btn.dataset.customIndex, 10);
         deleteCustomPackingItem(idx, customItems[idx]);
-      } else if (btn.dataset.builtinGroup) {
-        deleteBuiltInPackingItem(btn.dataset.builtinGroup, btn.dataset.builtinItem);
       }
     });
   });
