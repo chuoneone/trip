@@ -2,7 +2,10 @@ const mapLink = (query) =>
   /^https?:\/\//i.test(query)
     ? query
     : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
-const placeImage = (slug) => `./assets/place-images/${slug}.jpg`;
+const placeImage = (slug) =>
+  slug === "boss-ezo"
+    ? "./assets/place-images/boss-ezo.png"
+    : `./assets/place-images/${slug}.jpg`;
 
 function imageForPlace(title, query) {
   const text = `${title} ${query}`;
@@ -20,6 +23,12 @@ function imageForPlace(title, query) {
     [/西鐵福岡天神|Nishitetsu|Tenjin Station/i, "tenjin-station"],
     [/太宰府|Dazaifu/i, "dazaifu"],
     [/九州國立|Kyushu National/i, "kyushu-museum"],
+    [/teamLab|BOSS E.?ZO|PayPay Dome|MLB cafe|Fire Hall|WAKABA|Danbo Ramen/i, "boss-ezo"],
+    [/福岡塔|Fukuoka Tower/i, "fukuoka-tower"],
+    [/門司港懷舊展望室|Mojiko Retro Observatory/i, "mojiko-retro"],
+    [/門司港|Mojiko|Moji Port/i, "mojiko-retro"],
+    [/九州鐵道|Kyushu Railway/i, "kyushu-railway-museum"],
+    [/小倉城|Kokura Castle/i, "kokura-castle"],
     [/博多站|Hakata Station/i, "hakata-station"],
     [/大濠|Ohori/i, "ohori-park"],
     [/福岡城|Fukuoka Castle/i, "fukuoka-castle"],
@@ -74,10 +83,11 @@ const days = [
     route: "地鐵 + 步行",
     items: [
       ["09:00", "🍽️ 早餐：Pain Stock 箱崎本店", "先吃福岡名物明太法國麵包，離住宿區不遠。", "pain stock Hakozaki Fukuoka", "住宿 → Pain Stock：步行或計程車約 8-12 分鐘。"],
-      ["10:30", "🏛️ 本日唯一景點：櫛田神社", "福岡歷史悠久的守護神，參觀巨大的山笠，逛川端商店街。", "Kushida Shrine Fukuoka", "Pain Stock → 櫛田神社：地鐵+步行約 20 分鐘。"],
-      ["13:00", "🍽️ 午餐：The Full Full Hakata", "品嚐清單中的明太子法國麵包。", "THE FULL FULL HAKATA Fukuoka", "櫛田神社 → The Full Full Hakata：步行約 10-15 分鐘。"],
-      ["14:30", "博多運河城逛街", "逛街避暑，有各大品牌與 UQ Mobile 門市。", "au Canal City Hakata UQ mobile", "The Full Full Hakata → 博多運河城：步行約 5 分鐘。"],
-      ["18:00", "🍽️ 晚餐：一蘭拉麵 博多運河城店", "晚餐在運河城內享用特色方形碗的一蘭拉麵。", "Ichiran Canal City Hakata", "運河城內移動。"]
+      ["10:30", "🏛️ 櫛田神社", "福岡歷史悠久的守護神，參觀巨大的山笠，逛川端商店街。", "Kushida Shrine Fukuoka", "Pain Stock → 櫛田神社：地鐵＋步行約 20 分鐘。"],
+      ["13:00", "🍞 備選：THE FULL FULL HAKATA／運河城周邊午餐", "先看博多店現場排隊狀況；隊伍可接受就吃 Full Full，排太久就改到運河城附近用餐。", "THE FULL FULL HAKATA Fukuoka", "櫛田神社 → THE FULL FULL HAKATA：步行約 5-10 分鐘；再到運河城約 5 分鐘。"],
+      ["14:30", "博多運河城逛街", "逛街避暑，有各大品牌與 UQ Mobile 門市。", "au Canal City Hakata UQ mobile", "運河城周邊午餐 → 博多運河城：步行約 5 分鐘。"],
+      ["18:00", "🛒 Lopia 博多ヨドバシ店：買晚餐", "從運河城前往博多ヨドバシ 4 樓，買熟食、壽司、肉品與飲料，當作今晚晚餐。", "Lopia Hakata Yodobashi", "博多運河城 → 博多ヨドバシ：步行或地鐵約 10-15 分鐘。"],
+      ["19:30", "返回箱崎住宿", "買好晚餐後直接回住宿，晚上不再安排其他景點。", "LuxurySweet East71 Hakozaki", "博多 → 箱崎：地鐵約 15-20 分鐘。"]
     ]
   },
   {
@@ -86,12 +96,14 @@ const days = [
     weekday: "星期四",
     tag: "daytrip",
     filter: "daytrip",
-    title: "太宰府天滿宮 · 天神逛街大餐",
+    title: "太宰府天滿宮 · 一蘭 · Full Full 天神店",
     route: "地鐵 + 西鐵 + 步行",
     items: [
-      ["09:00", "🏛️ 本日唯一景點：太宰府天滿宮 參道散策", "避開最炎熱的正午，早點前往參道漫步，吃梅枝餅，參觀天滿宮。", "Dazaifu Tenmangu", "住宿 → 太宰府：西鐵約 50-60 分鐘。"],
-      ["11:30", "🍽️ 午餐：太宰府參道美食", "在參道上享用梅枝餅、各式和菓子，悠閒享用。", "Dazaifu Tenmangu", "參道周還步行。"],
-      ["14:00", "天神商圈逛街 + Mina 天神、PARCO", "搭西鐵返回天神，開逛福岡PARCO與Mina天神。", "福岡PARCO", "太宰府 → 天神：西鐵約 40-50 分鐘。"],
+      ["09:00", "🏛️ 太宰府天滿宮＋參道散策", "避開最炎熱的正午，早點前往參道漫步，吃梅枝餅，參觀天滿宮。", "Dazaifu Tenmangu", "住宿 → 太宰府：西鐵約 50-60 分鐘。"],
+      ["11:30", "🏛️ 九州國立博物館（FunPASS 必遊景點）", "參觀九州國立博物館，和太宰府排在同一天最順路。", "Kyushu National Museum Dazaifu", "太宰府天滿宮 → 九州國立博物館：步行約 10-15 分鐘。"],
+      ["13:30", "🍜 午餐：一蘭太宰府參道店", "在太宰府參道吃一蘭，還可以品嚐太宰府限定的合格梅拉麵。", "Ichiran Dazaifu Sando", "九州國立博物館 → 一蘭太宰府參道店：步行約 10-15 分鐘。"],
+      ["15:00", "🍞 FULL FULL 天神店", "改去天神店買明太子法國麵包，避開博多店較誇張的排隊人潮。", "FULL FULL Tenjin Fukuoka", "一蘭太宰府參道店 → 天神店：西鐵約 40-50 分鐘。"],
+      ["16:00", "天神商圈逛街 + Mina 天神、PARCO", "搭西鐵返回天神後，逛福岡PARCO與Mina天神。", "福岡PARCO", "Full Full 天神店 → Mina／PARCO：步行約 5-10 分鐘。"],
       ["18:00", "🍽️ 晚餐：國產牛燒肉 (ワンカルビ PREMIUM 天神店)", "第三晚大餐：品嚐美味的國產牛燒肉吃到飽 (建議提前預約)。", "ワンカルビ PREMIUM 天神", "天神商圈步行約 5-10 分鐘。"]
     ]
   },
@@ -101,13 +113,15 @@ const days = [
     weekday: "星期五",
     tag: "city",
     filter: "city",
-    title: "大濠公園 · 天神博多逛街",
+    title: "大濠公園 · teamLab · 福岡塔 · 百道",
     route: "地鐵 + 步行",
     items: [
-      ["09:00", "🏛️ 本日唯一景點：大濠公園 散步", "福岡市中心的美麗湖泊，早晨涼爽適合散步。", "Ohori Park Fukuoka", "住宿 → 大濠公園：地鐵約 25-35 分鐘。"],
-      ["11:00", "🍽️ 午餐：公園附近地元食堂", "公園周還有多家品質本料理小店，悠閒情調用餐。", "Ohori Park Fukuoka cafe restaurant", "公園內步行。"],
-      ["13:00", "Mina 天神 GU + 天神地下街 + PARCO", "天神區全面進攻，逛逛 Mina 天神 GU、天神地下街、福岡PARCO。", "福岡PARCO", "大濠公園 → Mina 天神：地鐵約 15 分鐘。"],
-      ["18:30", "🍽️ 晚餐：Shin-Shin 博多拉麵 KITTE博多店", "前往博多站的 KITTE 博多，享用超人氣的博多拉麵。", "Shin-Shin Hakata Ramen KITTE Hakata", "天神 → 博多/KITTE：地鐵約 10-15 分鐘。"]
+      ["09:00", "🏛️ 大濠公園散步", "福岡市中心的美麗湖泊，早晨涼爽適合散步。", "Ohori Park Fukuoka", "住宿 → 大濠公園：地鐵約 25-35 分鐘。"],
+      ["11:30", "🏛️ teamLab Forest（FunPASS 精選景點）", "沉浸式互動展覽，安排在 BOSS E・ZO FUKUOKA。", "teamLab Forest Fukuoka", "大濠公園 → BOSS E・ZO：地鐵＋步行約 25-35 分鐘。"],
+      ["13:30", "🍽️ 四人 FunPASS 深度體驗：餐點任選", "四人各自使用一張 FunPASS，每人可選一份：MLB cafe 漢堡／Fire Hall 4000 炒飯／Tonkatsu WAKABA 炸豬排／Danbo Ramen 拉麵。", "BOSS EZO Fukuoka", "teamLab Forest → BOSS E・ZO 3 樓餐飲區：館內移動。"],
+      ["15:30", "🏛️ 福岡塔（FunPASS 必遊景點）", "從地行濱前往百道，登塔欣賞博多灣與福岡市景。", "Fukuoka Tower", "BOSS E・ZO → 福岡塔：計程車約 10 分鐘，或公車約 15-25 分鐘。"],
+      ["17:00", "百道海濱公園＋MARK IS 散步", "把福岡塔、海濱與商場排在同一天，今天不再折返其他區域。", "MARK IS Fukuoka Momochi", "福岡塔 → 百道海濱／MARK IS：步行約 5-10 分鐘。"],
+      ["18:30", "🍽️ 晚餐：百道或天神", "依四人體力在百道用餐，或搭地鐵回天神。", "MARK IS Fukuoka Momochi restaurant", "百道地區步行。"]
     ]
   },
   {
@@ -116,13 +130,14 @@ const days = [
     weekday: "星期六",
     tag: "daytrip",
     filter: "daytrip",
-    title: "糸島海岸 · 姪濱百道購物",
-    route: "JR + 計程車",
+    title: "門司港 · 九州鐵道紀念館 · 小倉城",
+    route: "順路安排",
     items: [
-      ["09:00", "🏛️ 本日唯一景點：櫻井二見浦 夫婦岩 海上鳥居", "欣賞美麗海上鳥居與夫婦岩，拍照打卡。", "Sakurai Futamigaura Couple Stones", "筑前前原站 → 二見浦：計程車約 20-30 分鐘。"],
-      ["11:30", "🍽️ 午餐：糸島海景餐廳 + 和風拿鐵", "在二見浦海岸邊的海景餐廳享用悠閒午餐與午茶。", "Itoshima beach cafe lunch", "夫婦岩周還步行。"],
-      ["15:30", "MARK IS 福岡百道逛街", "下午返回市區，逛逛百道大型商場，避暑兼購物。", "MARK IS Fukuoka Momochi", "糸島 → MARK IS 百道：計程車約 40-50 分鐘，或大眾運輸約 60-80 分鐘。"],
-      ["18:30", "🍽️ 晚餐：百道地區餐廳或天神造訪", "在 MARK IS 百道周還享用晚餐，或返回天神覓食。", "MARK IS Fukuoka Momochi restaurant", "百道地區步行。"]
+      ["10:00", "🏛️ 門司港懷舊展望室（FunPASS 必遊景點）", "從高處欣賞門司港、關門海峽與懷舊街區。", "Mojiko Retro Observatory", ""],
+      ["11:30", "🏛️ 九州鐵道紀念館（FunPASS 必遊景點）", "參觀九州鐵道歷史與車輛展示，適合和門司港一起安排。", "Kyushu Railway History Museum Mojiko", ""],
+      ["13:00", "🍽️ 午餐：門司港燒咖哩", "在門司港商圈享用名物燒咖哩，再前往小倉。", "Mojiko Retro District", ""],
+      ["15:00", "🏯 小倉城（FunPASS 必遊景點）", "參觀小倉城天守閣，完成 FunPASS 五個必遊景點。", "Kokura Castle", ""],
+      ["16:30", "小倉城周邊簡單散步", "視體力逛小倉城庭園或 Riverwalk，結束今天行程。", "Kokura Castle Garden", ""]
     ]
   },
   {
@@ -131,14 +146,13 @@ const days = [
     weekday: "星期日",
     tag: "city",
     filter: "city",
-    title: "福岡塔 · 百道海濱公園 · LaLaport",
+    title: "福岡彈性日 · 休息與補買",
     route: "地鐵 + 步行",
     items: [
-      ["09:30", "🏛️ 本日唯一景點：福岡塔 + 百道海濱公園", "登上福岡塔俯瞰博多灣，然後漫步百道海濱公園，吹海風放鬆。", "Fukuoka Tower Momochi Beach", "住宿 → 福岡塔：地鐵+步行約 40-50 分鐘。"],
-      ["12:00", "🍽️ 午餐：百道地區海濱餐廳", "在百道海濱周遭享用悠閒午餐，眺望博多灣景色。", "MARK IS Fukuoka Momochi", "福岡塔 → 百道餐廳：步行約 5 分鐘。"],
-      ["14:00", "MARK IS 福岡百道逛街", "逛逛百道大型商場，避暑兼購物。", "MARK IS Fukuoka Momochi", "百道海濱 → MARK IS：步行約 5 分鐘。"],
-      ["16:30", "LaLaport 福岡逛街 看鋼彈、GU、超市購物", "前往 LaLaport，看 1:1 鋼彈，逛 GU、超市與各類商店。", "GU LaLaport Fukuoka", "MARK IS → LaLaport：地鐵約 20 分鐘。"],
-      ["18:30", "🍽️ 晚餐：LaLaport 內餐廳或天神造訪", "在 LaLaport 內享用晚餐，地下有花樣並陸的小吃。", "GU LaLaport Fukuoka restaurant", "LaLaport 內步行。"]
+      ["10:00", "睡晚一點／箱崎周邊散步", "前幾天行程較滿，今天保留休息與整理戰利品的時間。", "Hakozaki Fukuoka", "住宿周邊步行。"],
+      ["12:00", "🍽️ 午餐：箱崎或博多站周邊", "依四人體力選擇附近餐廳，不再跨區移動。", "Hakata Station Fukuoka", "箱崎 → 博多：地鐵約 15-20 分鐘。"],
+      ["14:00", "自由購物／補買伴手禮", "可在博多站、天神或住宿附近補買尚未買到的東西。", "Hakata Station souvenir shopping", "依當天體力選擇博多或天神。"],
+      ["18:00", "🍽️ 晚餐：自由安排", "把這天留作彈性備用日，遇到下雨或疲累也能直接休息。", "Hakozaki Fukuoka restaurant", "依當天安排。"]
     ]
   },
   {
@@ -147,14 +161,13 @@ const days = [
     weekday: "星期一",
     tag: "daytrip",
     filter: "daytrip",
-    title: "南藏院臥佛參拜與博多最後大採買",
-    route: "JR + 地鐵",
+    title: "南藏院臥佛 · 福岡慢活日",
+    route: "JR + 步行",
     items: [
-      ["08:45", "博多站搭乘 JR 前往南藏院", "搭乘篠栗線前往城戶南藏院前站。", "Hakata Station JR", "住宿 → 博多站：地鐵約 15-20 分鐘。"],
-      ["09:30", "南藏院 (本日唯一景點)", "參拜世界最大的青銅涅槃佛，感受莊嚴與寧靜。", "Nanzoin Temple Fukuoka", "城戶南藏院前站 → 南藏院：步行約 3-5 分鐘。"],
-      ["12:30", "博多 Yodobashi 與博多站逛街", "回博多站享用午餐，隨後在 Yodobashi（有 GU）及站內商圈補貨。", "GU Yodobashi Hakata", "南藏院 → 博多：JR 約 25 分鐘。"],
-      ["16:00", "博多站最後大採買", "藥妝、伴手禮一次買齊，買完後回住宿處打包行李。", "Hakata Station souvenir shopping", "博多站商圈步行。"],
-      ["18:00", "箱崎超市與周邊晚餐", "在住宿附近的 MaxValu 箱崎店或當地的食堂/拉麵店解決最後晚餐。", "MaxValu Hakozaki Miyamae Fukuoka", "博多站 → 箱崎住宿：地鐵約 15 分鐘。"]
+      ["09:30", "🏛️ 南藏院臥佛參拜", "參拜世界最大的青銅涅槃佛，感受莊嚴與寧靜。", "Nanzoin Temple Fukuoka", "住宿 → 城戶南藏院前站：JR 約 25-35 分鐘；車站 → 南藏院步行約 3-5 分鐘。"],
+      ["12:30", "🍽️ 午餐：篠栗或博多站周邊", "參拜後回到市區用餐，依四人體力彈性安排。", "Hakata Station Fukuoka", "南藏院 → 博多：JR 約 25 分鐘。"],
+      ["14:30", "福岡慢活／自由安排", "不再安排百道或遠程景點，可休息、補買伴手禮，或回住宿整理戰利品。", "Hakata Station Fukuoka", "博多站周邊或直接返回箱崎。"],
+      ["18:00", "🍽️ 晚餐：箱崎周邊", "保留晚上彈性，回住宿附近吃飯，不讓這天排得太滿。", "Hakozaki Fukuoka restaurant", "博多 → 箱崎：地鐵約 15-20 分鐘。"]
     ]
   },
   {
@@ -177,6 +190,9 @@ const days = [
 const dayContainer = document.querySelector("#days");
 const dateTabBar = document.querySelector("#date-tab-bar");
 const dayCounterEl = document.querySelector("#day-counter");
+const overviewSection = document.querySelector("#overview");
+const itinerarySection = document.querySelector("#itinerary");
+const overviewGrid = document.querySelector("#overview-grid");
 const packingList = document.querySelector("#packingList");
 const packingStatus = document.querySelector("#packingStatus");
 const sharePackingButton = document.querySelector("#sharePacking");
@@ -224,6 +240,15 @@ function getActiveDateIndex() {
 // Weekday short labels
 const weekdayShortMap = ["日", "一", "二", "三", "四", "五", "六"];
 
+function formatDayTag(tag) {
+  return {
+    city: "市區",
+    daytrip: "一日遊",
+    arrival: "抵達",
+    departure: "返程"
+  }[tag] || tag;
+}
+
 function renderDateTabs() {
   if (!dateTabBar) return;
   dateTabBar.innerHTML = "";
@@ -263,7 +288,7 @@ function renderDays() {
           <div class="date">${day.date}</div>
           <div class="weekday">${day.weekday}</div>
         </div>
-        <span class="tag">${day.tag}</span>
+        <span class="tag">${formatDayTag(day.tag)}</span>
       </div>
       <div class="day-body">
         <div class="day-title">
@@ -295,9 +320,44 @@ function renderDays() {
   `;
 }
 
+function renderOverview() {
+  if (!overviewGrid) return;
+  overviewGrid.innerHTML = days.map((day, index) => {
+    const highlights = day.items.map(([time, title]) => `
+      <li><time>${time}</time><span>${title}</span></li>
+    `).join("");
+    return `
+      <article class="overview-card">
+        <div class="overview-card-top">
+          <div class="overview-date"><strong>${day.date}</strong><span>${day.weekday}</span></div>
+          <span class="overview-tag">${formatDayTag(day.tag)}</span>
+        </div>
+        <h3>${day.title}</h3>
+        <ul class="overview-highlights">${highlights}</ul>
+        <button type="button" class="overview-card-link" onclick="openDayFromOverview(${index})">查看這天詳細行程 →</button>
+      </article>
+    `;
+  }).join("");
+}
+
+function toggleOverview(showOverview = null) {
+  const shouldShowOverview = showOverview === null
+    ? overviewSection?.classList.contains("is-hidden")
+    : showOverview;
+  overviewSection?.classList.toggle("is-hidden", !shouldShowOverview);
+  itinerarySection?.classList.toggle("is-hidden", shouldShowOverview);
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function openDayFromOverview(index) {
+  selectDayByIndex(index);
+  toggleOverview(false);
+}
+
 // Init itinerary
 currentDayIndex = getActiveDateIndex();
 if (dayCounterEl) dayCounterEl.textContent = `DAY ${currentDayIndex + 1} / ${days.length}`;
+renderOverview();
 renderDateTabs();
 renderDays();
 
@@ -658,7 +718,7 @@ const mustEatList = [
   {
     category: "🍜 拉麵",
     items: [
-      { name: "一蘭拉麵（博多運河城店）", note: "特色方形碗，7/22 晚餐已安排", planned: true },
+      { name: "一蘭拉麵（太宰府參道店）", note: "太宰府限定合格梅拉麵，7/23 午餐已安排", planned: true },
       { name: "Shin-Shin 博多拉麵（KITTE 博多）", note: "小拉麵清淡系，7/24 晚餐已安排", planned: true },
       { name: "賀茂山拉麵（天神/博多周邊）", note: "博多最小的豐盛拉麵，很小家 ⚠️ 延長小吃", planned: false },
       { name: "房山拉麵（箱崎周邊）", note: "濃螺山拉麵，住宿附近可就近享用", planned: false }
@@ -668,7 +728,7 @@ const mustEatList = [
     category: "🥐 麵包 & 可頌",
     items: [
       { name: "Pain Stock 明太法國麵包（箱崎本店）", note: "福岡代表麵包，7/22 早餐已安排", planned: true },
-      { name: "The Full Full Hakata 明太子麵包", note: "商業區的明太子麵包，7/22 午餐已安排", planned: true },
+      { name: "FULL FULL 天神店 明太子麵包", note: "避開博多店排隊，7/23 天神已安排", planned: true },
       { name: "梅枝餅（太宰府參道）", note: "太宰府道上的必吃和果黃豆餅，7/23 享用", planned: true },
       { name: "il FORNO del Mignon ミニヨン 迷你可頌（博多站 1F）", note: "博多站 JR 中央口旁，現烤迷你可頌秤重賣🥐 外酥內軟超好吃！07:00–23:00，路過必買！", planned: false, mapUrl: "https://maps.app.goo.gl/768Hd1ee5qmcVgmG6" }
     ]
@@ -684,7 +744,6 @@ const mustEatList = [
     category: "🍡 小吃 & 甜點",
     items: [
       { name: "明太子鯛魚燒（博多周邊）", note: "明太口味魚燒，隨處可山", planned: false },
-      { name: "糸島海景和品拿鐵（糸島海岸）", note: "糸島小旅行不容錯過的窗景咖啡問店，7/25 安排", planned: true },
       { name: "博多 天神遊世府 小吃（賀茂/公山天神）", note: "淡野系環境女子最愛的小吃聊天。可從達展", planned: false }
     ]
   },

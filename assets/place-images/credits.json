@@ -181,6 +181,41 @@
     "license": "CC BY-SA 4.0",
     "artist": "Hirho"
   },
+  "fukuoka-tower": {
+    "file": "assets/place-images/fukuoka-tower.jpg",
+    "title": "File:Fukuoka Tower.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Fukuoka_Tower.jpg",
+    "license": "Public domain",
+    "artist": "Ningyou"
+  },
+  "boss-ezo": {
+    "file": "assets/place-images/boss-ezo.png",
+    "title": "PayPay Dome and BOSS E・ZO FUKUOKA",
+    "source": "https://about.paypay.ne.jp/pr/20210317/01/",
+    "license": "Official press image; source retained for attribution",
+    "artist": "PayPay Corporation"
+  },
+  "mojiko-retro": {
+    "file": "assets/place-images/mojiko-retro.jpg",
+    "title": "File:Mojiko Retro Highmart and Mojiko Retro Area from southwest side.JPG",
+    "source": "https://commons.wikimedia.org/wiki/File:Mojiko_Retro_Highmart_and_Mojiko_Retro_Area_from_southwest_side.JPG",
+    "license": "CC BY-SA 4.0",
+    "artist": "そらみみ"
+  },
+  "kyushu-railway-museum": {
+    "file": "assets/place-images/kyushu-railway-museum.jpg",
+    "title": "File:Kyushu Railway Histry Museum.JPG",
+    "source": "https://commons.wikimedia.org/wiki/File:Kyushu_Railway_Histry_Museum.JPG",
+    "license": "Public domain",
+    "artist": "Tanuki"
+  },
+  "kokura-castle": {
+    "file": "assets/place-images/kokura-castle.jpg",
+    "title": "File:Kokura castle keep.jpg",
+    "source": "https://commons.wikimedia.org/wiki/File:Kokura_castle_keep.jpg",
+    "license": "CC BY-SA 2.0",
+    "artist": "Historian / Ian Ruxton"
+  },
   "bread": {
     "file": "assets/place-images/bread.jpg",
     "title": "User-provided Fukuoka Anpanman preview image",

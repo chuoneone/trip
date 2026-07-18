@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./styles.css?v=24" />
+    <link rel="stylesheet" href="./styles.css?v=25" />
   </head>
   <body>
 
@@ -19,6 +19,9 @@
     <nav class="top-nav">
       <h1 class="trip-title">猋猋美少女福崗遊</h1>
       <div class="quick-icons">
+        <button class="quick-icon-btn" onclick="toggleOverview()" aria-label="行程總覽">
+          <span class="quick-icon-circle">📋</span>
+        </button>
         <button class="quick-icon-btn" onclick="openModal('hotel')" aria-label="住宿資訊">
           <span class="quick-icon-circle">🛏️</span>
         </button>
@@ -36,7 +39,24 @@
 
     <!-- ══ 主內容 ══════════════════════════════════════════════ -->
     <main>
-      <section id="itinerary" class="section">
+      <section id="overview" class="section overview-section">
+        <div class="overview-head">
+          <div>
+            <p class="eyebrow">Trip Overview</p>
+            <h2>福岡行程總覽</h2>
+            <p class="overview-lead">7/21–7/28・以區域順路為主・4人同行</p>
+          </div>
+          <button type="button" class="overview-detail-btn" onclick="toggleOverview()">查看每日詳細行程 →</button>
+        </div>
+        <div class="overview-stats" aria-label="行程摘要">
+          <span><strong>8</strong> 天行程</span>
+          <span><strong>5</strong> 個 FunPASS 必遊景點</span>
+          <span><strong>1</strong> 天北九州遠程</span>
+        </div>
+        <div id="overview-grid" class="overview-grid"></div>
+      </section>
+
+      <section id="itinerary" class="section is-hidden">
         <div class="day-counter-bar">
           <span class="day-counter" id="day-counter">DAY 1 / 8</span>
         </div>
@@ -170,6 +190,6 @@
       </div>
     </div>
 
-    <script src="./script.js?v=29"></script>
+    <script src="./script.js?v=30"></script>
   </body>
 </html>
