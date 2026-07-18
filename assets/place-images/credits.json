@@ -20,13 +20,6 @@
     "license": "CC BY-SA 4.0",
     "artist": "Hirho"
   },
-  "pain-stock": {
-    "file": "assets/place-images/pain-stock.jpg",
-    "title": "File:Fukuoka Prefectural Kasuya Synthesis Public Office Building 18-1 Hakozaki-1-chōme Higashi-ku Fukuoka City 20221125.jpg",
-    "source": "https://commons.wikimedia.org/wiki/File:Fukuoka_Prefectural_Kasuya_Synthesis_Public_Office_Building_18-1_Hakozaki-1-ch%C5%8Dme_Higashi-ku_Fukuoka_City_20221125.jpg",
-    "license": "CC BY-SA 4.0",
-    "artist": "Hirho"
-  },
   "kushida": {
     "file": "assets/place-images/kushida.jpg",
     "title": "File:Kushida Shrine Kairō 1-41 Kami-kawabatamachi Hakata-ku Fukuoka 20231128.jpg",
@@ -195,6 +188,48 @@
     "license": "Official press image; source retained for attribution",
     "artist": "PayPay Corporation"
   },
+  "teamlab-forest": {
+    "file": "assets/place-images/teamlab-forest.png",
+    "title": "User-provided teamLab Forest Fukuoka image",
+    "source": "Provided by trip owner",
+    "license": "User-provided",
+    "artist": ""
+  },
+  "funpass-meal": {
+    "file": "assets/place-images/funpass-meal.png",
+    "title": "User-provided MLB cafe burger image",
+    "source": "Provided by trip owner",
+    "license": "User-provided",
+    "artist": ""
+  },
+  "lopia": {
+    "file": "assets/place-images/lopia.png",
+    "title": "User-provided Lopia supermarket image",
+    "source": "Provided by trip owner",
+    "license": "User-provided",
+    "artist": ""
+  },
+  "pain-stock": {
+    "file": "assets/place-images/pain-stock.png",
+    "title": "User-provided Pain Stock bakery image",
+    "source": "Provided by trip owner",
+    "license": "User-provided",
+    "artist": ""
+  },
+  "mark-is-momochi": {
+    "file": "assets/place-images/mark-is-momochi.png",
+    "title": "User-provided MARK IS Fukuoka Momochi image",
+    "source": "Provided by trip owner",
+    "license": "User-provided",
+    "artist": ""
+  },
+  "kyushu-national-museum": {
+    "file": "assets/place-images/kyushu-national-museum.png",
+    "title": "User-provided Kyushu National Museum exterior image",
+    "source": "Provided by trip owner",
+    "license": "User-provided",
+    "artist": ""
+  },
   "mojiko-retro": {
     "file": "assets/place-images/mojiko-retro.jpg",
     "title": "File:Mojiko Retro Highmart and Mojiko Retro Area from southwest side.JPG",
@@ -215,6 +250,34 @@
     "source": "https://commons.wikimedia.org/wiki/File:Kokura_castle_keep.jpg",
     "license": "CC BY-SA 2.0",
     "artist": "Historian / Ian Ruxton"
+  },
+  "mojiko-observatory": {
+    "file": "assets/place-images/mojiko-observatory.png",
+    "title": "User-provided Mojiko Retro Observatory image",
+    "source": "Provided by trip owner",
+    "license": "User-provided",
+    "artist": ""
+  },
+  "mojiko-curry": {
+    "file": "assets/place-images/mojiko-curry.png",
+    "title": "User-provided 蜜蜂咖哩 門司港懷舊燒咖哩 image",
+    "source": "Provided by trip owner",
+    "license": "User-provided",
+    "artist": ""
+  },
+  "kyushu-railway-museum-preview": {
+    "file": "assets/place-images/kyushu-railway-museum.png",
+    "title": "User-provided Kyushu Railway History Museum image",
+    "source": "Provided by trip owner",
+    "license": "User-provided",
+    "artist": ""
+  },
+  "nanzoin-buddha": {
+    "file": "assets/place-images/nanzoin-buddha.png",
+    "title": "User-provided Nanzoin reclining Buddha image",
+    "source": "Provided by trip owner",
+    "license": "User-provided",
+    "artist": ""
   },
   "bread": {
     "file": "assets/place-images/bread.jpg",

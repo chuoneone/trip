@@ -3,8 +3,8 @@ const mapLink = (query) =>
     ? query
     : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 const placeImage = (slug) =>
-  slug === "boss-ezo"
-    ? "./assets/place-images/boss-ezo.png"
+  ["boss-ezo", "teamlab-forest", "funpass-meal", "lopia", "pain-stock", "mark-is-momochi", "mojiko-observatory", "kyushu-national-museum", "kyushu-railway-museum", "mojiko-curry", "nanzoin-buddha"].includes(slug)
+    ? `./assets/place-images/${slug}.png`
     : `./assets/place-images/${slug}.jpg`;
 
 function imageForPlace(title, query) {
@@ -13,8 +13,9 @@ function imageForPlace(title, query) {
     [/桃園|Taoyuan/i, "taoyuan-airport"],
     [/福岡機場|Fukuoka Airport/i, "fukuoka-airport"],
     [/LuxurySweet|Hakozaki 812-0053/i, "./assets/hotel.jpg"],
+    [/Pain Stock/i, "pain-stock"],
     [/MaxValu 箱崎|Hakozaki Miyamae/i, "maxvalu-hakozaki"],
-    [/Pain Stock/i, "fishbread"],
+    [/Hakozaki/i, "maxvalu-hakozaki"],
     [/麵包超人|Anpanman/i, "./assets/place-images/bread.jpg"],
     [/櫛田|Kushida/i, "kushida"],
     [/Full Full/i, "fishbread"],
@@ -22,12 +23,16 @@ function imageForPlace(title, query) {
     [/Canal City/i, "canal-city"],
     [/西鐵福岡天神|Nishitetsu|Tenjin Station/i, "tenjin-station"],
     [/太宰府|Dazaifu/i, "dazaifu"],
-    [/九州國立|Kyushu National/i, "kyushu-museum"],
-    [/teamLab|BOSS E.?ZO|PayPay Dome|MLB cafe|Fire Hall|WAKABA|Danbo Ramen/i, "boss-ezo"],
+    [/九州國立|Kyushu National/i, "kyushu-national-museum"],
+    [/teamLab|teamLab Forest/i, "teamlab-forest"],
+    [/餐點任選|FunPASS 深度體驗/i, "funpass-meal"],
+    [/BOSS E.?ZO|PayPay Dome|MLB cafe|Fire Hall|WAKABA|Danbo Ramen/i, "boss-ezo"],
     [/福岡塔|Fukuoka Tower/i, "fukuoka-tower"],
-    [/門司港懷舊展望室|Mojiko Retro Observatory/i, "mojiko-retro"],
-    [/門司港|Mojiko|Moji Port/i, "mojiko-retro"],
+    [/Kokura Castle Garden/i, "kokura-castle"],
+    [/門司港懷舊展望室|Mojiko Retro Observatory/i, "mojiko-observatory"],
+    [/門司港燒咖哩|蜜蜂咖哩|Mojiko Curry/i, "mojiko-curry"],
     [/九州鐵道|Kyushu Railway/i, "kyushu-railway-museum"],
+    [/門司港|Mojiko|Moji Port/i, "mojiko-retro"],
     [/小倉城|Kokura Castle/i, "kokura-castle"],
     [/博多站|Hakata Station/i, "hakata-station"],
     [/大濠|Ohori/i, "ohori-park"],
@@ -38,11 +43,12 @@ function imageForPlace(title, query) {
     [/筑前前原|Chikuzen/i, "chikuzen-maebaru"],
     [/櫻井二見浦|Sakurai Futamigaura/i, "sakuraifutamigaura"],
     [/糸島海景|Itoshima beach/i, "itoshima-cafe"],
-    [/MARK IS|Momochi|Fukuoka Tower/i, "mark-is"],
+    [/MARK IS|Momochi/i, "mark-is-momochi"],
     [/能古渡船|Meinohama/i, "meinohama-ferry"],
     [/能古島|Nokonoshima/i, "nokonoshima"],
     [/LaLaport/i, "lalaport"],
-    [/南藏院|Nanzoin/i, "nanzoin"],
+    [/南藏院|Nanzoin/i, "nanzoin-buddha"],
+    [/Lopia/i, "lopia"],
     [/Yodobashi/i, "yodobashi-hakata"],
     [/Sunny|supermarket/i, "sunny-supermarket"],
     [/KITTE/i, "hakata-station"],
@@ -136,9 +142,8 @@ const days = [
     items: [
       ["10:00", "🏛️ 門司港懷舊展望室（FunPASS 必遊景點）", "從高處欣賞門司港、關門海峽與懷舊街區。", "Mojiko Retro Observatory", ""],
       ["11:30", "🏛️ 九州鐵道紀念館（FunPASS 必遊景點）", "參觀九州鐵道歷史與車輛展示，適合和門司港一起安排。", "Kyushu Railway History Museum Mojiko", ""],
-      ["13:00", "🍽️ 午餐：門司港燒咖哩", "在門司港商圈享用名物燒咖哩，再前往小倉。", "Mojiko Retro District", ""],
-      ["15:00", "🏯 小倉城（FunPASS 必遊景點）", "參觀小倉城天守閣，完成 FunPASS 五個必遊景點。", "Kokura Castle", ""],
-      ["16:30", "小倉城周邊簡單散步", "視體力逛小倉城庭園或 Riverwalk，結束今天行程。", "Kokura Castle Garden", ""]
+      ["13:00", "🍽️ 午餐：門司港燒咖哩（蜜蜂咖哩）", "在門司港商圈享用名物燒咖哩，再前往小倉。", "https://maps.app.goo.gl/oFG3Eu8K9ziopYkJA", ""],
+      ["15:00", "🏯 小倉城（FunPASS 必遊景點）", "參觀小倉城天守閣，完成 FunPASS 五個必遊景點。", "Kokura Castle", ""]
     ]
   },
   {
@@ -150,10 +155,8 @@ const days = [
     title: "福岡彈性日 · 休息與補買",
     route: "地鐵 + 步行",
     items: [
-      ["10:00", "睡晚一點／箱崎周邊散步", "前幾天行程較滿，今天保留休息與整理戰利品的時間。", "Hakozaki Fukuoka", "住宿周邊步行。"],
       ["12:00", "🍽️ 午餐：箱崎或博多站周邊", "依四人體力選擇附近餐廳，不再跨區移動。", "Hakata Station Fukuoka", "箱崎 → 博多：地鐵約 15-20 分鐘。"],
-      ["14:00", "自由購物／補買伴手禮", "可在博多站、天神或住宿附近補買尚未買到的東西。", "Hakata Station souvenir shopping", "依當天體力選擇博多或天神。"],
-      ["18:00", "🍽️ 晚餐：自由安排", "把這天留作彈性備用日，遇到下雨或疲累也能直接休息。", "Hakozaki Fukuoka restaurant", "依當天安排。"]
+      ["14:00", "自由購物／補買伴手禮", "可在博多站、天神或住宿附近補買尚未買到的東西。", "Hakata Station souvenir shopping", "依當天體力選擇博多或天神。"]
     ]
   },
   {
@@ -166,9 +169,7 @@ const days = [
     route: "JR + 步行",
     items: [
       ["09:30", "🏛️ 南藏院臥佛參拜", "參拜世界最大的青銅涅槃佛，感受莊嚴與寧靜。", "Nanzoin Temple Fukuoka", "住宿 → 城戶南藏院前站：JR 約 25-35 分鐘；車站 → 南藏院步行約 3-5 分鐘。"],
-      ["12:30", "🍽️ 午餐：篠栗或博多站周邊", "參拜後回到市區用餐，依四人體力彈性安排。", "Hakata Station Fukuoka", "南藏院 → 博多：JR 約 25 分鐘。"],
-      ["14:30", "福岡慢活／自由安排", "不再安排百道或遠程景點，可休息、補買伴手禮，或回住宿整理戰利品。", "Hakata Station Fukuoka", "博多站周邊或直接返回箱崎。"],
-      ["18:00", "🍽️ 晚餐：箱崎周邊", "保留晚上彈性，回住宿附近吃飯，不讓這天排得太滿。", "Hakozaki Fukuoka restaurant", "博多 → 箱崎：地鐵約 15-20 分鐘。"]
+      ["14:30", "福岡慢活／自由安排", "不再安排百道或遠程景點，可休息、補買伴手禮，或回住宿整理戰利品。", "Hakata Station Fukuoka", "博多站周邊或直接返回箱崎。"]
     ]
   },
   {
@@ -181,8 +182,8 @@ const days = [
     route: "計程車 + 地鐵",
     items: [
       ["06:00-11:00", "LuxurySweet East71 退房", "退房後叫計程車或地鐵前往博多站置物。", "1 Chome-41-41 Hakozaki Higashi Ward Fukuoka 812-0053 Japan", "箱崎 → 博多站：計程車或地鐵約 15-20 分鐘。"],
-      ["11:30", "博多站商圈與 KITTE 博多最後逛街", "最後補買、吃午餐，準備前往機場。", "購物中心KITTE", "博多站周邊步行。"],
-      ["16:30", "前往福岡機場", "建議保守提早 2 小時抵達機場辦理登機與免稅店購物。", "Fukuoka Airport International Terminal", "博多站 → 福岡機場國際線：計程車約 15-25 分鐘。"],
+      ["11:30", "福岡機場商店與免稅店逛街", "退房後提早到機場，逛國際線商店、免稅店並吃午餐。", "Fukuoka Airport International Terminal", "箱崎 → 福岡機場國際線：計程車或地鐵約 25-35 分鐘。"],
+      ["16:30", "國際線報到與登機準備", "完成報到、托運行李與最後採買，準備搭乘晚班機。", "Fukuoka Airport International Terminal", "機場航廈內移動。"],
       ["19:10", "CI129 福岡起飛", "搭乘華航班機返回台灣，預計 20:35 抵達桃園。", "Fukuoka Airport International Terminal", "飛行時間約 2 小時 25 分鐘。"]
     ]
   }
@@ -307,7 +308,7 @@ function renderDays() {
                     <span class="item">
                       <strong>${title}</strong>
                       <span>${detail}</span>
-                      <span class="transfer">${transfer}</span>
+                      ${transfer ? `<span class="transfer">${transfer}</span>` : ""}
                     </span>
                     <span class="map-hint" aria-hidden="true">MAP</span>
                   </a>
