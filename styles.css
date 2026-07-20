@@ -1393,6 +1393,22 @@ img {
   line-height: 1.5;
 }
 
+.hotel-guide-image {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+}
+
+.hotel-guide-caption {
+  margin: 10px 0 0;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
 .modal-actions {
   padding: 14px 20px 6px !important;
   border-top: 1px solid var(--line);

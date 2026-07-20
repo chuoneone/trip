@@ -3,7 +3,7 @@ const mapLink = (query) =>
     ? query
     : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 const placeImage = (slug) =>
-  ["boss-ezo", "teamlab-forest", "funpass-meal", "lopia", "pain-stock", "mark-is-momochi", "mojiko-observatory", "kyushu-national-museum", "kyushu-railway-museum", "mojiko-curry", "nanzoin-buddha"].includes(slug)
+  ["boss-ezo", "teamlab-forest", "funpass-meal", "lopia", "pain-stock", "mark-is-momochi", "mojiko-observatory", "kyushu-national-museum", "kyushu-railway-museum", "mojiko-curry", "nanzoin-buddha", "kumamoto-castle"].includes(slug)
     ? `./assets/place-images/${slug}.png`
     : `./assets/place-images/${slug}.jpg`;
 
@@ -48,6 +48,7 @@ function imageForPlace(title, query) {
     [/能古島|Nokonoshima/i, "nokonoshima"],
     [/LaLaport/i, "./assets/place-images/lalaport-gundam.png"],
     [/南藏院|Nanzoin/i, "nanzoin-buddha"],
+    [/熊本|Kumamoto/i, "kumamoto-castle"],
     [/Lopia/i, "lopia"],
     [/Yodobashi/i, "yodobashi-hakata"],
     [/Sunny|supermarket/i, "sunny-supermarket"],
@@ -74,7 +75,7 @@ const days = [
     items: [
       ["14:40", "CI128 桃園起飛", "桃園國際機場第 2 航廈。", "Taoyuan International Airport Terminal 2", "從台北市區到桃園機場：約 40-70 分鐘，依出發地與交通方式調整。"],
       ["18:05", "抵達福岡機場", "國際線入境後領行李，4 人建議直接搭計程車。", "Fukuoka Airport International Terminal", "飛行時間：約 2 小時 25 分鐘。"],
-      ["19:00", "🏨 入住 LuxurySweet East71", "車程約 15-25 分鐘，視入境與車流調整。", "1 Chome-41-41 Hakozaki Higashi Ward Fukuoka 812-0053 Japan", "福岡機場國際線 → 箱崎住宿：計程車約 15-25 分鐘。"],
+      ["19:00", "🏨 入住 LuxurySweet East71", "車程約 15-25 分鐘，視入境與車流調整。", "Modern Palazzo Hakozaki grace 701 1-41-22 Hakozaki Higashi Ward Fukuoka 812-0053 Japan", "福岡機場國際線 → 箱崎住宿：計程車約 15-25 分鐘。"],
       ["19:30", "🍽️ 晚餐：八起居酒場 (Yaoki) 或春陽軒拉麵", "住宿附近的地元居酒場，第一晚簡單吃好。", "八起 居酒場 箱崎", "住宿步行約 5-10 分鐘。"],
       ["21:00", "MaxValu 箱崎宮前補給", "買水、早餐、零食，回住宿整理。", "MaxValu Hakozaki Miyamae Fukuoka", "住宿 → MaxValu 箱崎宮前：步行約 5-8 分鐘。"]
     ]
@@ -150,13 +151,17 @@ const days = [
     isoDate: "2026-07-26",
     date: "7/26",
     weekday: "星期日",
-    tag: "city",
-    filter: "city",
-    title: "福岡彈性日 · 休息與補買",
-    route: "地鐵 + 步行",
+    tag: "daytrip",
+    filter: "daytrip",
+    title: "熊本一日遊 · 熊本城 · 城彩苑 · 酷麻萌廣場",
+    route: "新幹線 + 市電 + 步行",
     items: [
-      ["12:00", "🍽️ 午餐：箱崎或博多站周邊", "依四人體力選擇附近餐廳，不再跨區移動。", "Hakata Station Fukuoka", "箱崎 → 博多：地鐵約 15-20 分鐘。"],
-      ["14:00", "自由購物／補買伴手禮", "可在博多站、天神或住宿附近補買尚未買到的東西。", "Hakata Station souvenir shopping", "依當天體力選擇博多或天神。"]
+      ["08:30", "🚄 博多站搭乘新幹線前往熊本", "搭乘九州新幹線（約 35-40 分鐘）輕鬆抵達 JR 熊本站。", "Hakata Station", "箱崎 → 博多：地鐵約 15 分鐘；博多 → 熊本：新幹線約 35-40 分鐘。"],
+      ["09:30", "🏯 熊本城參觀 (天守閣與石垣)", "日本三大名城之一，參觀重建完成的壯觀天守閣與歷史石垣。", "Kumamoto Castle", "熊本站前搭乘熊本市電至「熊本城・二之丸駐車場」或「市役所前」步行前往。"],
+      ["12:00", "🍡 午餐：櫻之馬場 城彩苑", "在江戶城下町風格的商圈品嚐熊本特色美食（勝烈亭炸豬排、阿蘇赤牛丼、馬肉料理與阿蘇牛奶冰淇淋）。", "Sakura no Baba Josaien", "熊本城天守閣 → 城彩苑：步行約 5-10 分鐘。"],
+      ["14:00", "🐻 酷麻萌廣場 (Kumamon Square)", "造訪部長辦公室，見可愛的熊本熊部長，採購限定周邊商品。", "Kumamon Square Kumamoto", "城彩苑 → 酷麻萌廣場：搭乘市電至「水道町」站步行約 3 分鐘。"],
+      ["16:00", "🛍️ 上通 / 下通商店街散策 & 熊本拉麵", "熊本最繁華的拱廊購物街散步逛街，晚餐品嚐香濃焦香蒜油的熊本拉麵（黑亭 / 桂花）。", "Shimotori Shopping Arcade Kumamoto", "酷麻萌廣場 → 下通商店街：步行約 3 分鐘。"],
+      ["18:30", "🚄 搭乘新幹線返回博多 / 回箱崎", "搭乘新幹線順暢返回博多站，可在博多站逛街或直接返回箱崎休息。", "Kumamoto Station", "熊本站 → 博多站：新幹線約 35-40 分鐘。"]
     ]
   },
   {
@@ -181,7 +186,7 @@ const days = [
     title: "退房與博多站最後購物、返台",
     route: "計程車 + 地鐵",
     items: [
-      ["06:00-11:00", "LuxurySweet East71 退房", "退房後叫計程車或地鐵前往博多站置物。", "1 Chome-41-41 Hakozaki Higashi Ward Fukuoka 812-0053 Japan", "箱崎 → 博多站：計程車或地鐵約 15-20 分鐘。"],
+      ["06:00-11:00", "LuxurySweet East71 退房", "退房後叫計程車或地鐵前往博多站置物。", "Modern Palazzo Hakozaki grace 701 1-41-22 Hakozaki Higashi Ward Fukuoka 812-0053 Japan", "箱崎 → 博多站：計程車或地鐵約 15-20 分鐘。"],
       ["11:30", "福岡機場商店與免稅店逛街", "退房後提早到機場，逛國際線商店、免稅店並吃午餐。", "Fukuoka Airport International Terminal", "箱崎 → 福岡機場國際線：計程車或地鐵約 25-35 分鐘。"],
       ["16:30", "國際線報到與登機準備", "完成報到、托運行李與最後採買，準備搭乘晚班機。", "Fukuoka Airport International Terminal", "機場航廈內移動。"],
       ["19:10", "CI129 福岡起飛", "搭乘華航班機返回台灣，預計 20:35 抵達桃園。", "Fukuoka Airport International Terminal", "飛行時間約 2 小時 25 分鐘。"]
@@ -435,8 +440,8 @@ function toggleInfoBar(type) {
 
 function copyHotelAddr(lang = "ja") {
   const addresses = {
-    ja: "\u3012812-0053 \u798f\u5ca1\u770c\u798f\u5ca1\u5e02\u6771\u533a\u7b87\u5d0e\uff11\u4e01\u76ee41\u221241",
-    en: "1 Chome-41-41 Hakozaki, Higashi Ward, Fukuoka, 812-0053 Japan"
+    ja: "〒812-0053 福岡県福岡市東区箱崎1-41-22 Modern Palazzo 箱崎grace 701",
+    en: "Modern Palazzo Hakozaki grace 701, 1-41-22 Hakozaki, Higashi Ward, Fukuoka, 812-0053 Japan"
   };
   const addr = addresses[lang] || addresses.ja;
   navigator.clipboard?.writeText(addr).catch(() => {
@@ -688,7 +693,7 @@ const mustEatList = [
     category: "🍜 拉麵",
     items: [
       { name: "一蘭拉麵（太宰府參道店）", note: "太宰府限定合格梅拉麵，7/23 午餐已安排", planned: true },
-      { name: "Shin-Shin 博多拉麵（KITTE 博多）", note: "清爽豚骨拉麵，可安排在 7/26 博多站補買日或路過 KITTE 時享用", planned: false },
+      { name: "Shin-Shin 博多拉麵（KITTE 博多）", note: "清爽豚骨拉麵，可安排在博多站路過 KITTE 時享用", planned: false },
       { name: "賀茂山拉麵（天神/博多周邊）", note: "博多最小的豐盛拉麵，很小家 ⚠️ 延長小吃", planned: false },
       { name: "房山拉麵（箱崎周邊）", note: "濃螺山拉麵，住宿附近可就近享用", planned: false }
     ]
