@@ -28,7 +28,7 @@
         <button class="quick-icon-btn" onclick="openModal('packing')" aria-label="行李清單">
           <span class="quick-icon-circle">🧳</span>
         </button>
-        <button class="quick-icon-btn" onclick="openModal('flight')" aria-label="班機時間">
+        <button class="quick-icon-btn" onclick="openModal('flight')" aria-label="班機與交通">
           <span class="quick-icon-circle">✈️</span>
         </button>
         <button class="quick-icon-btn" onclick="openModal('musteat')" aria-label="必吃美食">
@@ -149,12 +149,12 @@
       </div>
     </div>
 
-    <!-- ══ Modal: 班機 ══════════════════════════════════════ -->
+    <!-- ══ Modal: 班機與交通 ══════════════════════════════════ -->
     <div class="info-modal" id="modal-flight" onclick="closeModal('flight')">
       <div class="info-modal-card" onclick="event.stopPropagation()">
         <div class="info-modal-handle"></div>
         <div class="info-modal-header">
-          <span class="info-modal-title">✈️ 班機時間</span>
+          <span class="info-modal-title">✈️ 班機與 JR Pass 交通</span>
           <button class="info-modal-close" onclick="closeModal('flight')" aria-label="關閉">✕</button>
         </div>
         <div class="info-modal-body">
@@ -195,6 +195,37 @@
                 <span class="flight-time">20:35</span>
                 <span class="flight-airport">桃園 TPE</span>
                 <span class="flight-date">7/28 週二</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="jrpass-card">
+            <div class="jrpass-header">
+              <span class="jrpass-title">🎫 JR Pass (7/23–7/25) 劃位清單</span>
+              <span class="jrpass-badge">連續 3 天</span>
+            </div>
+            <div class="jrpass-info-list">
+              <p>📍 <strong>預計兌換：</strong>7/21 (二) 19:30 抵達博多站 Lopia 採買時順便兌換</p>
+              <p>📍 <strong>兌換地點：</strong>JR 博多站綠色窗口 / 綠色售票機（至 22:00）</p>
+              <p>💼 <strong>預備文件：</strong>4 人護照正本（含短期滯在貼紙）+ Klook QR Code 憑證</p>
+            </div>
+            <div class="jrpass-sheet">
+              <div class="jrpass-sheet-title">📝 臨櫃 / 機器劃位清單 (出示給站務員)</div>
+              
+              <div class="jrpass-item">
+                <span class="jrpass-item-tag kumamoto">7/24 (週五) 熊本一日遊 (九州新幹線)</span>
+                <ul class="jrpass-item-details">
+                  <li><strong>去程 (預先劃位)：</strong>博多 ➔ 熊本｜預計 08:30 發車｜4 人指定席（連座）</li>
+                  <li><strong>回程 (當天彈性)：</strong>熊本 ➔ 博多｜回程時當場用售票機劃位或搭自由席</li>
+                </ul>
+              </div>
+
+              <div class="jrpass-item">
+                <span class="jrpass-item-tag mojiko">7/23 (週四) 門司港/小倉 (特急 Sonic 音速號)</span>
+                <ul class="jrpass-item-details">
+                  <li><strong>去程 (預先劃位)：</strong>博多 ➔ 小倉｜預計 09:00 發車｜4 人指定席</li>
+                  <li><strong>回程 (當天彈性)：</strong>小倉 ➔ 博多｜回程時當場用售票機劃位或搭自由席</li>
+                </ul>
               </div>
             </div>
           </div>

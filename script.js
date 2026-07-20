@@ -70,14 +70,14 @@ const days = [
     weekday: "星期二",
     tag: "arrival",
     filter: "relax",
-    title: "抵達福岡，入住箱崎",
-    route: "計程車優先",
+    title: "抵達福岡 · 箱崎放行李 · Lopia 採買晚餐",
+    route: "計程車 / 地鐵",
     items: [
       ["14:40", "CI128 桃園起飛", "桃園國際機場第 2 航廈。", "Taoyuan International Airport Terminal 2", "從台北市區到桃園機場：約 40-70 分鐘，依出發地與交通方式調整。"],
-      ["18:05", "抵達福岡機場", "國際線入境後領行李，4 人建議直接搭計程車。", "Fukuoka Airport International Terminal", "飛行時間：約 2 小時 25 分鐘。"],
-      ["19:00", "🏨 入住 LuxurySweet East71", "車程約 15-25 分鐘，視入境與車流調整。", "Modern Palazzo Hakozaki grace 701 1-41-22 Hakozaki Higashi Ward Fukuoka 812-0053 Japan", "福岡機場國際線 → 箱崎住宿：計程車約 15-25 分鐘。"],
-      ["19:30", "🍽️ 晚餐：八起居酒場 (Yaoki) 或春陽軒拉麵", "住宿附近的地元居酒場，第一晚簡單吃好。", "八起 居酒場 箱崎", "住宿步行約 5-10 分鐘。"],
-      ["21:00", "MaxValu 箱崎宮前補給", "買水、早餐、零食，回住宿整理。", "MaxValu Hakozaki Miyamae Fukuoka", "住宿 → MaxValu 箱崎宮前：步行約 5-8 分鐘。"]
+      ["18:05", "抵達福岡機場", "國際線入境後領行李，4 人建議直接搭計程車前往箱崎住宿。", "Fukuoka Airport International Terminal", "飛行時間：約 2 小時 25 分鐘。"],
+      ["19:00", "🏨 先前往 LuxurySweet East71 放行李", "車程約 15-25 分鐘，先回民宿放行李與辦理 Check-in。", "Modern Palazzo Hakozaki grace 701 1-41-22 Hakozaki Higashi Ward Fukuoka 812-0053 Japan", "福岡機場國際線 → 箱崎住宿：計程車約 15-25 分鐘。"],
+      ["19:35", "🛒 博多站兌換 JR Pass & Lopia 採買晚餐", "先至 JR 博多站綠色窗口兌換 7/23-7/25 JR Pass 並預先劃位去程班次（熊本新幹線與門司港特急），再至 Yodobashi 4 樓 Lopia 採買晚餐（留意 20:00 結束營業）。", "JR Hakata Station", "箱崎 → 博多：計程車或地鐵約 15 分鐘。"],
+      ["20:30", "🏠 返回箱崎住宿享用晚餐與休息", "帶回 Lopia 豐盛熟食與飲料，在民宿舒適享用第一晚晚餐。", "LuxurySweet East71 Hakozaki", "博多 → 箱崎：地鐵或計程車約 15 分鐘。"]
     ]
   },
   {
@@ -86,7 +86,7 @@ const days = [
     weekday: "星期三",
     tag: "city",
     filter: "city",
-    title: "櫛田神社 · 麵包超人博物館 · 運河城",
+    title: "櫛田神社 · 麵包超人博物館 · 運河城 · 國產牛燒肉",
     route: "地鐵 + 步行",
     items: [
       ["09:00", "🍽️ 早餐：Pain Stock 箱崎本店", "先吃福岡名物明太法國麵包，離住宿區不遠。", "pain stock Hakozaki Fukuoka", "住宿 → Pain Stock：步行或計程車約 8-12 分鐘。"],
@@ -94,48 +94,14 @@ const days = [
       ["10:45", "🎈 麵包超人博物館", "在博多Riverain逛福岡麵包超人兒童博物館，預留約2.5小時。", "Fukuoka Anpanman Children's Museum", "櫛田神社 → 博多Riverain：步行約 7-10 分鐘。"],
       ["13:30", "🍞 備選：THE FULL FULL HAKATA／運河城周邊午餐", "先看博多店現場排隊狀況；隊伍可接受就吃 Full Full，排太久就改到運河城附近用餐。", "THE FULL FULL HAKATA Fukuoka", "麵包超人博物館 → Full Full／運河城：步行約 5-10 分鐘。"],
       ["15:00", "博多運河城逛街", "逛街避暑，有各大品牌與 UQ Mobile 門市。", "au Canal City Hakata UQ mobile", "運河城周邊午餐 → 博多運河城：步行約 5 分鐘。"],
-      ["18:00", "🛒 Lopia 博多ヨドバシ店：買晚餐", "從運河城前往博多ヨドバシ 4 樓，買熟食、壽司、肉品與飲料，當作今晚晚餐。", "Lopia Hakata Yodobashi", "博多運河城 → 博多ヨドバシ：步行或地鐵約 10-15 分鐘。"],
-      ["19:30", "返回箱崎住宿", "買好晚餐後直接回住宿，晚上不再安排其他景點。", "LuxurySweet East71 Hakozaki", "博多 → 箱崎：地鐵約 15-20 分鐘。"]
+      ["18:00", "🍽️ 晚餐：國產牛燒肉 (ワンカルビ PREMIUM 天神店)", "第二晚大餐：品嚐美味的國產牛燒肉吃到飽 (建議提前預約)。", "ワンカルビ PREMIUM 天神", "運河城 → 天神：地鐵或步行約 10-15 分鐘。"],
+      ["20:30", "MaxValu 箱崎宮前補給 / 返回住宿", "補給零食飲料後回住宿休息，整理明後天行程。", "MaxValu Hakozaki Miyamae Fukuoka", "地鐵或步行約 15 分鐘。"]
     ]
   },
   {
     isoDate: "2026-07-23",
     date: "7/23",
     weekday: "星期四",
-    tag: "daytrip",
-    filter: "daytrip",
-    title: "太宰府天滿宮 · 一蘭 · Full Full 天神店",
-    route: "地鐵 + 西鐵 + 步行",
-    items: [
-      ["09:00", "🏛️ 太宰府天滿宮＋參道散策", "避開最炎熱的正午，早點前往參道漫步，吃梅枝餅，參觀天滿宮。", "Dazaifu Tenmangu", "住宿 → 太宰府：西鐵約 50-60 分鐘。"],
-      ["11:30", "🏛️ 九州國立博物館（FunPASS 必遊景點）", "參觀九州國立博物館，和太宰府排在同一天最順路。", "Kyushu National Museum Dazaifu", "太宰府天滿宮 → 九州國立博物館：步行約 10-15 分鐘。"],
-      ["13:30", "🍜 午餐：一蘭太宰府參道店", "在太宰府參道吃一蘭，還可以品嚐太宰府限定的合格梅拉麵。", "Ichiran Dazaifu Sando", "九州國立博物館 → 一蘭太宰府參道店：步行約 10-15 分鐘。"],
-      ["15:00", "🍞 FULL FULL 天神店", "改去天神店買明太子法國麵包，避開博多店較誇張的排隊人潮。", "FULL FULL Tenjin Fukuoka", "一蘭太宰府參道店 → 天神店：西鐵約 40-50 分鐘。"],
-      ["16:00", "天神商圈逛街 + Mina 天神、PARCO", "搭西鐵返回天神後，逛福岡PARCO與Mina天神。", "福岡PARCO", "Full Full 天神店 → Mina／PARCO：步行約 5-10 分鐘。"],
-      ["18:00", "🍽️ 晚餐：國產牛燒肉 (ワンカルビ PREMIUM 天神店)", "第三晚大餐：品嚐美味的國產牛燒肉吃到飽 (建議提前預約)。", "ワンカルビ PREMIUM 天神", "天神商圈步行約 5-10 分鐘。"]
-    ]
-  },
-  {
-    isoDate: "2026-07-24",
-    date: "7/24",
-    weekday: "星期五",
-    tag: "city",
-    filter: "city",
-    title: "大濠公園 · teamLab · 福岡塔 · 百道",
-    route: "地鐵 + 步行",
-    items: [
-      ["09:00", "🏛️ 大濠公園散步", "福岡市中心的美麗湖泊，早晨涼爽適合散步。", "Ohori Park Fukuoka", "住宿 → 大濠公園：地鐵約 25-35 分鐘。"],
-      ["11:30", "🏛️ teamLab Forest（FunPASS 精選景點）", "沉浸式互動展覽，安排在 BOSS E・ZO FUKUOKA。", "teamLab Forest Fukuoka", "大濠公園 → BOSS E・ZO：地鐵＋步行約 25-35 分鐘。"],
-      ["13:30", "🍽️ 四人 FunPASS 深度體驗：餐點任選", "四人各自使用一張 FunPASS，每人可選一份：MLB cafe 漢堡／Fire Hall 4000 炒飯／Tonkatsu WAKABA 炸豬排／Danbo Ramen 拉麵。", "BOSS EZO Fukuoka", "teamLab Forest → BOSS E・ZO 3 樓餐飲區：館內移動。"],
-      ["15:30", "🏛️ 福岡塔（FunPASS 必遊景點）", "從地行濱前往百道，登塔欣賞博多灣與福岡市景。", "Fukuoka Tower", "BOSS E・ZO → 福岡塔：計程車約 10 分鐘，或公車約 15-25 分鐘。"],
-      ["17:00", "百道海濱公園＋MARK IS 散步", "把福岡塔、海濱與商場排在同一天，今天不再折返其他區域。", "MARK IS Fukuoka Momochi", "福岡塔 → 百道海濱／MARK IS：步行約 5-10 分鐘。"],
-      ["18:30", "🍽️ 晚餐：百道或天神", "依四人體力在百道用餐，或搭地鐵回天神。", "MARK IS Fukuoka Momochi restaurant", "百道地區步行。"]
-    ]
-  },
-  {
-    isoDate: "2026-07-25",
-    date: "7/25",
-    weekday: "星期六",
     tag: "daytrip",
     filter: "daytrip",
     title: "門司港 · 九州鐵道紀念館 · 小倉城",
@@ -148,9 +114,9 @@ const days = [
     ]
   },
   {
-    isoDate: "2026-07-26",
-    date: "7/26",
-    weekday: "星期日",
+    isoDate: "2026-07-24",
+    date: "7/24",
+    weekday: "星期五",
     tag: "daytrip",
     filter: "daytrip",
     title: "熊本一日遊 · 熊本城 · 城彩苑 · 酷麻萌廣場",
@@ -165,9 +131,9 @@ const days = [
     ]
   },
   {
-    isoDate: "2026-07-27",
-    date: "7/27",
-    weekday: "星期一",
+    isoDate: "2026-07-25",
+    date: "7/25",
+    weekday: "星期六",
     tag: "daytrip",
     filter: "daytrip",
     title: "南藏院臥佛 · LaLaport 購物日",
@@ -175,6 +141,40 @@ const days = [
     items: [
       ["09:30", "🏛️ 南藏院臥佛參拜", "參拜世界最大的青銅涅槃佛，感受莊嚴與寧靜。", "Nanzoin Temple Fukuoka", "住宿 → 城戶南藏院前站：JR 約 25-35 分鐘；車站 → 南藏院步行約 3-5 分鐘。"],
       ["14:00", "🛍️ LaLaport 福岡・Side-F 鋼彈", "逛實物大 ν 鋼彈、GUNDAM SIDE-F、服飾與生活雜貨；可在商場內晚餐後再回箱崎。", "LaLaport Fukuoka", "南藏院 → 博多站轉乘 JR 至竹下站，再步行約 9 分鐘；或從博多站搭直達巴士。"]
+    ]
+  },
+  {
+    isoDate: "2026-07-26",
+    date: "7/26",
+    weekday: "星期日",
+    tag: "city",
+    filter: "city",
+    title: "大濠公園 · teamLab · 福岡塔 · 百道",
+    route: "地鐵 + 步行",
+    items: [
+      ["09:00", "🏛️ 大濠公園散步", "福岡市中心的美麗湖泊，早晨涼爽適合散步。", "Ohori Park Fukuoka", "住宿 → 大濠公園：地鐵約 25-35 分鐘。"],
+      ["11:30", "🏛️ teamLab Forest（FunPASS 精選景點）", "沉浸式互動展覽，安排在 BOSS E・ZO FUKUOKA。", "teamLab Forest Fukuoka", "大濠公園 → BOSS E・ZO：地鐵＋步行約 25-35 分鐘。"],
+      ["13:30", "🍽️ 四人 FunPASS 深度體驗：餐點任選", "四人各自使用一張 FunPASS，每人可選一份：MLB cafe 漢堡／Fire Hall 4000 炒飯／Tonkatsu WAKABA 炸豬排／Danbo Ramen 拉麵。", "BOSS EZO Fukuoka", "teamLab Forest → BOSS E・ZO 3 樓餐飲區：館內移動。"],
+      ["15:30", "🏛️ 福岡塔（FunPASS 必遊景點）", "從地行濱前往百道，登塔欣賞博多灣與福岡市景。", "Fukuoka Tower", "BOSS E・ZO → 福岡塔：計程車約 10 分鐘，或公車約 15-25 分鐘。"],
+      ["17:00", "百道海濱公園＋MARK IS 散步", "把福岡塔、海濱與商場排在同一天，今天不再折返其他區域。", "MARK IS Fukuoka Momochi", "福岡塔 → 百道海濱／MARK IS：步行約 5-10 分鐘。"],
+      ["18:30", "🍽️ 晚餐：百道或天神", "依四人體力在百道用餐，或搭地鐵回天神。", "MARK IS Fukuoka Momochi restaurant", "百道地區步行。"]
+    ]
+  },
+  {
+    isoDate: "2026-07-27",
+    date: "7/27",
+    weekday: "星期一",
+    tag: "daytrip",
+    filter: "daytrip",
+    title: "太宰府天滿宮 · 一蘭 · Full Full 天神店",
+    route: "地鐵 + 西鐵 + 步行",
+    items: [
+      ["09:00", "🏛️ 太宰府天滿宮＋參道散策", "避開最炎熱的正午，早點前往參道漫步，吃梅枝餅，參觀天滿宮。", "Dazaifu Tenmangu", "住宿 → 太宰府：西鐵約 50-60 分鐘。"],
+      ["11:30", "🏛️ 九州國立博物館（FunPASS 必遊景點）", "參觀九州國立博物館，和太宰府排在同一天最順路。", "Kyushu National Museum Dazaifu", "太宰府天滿宮 → 九州國立博物館：步行約 10-15 分鐘。"],
+      ["13:30", "🍜 午餐：一蘭太宰府參道店", "在太宰府參道吃一蘭，還可以品嚐太宰府限定的合格梅拉麵。", "Ichiran Dazaifu Sando", "九州國立博物館 → 一蘭太宰府參道店：步行約 10-15 分鐘。"],
+      ["15:00", "🍞 FULL FULL 天神店", "改去天神店買明太子法國麵包，避開博多店較誇張的排隊人潮。", "FULL FULL Tenjin Fukuoka", "一蘭太宰府參道店 → 天神店：西鐵約 40-50 分鐘。"],
+      ["16:00", "天神商圈逛街 + Mina 天神、PARCO", "搭西鐵返回天神後，逛福岡PARCO與Mina天神。", "福岡PARCO", "Full Full 天神店 → Mina／PARCO：步行約 5-10 分鐘。"],
+      ["18:30", "🍽️ 晚餐：天神商圈美食（博多牛腸鍋 / 水瀧鍋 / 地元名物）", "在天神商圈享用福岡特產牛腸鍋或水瀧鍋大餐。", "Tenjin Station Fukuoka", "天神商圈步行。"]
     ]
   },
   {
@@ -692,7 +692,7 @@ const mustEatList = [
   {
     category: "🍜 拉麵",
     items: [
-      { name: "一蘭拉麵（太宰府參道店）", note: "太宰府限定合格梅拉麵，7/23 午餐已安排", planned: true },
+      { name: "一蘭拉麵（太宰府參道店）", note: "太宰府限定合格梅拉麵，7/27 午餐已安排", planned: true },
       { name: "Shin-Shin 博多拉麵（KITTE 博多）", note: "清爽豚骨拉麵，可安排在博多站路過 KITTE 時享用", planned: false },
       { name: "賀茂山拉麵（天神/博多周邊）", note: "博多最小的豐盛拉麵，很小家 ⚠️ 延長小吃", planned: false },
       { name: "房山拉麵（箱崎周邊）", note: "濃螺山拉麵，住宿附近可就近享用", planned: false }
@@ -702,8 +702,8 @@ const mustEatList = [
     category: "🥐 麵包 & 可頌",
     items: [
       { name: "Pain Stock 明太法國麵包（箱崎本店）", note: "福岡代表麵包，7/22 早餐已安排", planned: true },
-      { name: "FULL FULL 天神店 明太子麵包", note: "避開博多店排隊，7/23 天神已安排", planned: true },
-      { name: "梅枝餅（太宰府參道）", note: "太宰府道上的必吃和果黃豆餅，7/23 享用", planned: true },
+      { name: "FULL FULL 天神店 明太子麵包", note: "避開博多店排隊，7/27 天神已安排", planned: true },
+      { name: "梅枝餅（太宰府參道）", note: "太宰府道上的必吃和果黃豆餅，7/27 享用", planned: true },
       { name: "il FORNO del Mignon ミニヨン 迷你可頌（博多站 1F）", note: "博多站 JR 中央口旁，現烤迷你可頌秤重賣🥐 外酥內軟超好吃！07:00–23:00，路過必買！", planned: false, mapUrl: "https://maps.app.goo.gl/768Hd1ee5qmcVgmG6" },
       { name: "Dacomecca", note: "博多站附近的人氣麵包店，適合在博多站行程時順路外帶", planned: false }
     ]
@@ -711,7 +711,7 @@ const mustEatList = [
   {
     category: "🥩 燒肉 / 居酒屋",
     items: [
-      { name: "國產牛燒肉 ワンカルビ PREMIUM（天神）", note: "一定要預約！吃到飽展。絡 7/23 晚餐已安排", planned: true },
+      { name: "國產牛燒肉 ワンカルビ PREMIUM（天神）", note: "一定要預約！吃到飽展。絡 7/22 晚餐已安排", planned: true },
       { name: "地元居酒屋八起 (Yaoki)（箱崎）", note: "第一晚抵達就近吃，平價奇醐地元居酒屋", planned: false },
       { name: "箱崎站前食堂（Hakozaki Ekimae Shokudo）", note: "住宿區附近的定食選擇，想吃家常日式料理時可備選", planned: false }
     ]
