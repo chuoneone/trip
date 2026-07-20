@@ -46,7 +46,7 @@ function imageForPlace(title, query) {
     [/MARK IS|Momochi/i, "mark-is-momochi"],
     [/能古渡船|Meinohama/i, "meinohama-ferry"],
     [/能古島|Nokonoshima/i, "nokonoshima"],
-    [/LaLaport/i, "lalaport"],
+    [/LaLaport/i, "./assets/place-images/lalaport-gundam.png"],
     [/南藏院|Nanzoin/i, "nanzoin-buddha"],
     [/Lopia/i, "lopia"],
     [/Yodobashi/i, "yodobashi-hakata"],
@@ -165,11 +165,11 @@ const days = [
     weekday: "星期一",
     tag: "daytrip",
     filter: "daytrip",
-    title: "南藏院臥佛 · 福岡慢活日",
+    title: "南藏院臥佛 · LaLaport 購物日",
     route: "JR + 步行",
     items: [
       ["09:30", "🏛️ 南藏院臥佛參拜", "參拜世界最大的青銅涅槃佛，感受莊嚴與寧靜。", "Nanzoin Temple Fukuoka", "住宿 → 城戶南藏院前站：JR 約 25-35 分鐘；車站 → 南藏院步行約 3-5 分鐘。"],
-      ["14:30", "福岡慢活／自由安排", "不再安排百道或遠程景點，可休息、補買伴手禮，或回住宿整理戰利品。", "Hakata Station Fukuoka", "博多站周邊或直接返回箱崎。"]
+      ["14:00", "🛍️ LaLaport 福岡・Side-F 鋼彈", "逛實物大 ν 鋼彈、GUNDAM SIDE-F、服飾與生活雜貨；可在商場內晚餐後再回箱崎。", "LaLaport Fukuoka", "南藏院 → 博多站轉乘 JR 至竹下站，再步行約 9 分鐘；或從博多站搭直達巴士。"]
     ]
   },
   {
@@ -688,7 +688,7 @@ const mustEatList = [
     category: "🍜 拉麵",
     items: [
       { name: "一蘭拉麵（太宰府參道店）", note: "太宰府限定合格梅拉麵，7/23 午餐已安排", planned: true },
-      { name: "Shin-Shin 博多拉麵（KITTE 博多）", note: "小拉麵清淡系，7/24 晚餐已安排", planned: true },
+      { name: "Shin-Shin 博多拉麵（KITTE 博多）", note: "清爽豚骨拉麵，可安排在 7/26 博多站補買日或路過 KITTE 時享用", planned: false },
       { name: "賀茂山拉麵（天神/博多周邊）", note: "博多最小的豐盛拉麵，很小家 ⚠️ 延長小吃", planned: false },
       { name: "房山拉麵（箱崎周邊）", note: "濃螺山拉麵，住宿附近可就近享用", planned: false }
     ]
@@ -699,14 +699,28 @@ const mustEatList = [
       { name: "Pain Stock 明太法國麵包（箱崎本店）", note: "福岡代表麵包，7/22 早餐已安排", planned: true },
       { name: "FULL FULL 天神店 明太子麵包", note: "避開博多店排隊，7/23 天神已安排", planned: true },
       { name: "梅枝餅（太宰府參道）", note: "太宰府道上的必吃和果黃豆餅，7/23 享用", planned: true },
-      { name: "il FORNO del Mignon ミニヨン 迷你可頌（博多站 1F）", note: "博多站 JR 中央口旁，現烤迷你可頌秤重賣🥐 外酥內軟超好吃！07:00–23:00，路過必買！", planned: false, mapUrl: "https://maps.app.goo.gl/768Hd1ee5qmcVgmG6" }
+      { name: "il FORNO del Mignon ミニヨン 迷你可頌（博多站 1F）", note: "博多站 JR 中央口旁，現烤迷你可頌秤重賣🥐 外酥內軟超好吃！07:00–23:00，路過必買！", planned: false, mapUrl: "https://maps.app.goo.gl/768Hd1ee5qmcVgmG6" },
+      { name: "Dacomecca", note: "博多站附近的人氣麵包店，適合在博多站行程時順路外帶", planned: false }
     ]
   },
   {
     category: "🥩 燒肉 / 居酒屋",
     items: [
       { name: "國產牛燒肉 ワンカルビ PREMIUM（天神）", note: "一定要預約！吃到飽展。絡 7/23 晚餐已安排", planned: true },
-      { name: "地元居酒屋八起 (Yaoki)（箱崎）", note: "第一晚抵達就近吃，平價奇醐地元居酒屋", planned: false }
+      { name: "地元居酒屋八起 (Yaoki)（箱崎）", note: "第一晚抵達就近吃，平價奇醐地元居酒屋", planned: false },
+      { name: "箱崎站前食堂（Hakozaki Ekimae Shokudo）", note: "住宿區附近的定食選擇，想吃家常日式料理時可備選", planned: false }
+    ]
+  },
+  {
+    category: "🏛️ 體驗與景點",
+    items: [
+      { name: "明太子 DIY 博多飲食文化博物館", note: "可親手製作明太子，須另確認場次與預約；適合排在博多站／機場周邊的彈性時段", planned: false }
+    ]
+  },
+  {
+    category: "🛒 超市採買",
+    items: [
+      { name: "LUMIERE", note: "平價超市，可作為 LOPIA、MaxValu 之外的採買備選", planned: false }
     ]
   },
   {
